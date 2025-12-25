@@ -1,0 +1,177 @@
+﻿@using Arihant.Models.Rights_Master
+
+@{
+    ViewData["Title"] = "Customer List";
+}
+@model List<DTO_MenuRight>
+<link href="~/css/datatables.css" rel="stylesheet" />
+<link href="~/css/allmin.css" rel="stylesheet" />
+<link href="~/css/toggle.min.css" rel="stylesheet" />
+
+<link href="~/css/sumoselect.css" rel="stylesheet" />
+<style>
+    .master-container {
+        width: 85%;
+        margin: 30px auto;
+        background: #fff;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .table-role-master {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+ 
+        .table-role-master thead th {
+            background-color: #b08d57;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #9a7b4a;
+        }
+
+    .role-name-cell {
+        border: 1px solid #eee;
+        padding: 15px !important;
+        vertical-align: top;
+        background-color: #fff;
+    }
+
+
+    .menu-assigned-cell {
+        border: 1px solid #eee;
+        padding: 10px !important;
+    }
+
+    .module-header {
+        color: #a52a2a; 
+        font-weight: bold;
+        display: block;
+        margin-top: 10px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .menu-item {
+        font-size: 13px;
+        color: #444;
+        margin-left: 20px;
+        line-height: 1.6;
+    }
+</style>
+
+<div class="master-container">
+   
+
+    <table class="table-role-master">
+        <thead>
+            <tr>
+                <th width="25%">Role Name</th>
+                <th width="65%">Menu's Assigned</th>
+                <th width="10%" class="text-center">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var roleGroup in Model.GroupBy(r => new { r.RoleID, r.RoleName }))
+            {
+                <tr>
+                    <td class="role-name-cell">
+                        <span style="font-size: 16px; font-weight: 500;">@roleGroup.Key.RoleName</span><br />
+                        <small class="text-primary" style="font-style: italic;">
+                            (Role assigned count: @roleGroup.Count())
+                        </small>
+                    </td>
+                    <td class="menu-assigned-cell">
+                        @foreach (var moduleGroup in roleGroup.GroupBy(m => m.Module))
+                        {
+                            <div class="module-section" style="margin-bottom: 10px;">
+                                <span class="module-header" style="font-weight: bold; color: #a52a2a;">@moduleGroup.Key</span>
+                                <div style="display: flex; flex-direction: column; gap: 5px; margin-top: 5px;">
+                                    @foreach (var menu in moduleGroup)
+                                    {
+                                        <span class="badge badge-light" style="font-weight: normal; align-self: flex-start;">
+                                            @menu.RightName
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </td>
+                    <td class="text-center" style="vertical-align: middle; white-space: nowrap;">
+                        <a href="@Url.Action("EditRole", "Users_Master", new { id = roleGroup.Key.RoleID })"
+                           style="text-decoration: none; margin-right: 15px;" title="Edit Role">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#007bff" viewBox="0 0 16 16" style="vertical-align: middle;">
+                                <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
+                            </svg>
+                        </a>
+
+                        <a href="javascript:void(0)" onclick="DeleteRole(@roleGroup.Key.RoleID)" title="Delete Role">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#dc3545" viewBox="0 0 16 16" style="vertical-align: middle;">
+                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                            </svg>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script src="~/js/jquery-3.7.1.js"></script>
+<script src="~/js/sumoselect.js"></script>
+<script src="~/js/datatables.js"></script>
+<script src="~/js/sweetalert2.js"></script>
+<script src="~/js/validation.js"></script>
+<script>
+
+            function DeleteRole(roleId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to deactivate this role!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+              
+                Swal.showLoading();
+
+                $.ajax({
+                    url: '@Url.Action("DeleteRole", "Users_Master")',
+                    type: 'POST',
+                    data: { id: roleId },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire(
+                                'Deleted!',
+                                response.message,
+                                'success'
+                            ).then(() => {
+                                location.reload(); 
+                            });
+                        } else {
+                            Swal.fire(
+                                'Failed!',
+                                response.message,
+                                'error'
+                            );
+                        }
+                    },
+                    error: function () {
+                        Swal.fire(
+                            'Error!',
+                            'Something went wrong with the server request.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    }
+</script>

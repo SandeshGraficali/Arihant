@@ -1,0 +1,116 @@
+﻿
+@using Arihant.Models.Rights_Master
+
+@{
+    ViewData["Title"] = "Customer List";
+}
+@model List<IGrouping<string, MenuRightViewModel>>
+<link href="~/css/datatables.css" rel="stylesheet" />
+<link href="~/css/allmin.css" rel="stylesheet" />
+<link href="~/css/toggle.min.css" rel="stylesheet" />
+
+<link href="~/css/sumoselect.css" rel="stylesheet" />
+<div class="card" style="width: 55%; margin: 50px auto; border: 1px solid #ccc; padding: 20px; font-family: sans-serif; background: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+    <h3 style="text-align:center; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #333;">Add Role</h3>
+
+    <div class="form-section" style="margin-bottom: 25px; display: flex; align-items: center;">
+        <label style="margin-right: 15px; white-space: nowrap;"><b>Role Name:</b></label>
+        <input type="text" id="txtRoleName" class="form-control" style="flex: 1;" placeholder="Enter Role Name" />
+    </div>
+
+    <label style="margin-bottom: 10px; display: block;"><b>Menu Rights:</b></label>
+    <div class="rights-container" style="border: 1px solid #eee; padding: 15px; max-height: 450px; overflow-y: auto; background: #fafafa; border-radius: 4px;">
+        @foreach (var group in Model)
+        {
+            <div class="module-group" style="margin-bottom: 15px; border: 1px solid #eee; background: #fff; border-radius: 4px;">
+                <div style="background-color: #fcfcfc; padding: 10px; border-bottom: 1px solid #eee;">
+                    <input type="checkbox" class="parent-check" id="mod_@group.Key" />
+                    <label for="mod_@group.Key" style="color: #a52a2a; font-weight: bold; margin-left: 8px; cursor: pointer; margin-bottom: 0;">@group.Key</label>
+                </div>
+
+                <div class="child-rights row" style="padding: 10px 15px;">
+                    @foreach (var item in group)
+                    {
+                        <div class="col-md-4" style="margin-bottom: 8px;">
+                            <input type="checkbox" name="selectedMenus" value="@item.MenuID" class="child-check" id="chk_@item.MenuID" />
+                            <label for="chk_@item.MenuID" style="font-size: 13px; color: #444; cursor: pointer; margin-left: 3px;">@item.RightName</label>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <div style="text-align: right; margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+        <button class="btn btn-primary" style="padding: 8px 35px; font-weight: bold;" onclick="SaveRole()">Save Role</button>
+    </div>
+</div>
+
+<script src="~/js/jquery-3.7.1.js"></script>
+<script src="~/js/sumoselect.js"></script>
+<script src="~/js/datatables.js"></script>
+<script src="~/js/sweetalert2.js"></script>
+<script src="~/js/validation.js"></script>
+<script>
+
+    function SaveRole() {
+           var roleName = $('#txtRoleName').val() ? $('#txtRoleName').val().trim() : "";
+
+
+           var selectedMenus = [];
+           $('.child-check:checked').each(function () {
+               selectedMenus.push($(this).val());
+           });
+
+
+           if (roleName === "") {
+               Swal.fire("Warning", "Please enter Role Name", "warning");
+               return;
+           }
+
+           if (selectedMenus.length === 0) {
+               Swal.fire("Warning", "Please select at least one menu right", "warning");
+               return;
+           }
+
+           var data = {
+               RoleName: roleName,
+               MenuIDs: selectedMenus.join(',') 
+           };
+
+
+              $.post("@Url.Action("SaveRole", "Users_Master")", data, function (res) {
+                if (res.success) {
+                    Swal.fire("Success", "Role saved successfully!", "success").then(() => {
+                        location.reload();
+                    });
+                } else {
+                    
+                    if(res.result === "0") {
+                        Swal.fire("Duplicate", "This Role Name already exists. Please choose another.", "warning");
+                    } else {
+                        Swal.fire("Error", res.message || "Failed to save", "error");
+                    }
+                }
+            }).fail(function() {
+                       Swal.fire("Error", "Could not connect to server", "error");
+                   });
+       }
+
+       $(document).ready(function () {
+        
+           $('.parent-check').on('change', function () {
+               $(this).closest('.module-group').find('.child-check').prop('checked', this.checked);
+           });
+
+    
+           $('.child-check').on('change', function () {
+               var group = $(this).closest('.module-group');
+               var total = group.find('.child-check').length;
+               var checked = group.find('.child-check:checked').length;
+
+             
+               group.find('.parent-check').prop('checked', (total === checked));
+           });
+       });
+</script>
