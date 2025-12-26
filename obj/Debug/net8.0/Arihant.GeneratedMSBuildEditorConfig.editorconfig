@@ -28,20 +28,52 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[E:/Work/Arihant/Code/Arihant/Arihant/Views/LogIn/User_LogIn.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9nSW5cVXNlcl9Mb2dJbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [E:/Work/Arihant/Code/Arihant/Arihant/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/Work/Arihant/Code/Arihant/Arihant/Views/Shared/_AddressDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BZGRyZXNzRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/Work/Arihant/Code/Arihant/Arihant/Views/Shared/_BankDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9CYW5rRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/Work/Arihant/Code/Arihant/Arihant/Views/Shared/_CompanyDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Db21wYW55RGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/Work/Arihant/Code/Arihant/Arihant/Views/Shared/_ContactCommunication.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Db250YWN0Q29tbXVuaWNhdGlvbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [E:/Work/Arihant/Code/Arihant/Arihant/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[E:/Work/Arihant/Code/Arihant/Arihant/Views/Users_Master/CompanyMaster.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNfTWFzdGVyXENvbXBhbnlNYXN0ZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [E:/Work/Arihant/Code/Arihant/Arihant/Views/Users_Master/Dashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNfTWFzdGVyXERhc2hib2FyZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[E:/Work/Arihant/Code/Arihant/Arihant/Views/Users_Master/EditCompany.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNfTWFzdGVyXEVkaXRDb21wYW55LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [E:/Work/Arihant/Code/Arihant/Arihant/Views/Users_Master/EditRole.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNfTWFzdGVyXEVkaXRSb2xlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/Work/Arihant/Code/Arihant/Arihant/Views/Users_Master/GetCompanyList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNfTWFzdGVyXEdldENvbXBhbnlMaXN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [E:/Work/Arihant/Code/Arihant/Arihant/Views/Users_Master/IP_Master.cshtml]

@@ -1,0 +1,417 @@
+﻿<head>
+    <link href="~/css/datatables.css" rel="stylesheet" />
+    <link href="~/css/allmin.css" rel="stylesheet" />
+    <link href="~/css/toggle.min.css" rel="stylesheet" />
+
+    <link href="~/css/sumoselect.css" rel="stylesheet" />
+
+</head>
+<body class="bg">
+    <div class="wrapper paddingLR10">
+        <div class="col-lg-textcenter padding10 Heading FontColor1 AllCaps">
+            <strong>Company Master</strong>
+            <input type="hidden" id="companyID" />
+        </div>
+
+        <form id="CompanyForm">
+            @Html.Partial("_CompanyDetails")
+
+
+            @Html.Partial("_ContactCommunication")
+
+            <div class="col-lg-12 floatleft BgColor1 Border1 BorderColor1 padding20 BorderRounded10 Shadow marginB20" style="margin:10px;">
+                <div class="col-lg-6 floatleft"><div class="NormalTextBig FontColor1"><strong> Address Details</strong></div></div>
+                <div class="col-lg-6 floatleft text-right">
+                    <label style="cursor:pointer;" class="FontColor1">
+                        <input type="checkbox" id="chkSameAddress" onclick="CopyAddress()"> Purchase same as Sales
+                    </label>
+                </div>
+                <div class="clear"></div>
+                <hr />
+
+                <div class="col-lg-6 floatleft padding10 border-right">
+                    <div class="padding5"><strong>Sales Address</strong></div>
+                    @Html.Partial("_AddressDetails", "S")
+                </div>
+
+                <div class="col-lg-6 floatleft padding10">
+                    <div class="padding5"><strong>Purchase Address</strong></div>
+                    @Html.Partial("_AddressDetails", "P")
+                </div>
+            </div>
+
+            @Html.Partial("_BankDetails", "B")
+
+            <div class="floatright padding20" style="margin-bottom: 50px;">
+                <button type="button" class="Button ButtonColor3 BorderRounded5" onclick="window.history.back()">Back</button>
+                <button type="button" class="Button ButtonColor1 BorderRounded5" onclick="SaveCompany()">Update Company Profile</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+<script src="~/js/jquery-3.7.1.js"></script>
+<script src="~/js/sumoselect.js"></script>
+<script src="~/js/datatables.js"></script>
+<script src="~/js/sweetalert2.js"></script>
+<script src="~/js/validation.js"></script>
+
+
+
+<script>
+
+    var companyData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
+     var StateList = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.statelist));
+    $(document).ready(function () {
+        if (companyData != null) {
+            FillFormData(companyData);
+        }
+    });
+
+    function AddMobileRow()
+    {
+
+            var rowCount = $('.mobile-row').length;
+            if (rowCount >= 5) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Limit Reached',
+                    text: 'You can only add a maximum of 4 mobile numbers.',
+                    confirmButtonColor: '#000080'
+                });
+                return;
+            }
+
+            var html = `
+            <div class="col-lg-4 floatleft padding10 mobile-row">
+                <label>Mobile Number</label>
+                <div style="display: flex; gap: 5px;">
+                    <input type="text" name="MobileNo" class="TextBox col-lg-10 BorderRounded5" placeholder="Additional No.">
+                    <button type="button" class="Button ButtonColor3" onclick="$(this).closest('.mobile-row').remove()"
+                            style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; padding: 0; border: none;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" viewBox="0 0 16 16">
+                            <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z" stroke="white" stroke-width="1"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>`;
+
+            $('#MobileContainer').append(html);
+    }
+
+
+    function OnStateChange(stateId, prefix)
+    {
+               var cityDropdown = document.getElementById(prefix + "_City");
+                cityDropdown.innerHTML = "";
+                cityDropdown.innerHTML = '<option value="">-- Select City --</option>';
+
+            if (!stateId) return;
+
+            $.ajax({
+               url: '/Users_Master/GetCitiesByState',
+                type: "GET",
+                data: { stateId: stateId },
+                success: function (cityList) {
+
+                    cityList.forEach(function (city) {
+                        var option = document.createElement("option");
+                        option.value = city.id;
+                        option.text = city.name;
+                        cityDropdown.appendChild(option);
+                    });
+                },
+                error: function () {
+                    console.error("Failed to load cities.");
+                }
+            });
+    }
+
+
+    function FillFormData(data) {
+        console.log(JSON.stringify(data));
+        $("#companyID").val(data.CompanyID);
+        $("input[name='CompanyName']").val(data.CompanyName);
+        $("input[name='RegNo']").val(data.RegNo);
+        $("input[name='GSTNo']").val(data.GSTNo);
+        $("input[name='PANNo']").val(data.PANNo);
+        $("input[name='Email']").val(data.Email);
+        $("input[name='Website']").val(data.Website);
+        $("input[name='Tel1']").val(data.Telephone);
+        $("input[name='MobileNo']").first().val(data.MobileNumber);
+        var extraMobiles = [data.MobileNumber2, data.MobileNumber3, data.MobileNumber4, data.MobileNumber5];
+        extraMobiles.forEach(function(mob) {
+            if(mob && mob.trim() !== "") {
+                AddMobileRow();
+                $("input[name='MobileNo']").last().val(mob);
+            }
+        });
+
+        $("input[name='BankName']").val(data.BankName);
+        $("input[name='AccountNo']").val(data.AccountNo);
+        $("input[name='IFSCCode']").val(data.IFSCCode);
+        $("input[name='BankAddress']").val(data.Bank_Address);
+        $("#B_Landmark").val(data.Bank_Landmark);
+        $("#B_Pincode").val(data.Bank_PinCode);
+        $("#S_Address").val(data.Sales_Address);
+        $("#S_Landmark").val(data.Sales_Landmark);
+        $("#S_Pincode").val(data.Sales_PinCode);
+        $("#P_Address").val(data.Purchase_Address);
+        $("#P_Landmark").val(data.Purchase_Landmark);
+        $("#P_Pincode").val(data.Purchase_PinCode);
+
+        SetStateDropdawon(data);
+        SetDropdowns(data);
+    }
+
+    function SetStateDropdawon(data)
+    {
+          var StateList = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.statelist))
+                    console.log(JSON.stringify(StateList));
+                   var S_State = document.getElementById("S_State");
+
+                    StateList.forEach(function(city) {
+                        var option = document.createElement("option");
+                        option.value = city.ID;
+                        option.text = city.Name;
+                        S_State.appendChild(option);
+                    });
+
+                     var P_State = document.getElementById("P_State");
+                    StateList.forEach(function(city) {
+                        var option = document.createElement("option");
+                        option.value = city.ID;
+                        option.text = city.Name;
+                        P_State.appendChild(option);
+                    });
+
+                     var B_State = document.getElementById("B_State");
+                    StateList.forEach(function(city) {
+                        var option = document.createElement("option");
+                        option.value = city.ID;
+                        option.text = city.Name;
+                        B_State.appendChild(option);
+                    });
+      }
+
+    function SetDropdowns(data) {
+
+        $("#S_State").val(data.Sales_State);
+        $("#P_State").val(data.Purchase_State);
+        $("#B_State").val(data.Bank_State);
+        if (data.Sales_State) LoadCitiesAndSet(data.Sales_State, "S", data.Sales_City);
+        if (data.Purchase_State) LoadCitiesAndSet(data.Purchase_State, "P", data.Purchase_City);
+        if (data.Bank_State) LoadCitiesAndSet(data.Bank_State, "B", data.Bank_City);
+    }
+
+    function LoadCitiesAndSet(stateId, prefix, selectedCityId)
+    {
+        $.ajax({
+            url: '/Users_Master/GetCitiesByState',
+            type: "GET",
+            data: { stateId: stateId },
+            success: function (cityList) {
+                var cityDropdown = document.getElementById(prefix + "_City");
+                cityDropdown.innerHTML = '<option value="">-- Select City --</option>';
+
+                cityList.forEach(function (city) {
+                    var option = document.createElement("option");
+                    option.value = city.id;
+                    option.text = city.name;
+                    cityDropdown.appendChild(option);
+                });
+
+
+                $(cityDropdown).val(selectedCityId);
+            }
+        });
+    }
+
+
+    function SaveCompany()
+    {
+
+                    var companyName = $("input[name='CompanyName']").val().trim();
+                    if (companyName === "") {
+                        Swal.fire("Required", "Please enter the Company Name.", "warning");
+                        return;
+                    }
+
+                    const patterns = {
+
+                        gst: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/,
+                        pan: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/,
+                        ifsc: /^[A-Z]{4}0[A-Z0-9]{6}$/,
+                        pincode: /^[1-9][0-9]{5}$/,
+                        mobile: /^[6-9]\d{9}$/,
+                        website: /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/
+                    };
+
+
+                    var companyName = $("input[name='CompanyName']").val().trim();
+                    var regNo = $("input[name='RegNo']").val().trim();
+                    var gstNo = $("input[name='GSTNo']").val().trim();
+                    var panNo = $("input[name='PANNo']").val().trim();
+
+                    if (companyName === "" || regNo === "" || gstNo === "" || panNo === "") {
+                        Swal.fire("Required", "Please fill all Company Identity fields marked with *", "warning");
+                        return;
+                    }
+
+
+                    var email = $("input[name='Email']").val().trim();
+                    var website = $("input[name='Website']").val().trim();
+                    var bankName = $("input[name='BankName']").val().trim();
+                    var accNo = $("input[name='AccountNo']").val().trim();
+                    var ifsc = $("input[name='IFSCCode']").val().trim();
+
+                    if (email === "" || website === "" || bankName === "" || accNo === "" || ifsc === "") {
+                        Swal.fire("Required", "Please fill Email, Website, and Bank details marked with *", "warning");
+                        return;
+                    }
+
+
+                    if (!patterns.gst.test(gstNo)) { return showError("Invalid GST No. format (e.g. 22AAAAA0000A1Z5)."); }
+                    if (!patterns.pan.test(panNo)) { return showError("Invalid PAN No. format (e.g. ABCDE1234F)."); }
+                    if (!patterns.ifsc.test(ifsc)) { return showError("Invalid IFSC Code format (e.g. SBIN0123456)."); }
+                    if (!patterns.website.test(website)) { return showError("Invalid Website URL."); }
+
+
+                    if (!patterns.pincode.test($("#S_Pincode").val())) { return showError("Invalid Sales Pincode (6 digits)."); }
+                    if (!patterns.pincode.test($("#B_Pincode").val())) { return showError("Invalid Bank Pincode (6 digits)."); }
+
+
+                    var primaryMobile = $("input[name='MobileNo']").first().val();
+                    if (!patterns.mobile.test(primaryMobile)) { return showError("Invalid Primary Mobile Number (10 digits)."); }
+
+
+                    var email = $("input[name='Email']").val().trim();
+                    let companyID= $("#companyID").val().trim();
+                    var model = {
+                        CompanyName: companyName,
+                        companyID:companyID,
+                        RegNo: $("input[name='RegNo']").val(),
+                        GSTNo: $("input[name='GSTNo']").val(),
+                        PANNo: $("input[name='PANNo']").val(),
+                        Email: email,
+                        Website: $("input[name='Website']").val(),
+                        Telephone: $("input[name='Tel1']").val(),
+
+
+                        MobileNumbers: $("input[name='MobileNo']").map(function() {
+                            return $(this).val();
+                        }).get().filter(v => v !== ""),
+
+
+                        SalesAddress: {
+                            Address: $("#S_Address").val(),
+                            Landmark: $("#S_Landmark").val(),
+                            Pincode: $("#S_Pincode").val(),
+                            City: $("#S_City").val(),
+                            State: $("#S_State").val()
+                        },
+
+                        PurchaseAddress: {
+                            Address: $("#P_Address").val(),
+                            Landmark: $("#P_Landmark").val(),
+                            Pincode: $("#P_Pincode").val(),
+                            City: $("#P_City").val(),
+                            State: $("#P_State").val()
+                        },
+
+
+                        BankName: $("input[name='BankName']").val(),
+                        AccountNo: $("input[name='AccountNo']").val(),
+                        IFSCCode: $("input[name='IFSCCode']").val(),
+                        BankAddress: $("input[name='BankAddress']").val(),
+                        BankLandmark: $("#B_Landmark").val(),
+                        BankPincode: $("#B_Pincode").val(),
+                        BankCity: $("#B_City").val(),
+                        BankState: $("#B_State").val()
+                    };
+
+
+                    $.ajax({
+                            url: '@Url.Action("UpdateCompanyProfile", "Users_Master")',
+                            type: 'POST',
+                            data: { data: JSON.stringify(model) },
+                            success: function (response) {
+                                if (response.success) {
+
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Success!',
+                                        text: response.message,
+                                        confirmButtonColor: '#3085d6'
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            window.location.href = '@Url.Action("GetCompanyList", "Users_Master")';
+                                        }
+                                    });
+                                } else {
+
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Oops...',
+                                        text: response.message,
+                                        confirmButtonColor: '#d33'
+                                    });
+                                }
+                            },
+                            error: function () {
+
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'System Error',
+                                    text: 'Communication failure with the server. Please check your connection.',
+                                    confirmButtonColor: '#d33'
+                                });
+                            }
+                    });
+    }
+
+
+     function CopyAddress() {
+            if ($("#chkSameAddress").is(":checked")) {
+
+                $("#P_Address").val($("#S_Address").val());
+                $("#P_Landmark").val($("#S_Landmark").val());
+                $("#P_Pincode").val($("#S_Pincode").val());
+
+
+                var salesState = $("#S_State").val();
+                $("#P_State").val(salesState);
+
+
+                if (salesState !== "") {
+                    var salesCity = $("#S_City").val();
+
+
+                    $.ajax({
+                        url: '@Url.Action("GetCitiesByState", "Users_Master")',
+                        type: "GET",
+                        data: { stateId: salesState },
+                        success: function (cityList) {
+                            var pCity = document.getElementById("P_City");
+                            pCity.innerHTML = '<option value="">-- Select City --</option>';
+
+                            cityList.forEach(function (city) {
+                                var option = document.createElement("option");
+                                option.value = city.id;
+                                option.text = city.name;
+                                pCity.appendChild(option);
+                            });
+
+                            $("#P_City").val(salesCity);
+                        }
+                    });
+                }
+            } else {
+
+                $("#P_Address, #P_Landmark, #P_Pincode").val("");
+                $("#P_State, #P_City").val("");
+            }
+        }
+
+
+</script>

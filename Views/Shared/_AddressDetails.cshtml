@@ -1,0 +1,26 @@
+﻿@model string
+
+
+<div class="col-lg-12 padding5"><label>Address <span style="color:red">*</span></label> <input type="text" id="@(Model)_Address" class="TextBox col-lg-12 BorderRounded5"></div>
+
+
+<div class="col-lg-12 no-padding">
+    <div class="col-lg-6 floatleft padding5"><label>Landmark</label><input type="text" id="@(Model)_Landmark" class="TextBox col-lg-12 BorderRounded5"></div>
+    <div class="col-lg-6 floatleft padding5"><label>Pincode <span style="color:red">*</span></label><input type="text" id="@(Model)_Pincode" class="TextBox col-lg-12 BorderRounded5"></div>
+</div>
+<div class="col-lg-12 no-padding">
+    
+
+    <div class="col-lg-6 floatleft padding5">
+        <label>State</label> <span style="color:red">*</span>
+        <select id="@(Model)_State" class="TextBox col-lg-12 BorderRounded5" onchange="OnStateChange(this.value, '@(Model)')">
+            <option value="">-- Select State --</option>
+        </select>
+    </div>
+    <div class="col-lg-6 floatleft padding5">
+        <label>City</label> <span style="color:red">*</span>
+        <select id="@(Model)_City" class="TextBox col-lg-12 BorderRounded5">
+            <option value="">-- Select City --</option>
+        </select>
+    </div>
+</div>

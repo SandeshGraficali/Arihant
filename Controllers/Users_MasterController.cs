@@ -1,4 +1,5 @@
-﻿using Arihant.Models.IP_Master;
+﻿using Arihant.Models.Company_Master;
+using Arihant.Models.IP_Master;
 using Arihant.Models.Rights_Master;
 using Arihant.Models.User_Master;
 using Arihant.Services;
@@ -17,6 +18,115 @@ namespace Arihant.Controllers
         public Users_MasterController(DL_Users_Master _master)
         {
             _user = _master;
+        }
+
+        [HttpPost]
+        public JsonResult DeleteCompany(int CompanyID)
+        {
+            try
+            {
+               
+                string result = _user.DeactiveConpany(CompanyID.ToString());
+
+                if (result == "1")
+                    return Json(new { success = true, message = "Company De-Activetd successfully!" });
+                else
+                    return Json(new { success = false, message = "Deactivation failed. Please try again." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult UpdateCompanyProfile(string data)
+        {
+            try
+            {
+                string result = _user.UpdateCompanyDetails(data);
+             
+                if (result == "1")
+                    return Json(new { success = true, message = "Company Updated successfully!" });
+                else
+                    return Json(new { success = false, message = "Failed to save company profile. Please try again." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
+        public IActionResult GetCompanyList()
+        {
+            List<CompanyProfileModel>  list = _user.GetAllCompanyMasters();
+         
+            return View(list);
+        }
+
+        [HttpGet]
+        public IActionResult EditCompany(int id)
+        {
+            List<C_Master> CMasterlist = _user.GetC_MasterList();
+            ViewBag.statelist = CMasterlist;
+            List<CompanyProfileModel> list = _user.GetAllCompanyMasters();
+            var companyDetail = list.FirstOrDefault(x => x.CompanyID == Convert.ToInt32( id));
+
+            if (companyDetail == null)
+            {
+                return NotFound();
+            }
+
+            return View( companyDetail);
+        }
+
+
+        [HttpGet]
+        public IActionResult GetCitiesByState(string stateId)
+        {
+            DataSet ds = _user.GetC_MasterCityList(stateId);
+
+            var cities = new List<object>();
+
+            if (ds != null && ds.Tables.Count > 0)
+            {
+                foreach (System.Data.DataRow row in ds.Tables[0].Rows)
+                {
+                    cities.Add(new
+                    {
+                        id = row["ID"].ToString(),
+                        name = row["Name"].ToString()
+                    });
+                }
+            }
+
+            return Json(cities);
+        }
+
+        [HttpPost]
+        public IActionResult SaveCompanyProfile(string data)
+        {
+            try
+            {
+               string result= _user.SaveCompanyDetails(data);
+
+                if (result == "1")
+                    return Json(new { success = true, message = "Company created successfully!" });
+                else
+                    return Json(new { success = false, message = "Failed to save company profile. Please try again." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        public IActionResult CompanyMaster()
+        {
+            List<C_Master> list = _user.GetC_MasterList();
+            ViewBag.statelist = list;
+            return View();
         }
 
         [HttpPost]
@@ -248,7 +358,7 @@ namespace Arihant.Controllers
         }
         public IActionResult User_Master_Dashboard()
         {
-            HttpContext.Session.SetString("UserName", "Sandesh");
+           
             ViewBag.IPList = _user.GetIPList();   
             List<IPViewModel_withIPS> result= _user.GetAllUsers();
             return View(result);

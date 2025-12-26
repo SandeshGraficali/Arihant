@@ -1,0 +1,119 @@
+﻿@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>Arihant</title>
+	<meta name="keywords" content="">
+	<meta name="Description" content="">
+	<meta http-equiv='cache-control' content='no-cache'>
+	<meta http-equiv='expires' content='0'>
+	<meta http-equiv='pragma' content='no-cache'>
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+
+    <link href="~/css/programstyle.css" rel="stylesheet" />
+    <link href="~/css/responsive.css" rel="stylesheet" />
+    <script src="~/js/jquery-2.1.1.min.js"></script>
+    <script src="~/js/jquery.matchheight.js"></script>
+	<script type="text/javascript">
+		jQuery(function ($) {
+			$('.matchheight').matchHeight();
+		});
+	</script>
+
+</head>
+<body class="loginbg">
+	<div class="wrapper padding10">
+		<div class="col-lg-textcenter padding20">
+			<div class="clear padding20">&nbsp;</div>
+            <img  />
+			<img src="images/logo.png" class="logo" alt="" />
+			<div class="clear"></div>
+			<span class="Heading FontColor1 Bi"><strong>Arihant Gold Plast Pvt. Ltd.</strong></span>
+		</div>
+		<div class="clear"></div>
+
+		<div style="max-width:500px; width:95%; margin:auto;">
+			<div class="Login">
+				<div class="col-lg-10 col-xs-11 col-lg-center padding5">
+					<div class="col-lg-textcenter padding10 Heading AllCaps FontColor3"><strong>Login</strong></div>
+					<div class="clear padding5"></div>
+
+					<input type="text" id="txtUsername" class="logintextbox col-lg-12 BorderRounded5" placeholder="Username">
+					<div class="clear padding10"></div>
+					<input type="password"  id="txtPassword" class="logintextbox col-lg-12 BorderRounded5" placeholder="Password">
+					<div class="clear paddingTB20 floatright">
+						<button onclick="Login()" class="Button ButtonColor2 BorderRounded5">Login</button>
+					</div>
+				</div>
+				<div class="clear padding5"></div>
+			</div>
+		</div>
+
+	</div>
+
+	<div class="clear"></div>
+
+
+    <script src="~/js/jquery-3.7.1.js"></script>
+    <script src="~/js/sweetalert2.js"></script>
+	<script>
+			function Login() {
+			var username = $('#txtUsername').val();
+			var password = $('#txtPassword').val();
+
+			if (username === "" || password === "") {
+				Swal.fire({
+					icon: 'warning',
+					title: 'Required',
+					text: 'Please enter username and password'
+				});
+				return;
+			}
+
+			$.ajax({
+				url: '@Url.Action("Login", "LogIn")',
+				type: 'POST',
+				data: {
+					Username: username,
+					Password: password
+				},
+				success: function (response) {
+					if (response.success) {
+						Swal.fire({
+							icon: 'success',
+							title: 'Success',
+							text: response.message,
+							timer: 1500,
+							showConfirmButton: false
+						}).then(() => {
+							window.location.href = '@Url.Action("Index", "Home")';
+						});
+					} else {
+						Swal.fire({
+							icon: 'error',
+							title: 'Login Failed',
+							text: response.message
+						});
+					}
+				},
+				error: function () {
+					Swal.fire({
+						icon: 'error',
+						title: 'Error',
+						text: 'Something went wrong. Please try again.'
+					});
+				}
+			});
+		}
+	</script>
+
+
+</body>
+</html>

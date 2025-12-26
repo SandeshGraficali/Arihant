@@ -1,4 +1,5 @@
-﻿using Arihant.Models.IP_Master;
+﻿using Arihant.Models.Company_Master;
+using Arihant.Models.IP_Master;
 using Arihant.Models.Rights_Master;
 using Arihant.Models.User_Master;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -18,6 +19,257 @@ namespace Arihant.Services
             gc = _gc;
         }
 
+        public string DeactiveConpany(string ID)
+        {
+            var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
+            var parameters = new Dictionary<string, SqlParameter>
+                {
+                     { "Operation", new SqlParameter("@Operation", "DeactivateComapany") },
+                     { "ID", new SqlParameter("@ID", ID) },
+                     { "result", outParam }
+                };
+
+            var response = gc.ExecuteStoredProcedure("SP_Update_Company", parameters);
+
+            string finalResult = response.OutputParameters["@result"]?.ToString();
+
+            return finalResult;
+        }
+
+        public List<CompanyProfileModel> GetAllCompanyMasters()
+        {
+            List<CompanyProfileModel> list = new List<CompanyProfileModel>();
+            var parameters = new Dictionary<string, SqlParameter>
+                {
+                    { "Operation", new SqlParameter("@Operation", "Get_Company_Master") }
+                 
+                };
+
+            DataSet ds = gc.ExecuteStoredProcedureGetDataSet("SP_Update_Company", parameters.Values.ToArray());
+            if (ds != null && ds.Tables.Count > 0)
+            {
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    list.Add(new CompanyProfileModel
+                    {
+                  
+                        CompanyID = dr["CompanyID"] != DBNull.Value ? Convert.ToInt32(dr["CompanyID"]) : 0,
+                        CompanyName = dr["CompanyName"].ToString(),
+                        RegNo = dr["RegNo"].ToString(),
+                        PANNo = dr["PANNo"].ToString(),
+                        GSTNo = dr["GSTNo"].ToString(),
+
+
+                        Email = dr["Email"].ToString(),
+                        Website = dr["Website"].ToString(),
+                        MobileNumber = dr["MobileNumber"].ToString(),
+                        MobileNumber2 = dr["MobileNumber2"].ToString(),
+                        MobileNumber3 = dr["MobileNumber3"].ToString(),
+                        MobileNumber4 = dr["MobileNumber4"].ToString(),
+                        MobileNumber5 = dr["MobileNumber5"].ToString(),
+
+                      
+                        BankName = dr["BankName"].ToString(),
+                        AccountNo = dr["AccountNo"].ToString(),
+                        IFSCCode = dr["IFSCCode"].ToString(),
+
+                        Sales_Address = dr["Sales_Address"].ToString(),
+                        Sales_State = dr["Sales_State"].ToString(),
+                        Sales_City = dr["Sales_City"].ToString(),
+                        Sales_PinCode = dr["Sales_PinCode"].ToString(),
+                        Sales_Landmark = dr["Sales_Landmark"].ToString(),
+
+                  
+                        Purchase_Address = dr["Purchase_Address"].ToString(),
+                        Purchase_State = dr["Purchase_State"].ToString(),
+                        Purchase_City = dr["Purchase_City"].ToString(),
+                        Purchase_PinCode = dr["Purchase_PinCode"].ToString(),
+                        Purchase_Landmark = dr["Purchase_Landmark"].ToString(),
+
+                    
+                        Bank_Address = dr["Bank_Address"].ToString(),
+                        Bank_State = dr["Bank_State"].ToString(),
+                        Bank_City = dr["Bank_City"].ToString(),
+                        Bank_PinCode = dr["Bank_PinCode"].ToString()
+                    });
+                }
+            }
+
+            return list;
+
+        }
+
+        public string SaveCompanyDetails(string data)
+        {
+            try
+            {
+                var model = System.Text.Json.JsonSerializer.Deserialize<CompanyViewModel>(data);
+
+               
+                var mobiles = model.MobileNumbers ?? new List<string>();
+                var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
+                var parameters = new Dictionary<string, SqlParameter>
+                {
+                    { "CompanyName", new SqlParameter("@CompanyName", model.CompanyName ?? (object)DBNull.Value) },
+                    { "RegNo", new SqlParameter("@RegNo", model.RegNo ?? (object)DBNull.Value) },
+                    { "GSTNo", new SqlParameter("@GSTNo", model.GSTNo ?? (object)DBNull.Value) },
+                    { "PANNo", new SqlParameter("@PANNo", model.PANNo ?? (object)DBNull.Value) },
+                    { "Email", new SqlParameter("@Email", model.Email ?? (object)DBNull.Value) },
+                    { "Website", new SqlParameter("@Website", model.Website ?? (object)DBNull.Value) },
+                    { "Telephone", new SqlParameter("@Telephone", model.Telephone ?? (object)DBNull.Value) },
+            
+                    
+                    { "Mobile1", new SqlParameter("@Mobile1", mobiles.Count > 0 ? mobiles[0] : (object)DBNull.Value) },
+                    { "Mobile2", new SqlParameter("@Mobile2", mobiles.Count > 1 ? mobiles[1] : (object)DBNull.Value) },
+                    { "Mobile3", new SqlParameter("@Mobile3", mobiles.Count > 2 ? mobiles[2] : (object)DBNull.Value) },
+                    { "Mobile4", new SqlParameter("@Mobile4", mobiles.Count > 3 ? mobiles[3] : (object)DBNull.Value) },
+                    { "Mobile5", new SqlParameter("@Mobile5", mobiles.Count > 4 ? mobiles[4] : (object)DBNull.Value) },
+
+                    
+                    { "S_Address", new SqlParameter("@S_Address", model.SalesAddress.Address ?? (object)DBNull.Value) },
+                    { "S_Landmark", new SqlParameter("@S_Landmark", model.SalesAddress.Landmark ?? (object)DBNull.Value) },
+                    { "S_PinCode", new SqlParameter("@S_PinCode", model.SalesAddress.Pincode ?? (object)DBNull.Value) },
+                    { "S_City", new SqlParameter("@S_City", model.SalesAddress.City ?? (object)DBNull.Value) },
+                    { "S_State", new SqlParameter("@S_State", model.SalesAddress.State ?? (object)DBNull.Value) },
+
+
+                    { "P_Address", new SqlParameter("@P_Address", model.PurchaseAddress.Address ?? (object)DBNull.Value) },
+                    { "P_Landmark", new SqlParameter("@P_Landmark", model.PurchaseAddress.Landmark ?? (object)DBNull.Value) },
+                    { "P_PinCode", new SqlParameter("@P_PinCode", model.PurchaseAddress.Pincode ?? (object)DBNull.Value) },
+                    { "P_City", new SqlParameter("@P_City", model.PurchaseAddress.City ?? (object)DBNull.Value) },
+                    { "P_State", new SqlParameter("@P_State", model.PurchaseAddress.State ?? (object)DBNull.Value) },
+
+                 
+                    { "BankName", new SqlParameter("@BankName", model.BankName ?? (object)DBNull.Value) },
+                    { "AccountNo", new SqlParameter("@AccountNo", model.AccountNo ?? (object)DBNull.Value) },
+                    { "IFSCCode", new SqlParameter("@IFSCCode", model.IFSCCode ?? (object)DBNull.Value) },
+                    { "BankAddress", new SqlParameter("@BankAddress", model.BankAddress ?? (object)DBNull.Value) },
+                    { "B_Landmark", new SqlParameter("@B_Landmark", model.BankLandmark ?? (object)DBNull.Value) },
+                    { "B_PinCode", new SqlParameter("@B_PinCode", model.BankPincode ?? (object)DBNull.Value) },
+                    { "B_City", new SqlParameter("@B_City", model.BankCity ?? (object)DBNull.Value) },
+                    { "B_State", new SqlParameter("@B_State", model.BankState ?? (object)DBNull.Value) },
+                     { "result", outParam }
+
+                };
+
+                var response = gc.ExecuteStoredProcedure("sp_SaveCompanyProfile", parameters);
+               
+                string finalResult = response.OutputParameters["@result"]?.ToString();
+
+                return finalResult;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+
+        public string UpdateCompanyDetails(string data)
+        {
+            try
+            {
+                var model = System.Text.Json.JsonSerializer.Deserialize<UpdateCompanyModel>(data);
+
+
+                var mobiles = model.MobileNumbers ?? new List<string>();
+                var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
+                var parameters = new Dictionary<string, SqlParameter>
+                {
+                    { "CompanyName", new SqlParameter("@CompanyName", model.CompanyName ?? (object)DBNull.Value) },
+                     { "companyID", new SqlParameter("@companyID", model.companyID ?? (object)DBNull.Value) },
+                    { "RegNo", new SqlParameter("@RegNo", model.RegNo ?? (object)DBNull.Value) },
+                    { "GSTNo", new SqlParameter("@GSTNo", model.GSTNo ?? (object)DBNull.Value) },
+                    { "PANNo", new SqlParameter("@PANNo", model.PANNo ?? (object)DBNull.Value) },
+                    { "Email", new SqlParameter("@Email", model.Email ?? (object)DBNull.Value) },
+                    { "Website", new SqlParameter("@Website", model.Website ?? (object)DBNull.Value) },
+                    { "Telephone", new SqlParameter("@Telephone", model.Telephone ?? (object)DBNull.Value) },
+
+
+                    { "Mobile1", new SqlParameter("@Mobile1", mobiles.Count > 0 ? mobiles[0] : (object)DBNull.Value) },
+                    { "Mobile2", new SqlParameter("@Mobile2", mobiles.Count > 1 ? mobiles[1] : (object)DBNull.Value) },
+                    { "Mobile3", new SqlParameter("@Mobile3", mobiles.Count > 2 ? mobiles[2] : (object)DBNull.Value) },
+                    { "Mobile4", new SqlParameter("@Mobile4", mobiles.Count > 3 ? mobiles[3] : (object)DBNull.Value) },
+                    { "Mobile5", new SqlParameter("@Mobile5", mobiles.Count > 4 ? mobiles[4] : (object)DBNull.Value) },
+
+
+                    { "S_Address", new SqlParameter("@S_Address", model.SalesAddress.Address ?? (object)DBNull.Value) },
+                    { "S_Landmark", new SqlParameter("@S_Landmark", model.SalesAddress.Landmark ?? (object)DBNull.Value) },
+                    { "S_PinCode", new SqlParameter("@S_PinCode", model.SalesAddress.Pincode ?? (object)DBNull.Value) },
+                    { "S_City", new SqlParameter("@S_City", model.SalesAddress.City ?? (object)DBNull.Value) },
+                    { "S_State", new SqlParameter("@S_State", model.SalesAddress.State ?? (object)DBNull.Value) },
+
+
+                    { "P_Address", new SqlParameter("@P_Address", model.PurchaseAddress.Address ?? (object)DBNull.Value) },
+                    { "P_Landmark", new SqlParameter("@P_Landmark", model.PurchaseAddress.Landmark ?? (object)DBNull.Value) },
+                    { "P_PinCode", new SqlParameter("@P_PinCode", model.PurchaseAddress.Pincode ?? (object)DBNull.Value) },
+                    { "P_City", new SqlParameter("@P_City", model.PurchaseAddress.City ?? (object)DBNull.Value) },
+                    { "P_State", new SqlParameter("@P_State", model.PurchaseAddress.State ?? (object)DBNull.Value) },
+
+
+                    { "BankName", new SqlParameter("@BankName", model.BankName ?? (object)DBNull.Value) },
+                    { "AccountNo", new SqlParameter("@AccountNo", model.AccountNo ?? (object)DBNull.Value) },
+                    { "IFSCCode", new SqlParameter("@IFSCCode", model.IFSCCode ?? (object)DBNull.Value) },
+                    { "BankAddress", new SqlParameter("@BankAddress", model.BankAddress ?? (object)DBNull.Value) },
+                    { "B_Landmark", new SqlParameter("@B_Landmark", model.BankLandmark ?? (object)DBNull.Value) },
+                    { "B_PinCode", new SqlParameter("@B_PinCode", model.BankPincode ?? (object)DBNull.Value) },
+                    { "B_City", new SqlParameter("@B_City", model.BankCity ?? (object)DBNull.Value) },
+                    { "B_State", new SqlParameter("@B_State", model.BankState ?? (object)DBNull.Value) },
+                     { "result", outParam }
+
+                };
+
+                var response = gc.ExecuteStoredProcedure("sp_Update_CompanyProfile", parameters);
+
+                string finalResult = response.OutputParameters["@result"]?.ToString();
+
+                return finalResult;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+
+        public DataSet GetC_MasterCityList(string ID)
+        {
+              var parameters = new Dictionary<string, SqlParameter>
+                {
+                    { "Operation", new SqlParameter("@Operation", "Get_C_MastersCity") },
+                     { "ID", new SqlParameter("@ID", ID) }
+                };
+
+            DataSet ds = gc.ExecuteStoredProcedureGetDataSet("sp_Get_C_Master", parameters.Values.ToArray());
+            return ds;
+        }
+
+        public List<C_Master> GetC_MasterList()
+        {
+            List<C_Master> list = new List<C_Master>();
+                var parameters = new Dictionary<string, SqlParameter>
+                {
+                    { "Operation", new SqlParameter("@Operation", "Get_C_Masters") }
+                };
+
+                 DataSet ds = gc.ExecuteStoredProcedureGetDataSet("sp_Get_C_Master", parameters.Values.ToArray());
+                if (ds != null && ds.Tables.Count > 0)
+                {
+                    DataTable dt = ds.Tables[0];
+
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        C_Master obj = new C_Master
+                        {
+                            ID = row["ID"].ToString(),
+                            Name = row["Name"].ToString()
+                        };
+
+                        list.Add(obj);
+                    }
+                }
+            return list;
+        }
         public string UpdateRoleWithRights(string roleName, string menuIDs, string createdBy, string roleID)
         {
             try

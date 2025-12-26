@@ -618,7 +618,10 @@ $(document).ready(function () {
 
         const emailVal = $('#EmailID').val().trim();
                   if (!validateEmailField('#EmailID')) {
+                          $('#err_EmailID').text("Enter Valid Email").show();
                     $('#EmailID').addClass('error');
+
+                    
                     isValid = false;
                 }
 
