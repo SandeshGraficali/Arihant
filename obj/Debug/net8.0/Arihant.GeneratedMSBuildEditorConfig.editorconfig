@@ -52,8 +52,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Db250YWN0Q29tbXVuaWNhdGlvbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[E:/Work/Arihant/Code/Arihant/Arihant/Views/Shared/_Factory.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9GYWN0b3J5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [E:/Work/Arihant/Code/Arihant/Arihant/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/Work/Arihant/Code/Arihant/Arihant/Views/Users_Master/CompanyForm.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNfTWFzdGVyXENvbXBhbnlGb3JtLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [E:/Work/Arihant/Code/Arihant/Arihant/Views/Users_Master/CompanyMaster.cshtml]

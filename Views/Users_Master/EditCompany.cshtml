@@ -286,7 +286,33 @@
 
 
                     var email = $("input[name='Email']").val().trim();
+                     if (!validateEmailField("input[name='Email']")) {
+                              showError("Please enter a valid email address (e.g., example@gmail.com).");
+                                 $("input[name='Email']").focus();
+                                   return;
+                            }
+
                     let companyID= $("#companyID").val().trim();
+
+                        let requiredFields = [
+                            { val: $("#S_State").val(), name: "Sales State" },
+                            { val: $("#S_City").val(), name: "Sales City" },
+                            { val: $("#P_State").val(), name: "Purchase State" },
+                            { val: $("#P_City").val(), name: "Purchase City" },
+                            { val: $("#B_State").val(), name: "Bank State" },
+                            { val: $("#B_City").val(), name: "Bank City" }
+                        ];
+
+                                         
+                        for (let field of requiredFields) {
+                            if (field.val === null || field.val.trim() === "") {
+                                showError(`Please select ${field.name}`);
+                                return false; 
+                            }
+                        }
+
+
+
                     var model = {
                         CompanyName: companyName,
                         companyID:companyID,

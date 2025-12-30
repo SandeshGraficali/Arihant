@@ -1,0 +1,360 @@
+﻿@model Arihant.Models.Company_Master.CompanyProfileModel
+@{
+    bool isEdit = Model != null && Model.CompanyID > 0;
+    ViewData["Title"] = isEdit ? "Edit Company" : "Add Company";
+}
+<head>
+    <link href="~/css/datatables.css" rel="stylesheet" />
+    <link href="~/css/allmin.css" rel="stylesheet" />
+    <link href="~/css/toggle.min.css" rel="stylesheet" />
+
+    <link href="~/css/sumoselect.css" rel="stylesheet" />
+
+</head>
+<body class="bg">
+    <div class="wrapper paddingLR10">
+        <div class="col-lg-textcenter padding10 Heading FontColor1 AllCaps">
+            <strong>@ViewData["Title"]</strong>
+
+            <input type="hidden" id="companyID" value="@(Model?.CompanyID ?? 0)" />
+        </div>
+
+        <form id="CompanyForm">
+            @Html.Partial("_CompanyDetails")
+            @Html.Partial("_ContactCommunication")
+
+            <div class="col-lg-12 floatleft BgColor1 Border1 BorderColor1 padding20 BorderRounded10 Shadow marginB20" style="margin:10px;">
+                <div class="col-lg-6 floatleft"><div class="NormalTextBig FontColor1"><strong> Address Details</strong></div></div>
+
+                <div class="clear"></div>
+                <hr />
+                <div class="col-lg-6 floatleft padding10 border-right">
+                    <div class="padding5"><strong>Company Address</strong></div>
+                    @Html.Partial("_AddressDetails", "Company")
+                </div>
+                <div class="col-lg-6 floatleft padding10">
+                    <div class="padding5"><strong>Central Excise Address</strong></div>
+                    @Html.Partial("_AddressDetails", "Central_Excise")
+                </div>
+                <div class="clear"></div>
+                <hr />
+                <div class="col-lg-6 floatleft padding10 border-right">
+                    <div class="padding5"><strong>Division Address</strong></div>
+                    @Html.Partial("_AddressDetails", "Division")
+                </div>
+                <div class="col-lg-6 floatleft padding10">
+                    <div class="padding5"><strong>Commissionerate Address</strong></div>
+                    @Html.Partial("_AddressDetails", "Commissionerate")
+                </div>
+            </div>
+
+
+
+            <div class="col-lg-12 floatleft BgColor1 Border1 BorderColor1 padding20 BorderRounded10 Shadow marginB20" style="margin:10px;">
+                @Html.Partial("_BankDetails", "B")
+                <div class="col-lg-12 floatleft padding10 border-right">
+
+                    @Html.Partial("_AddressDetails", "Bank")
+                </div>
+
+            </div>
+
+
+            <div class="floatright padding20" style="margin-bottom: 50px;">
+                <button type="button" class="Button ButtonColor3 BorderRounded5" onclick="window.history.back()">Back</button>
+
+                <button type="button" class="Button ButtonColor1 BorderRounded5" onclick="SaveCompany()">
+                    @(isEdit ? "Update Company Profile" : "Save Company Profile")
+                </button>
+            </div>
+        </form>
+    </div>
+</body>
+
+<script src="~/js/jquery-3.7.1.js"></script>
+<script src="~/js/sumoselect.js"></script>
+<script src="~/js/datatables.js"></script>
+<script src="~/js/sweetalert2.js"></script>
+<script src="~/js/validation.js"></script>
+
+<script src="~/js/common/partial.js"></script>
+
+
+
+<script>
+
+          var companyData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
+          var countryList = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.countrylist));
+
+        async function FillFormData(data) {
+
+
+            console.log(JSON.stringify(data));
+
+            bindIdentityDetails(data);
+            bindContactCommunication(data);
+            bindBankDetails(data);
+            bindAddressTextFields('Company', data.Company_Address1, data.Company_Address2, data.Company_Landmark, data.Company_PinCode);
+            bindAddressTextFields('Central_Excise', data.CE_Address1, data.CE_Address2, data.CE_Landmark, data.CE_PinCode);
+            bindAddressTextFields('Division', data.Div_Address1, data.Div_Address2, data.Div_Landmark, data.Div_PinCode);
+            bindAddressTextFields('Commissionerate', data.Comm_Address1, data.Comm_Address2, data.Comm_Landmark, data.Comm_PinCode);
+            bindAddressTextFields('Bank', data.Bank_Address1, data.Bank_Address2, data.Bank_Landmark, data.Bank_PinCode);
+            SelectedValueCountryDropdown('Company' ,data.Company_Country );
+            SelectedValueCountryDropdown('Central_Excise' ,data.CE_Country );
+            SelectedValueCountryDropdown('Division' ,data.Div_Country );
+            SelectedValueCountryDropdown('Commissionerate' ,data.Comm_Country );
+            SelectedValueCountryDropdown('Bank' ,data.Bank_Country );
+            await BindDropdownState("Company", data.Company_Country, data.Company_State);
+            await BindDropdownState("Central_Excise", data.CE_Country, data.CE_State);
+            await BindDropdownState("Division", data.Div_Country, data.Div_State);
+            await BindDropdownState("Commissionerate", data.Comm_Country, data.Comm_State);
+            await BindDropdownState("Bank", data.Bank_Country, data.Bank_State);
+
+            await BindDropdown("Company", data.Company_State, data.Company_City);
+            await BindDropdown("Central_Excise", data.CE_State, data.CE_City);
+            await BindDropdown("Division", data.Div_State, data.Div_City);
+            await BindDropdown("Commissionerate", data.Comm_State, data.Comm_City);
+            await BindDropdown("Bank", data.Bank_State, data.Bank_City);
+
+          }
+
+          $(document).ready(function () {
+              InitializeStates();
+              if (companyData && companyData.CompanyID > 0) {
+                  FillFormData(companyData);
+              }
+          });
+
+          function InitializeStates() {
+                        const dropdowns = ["Company_Country", "Central_Excise_Country", "Division_Country", "Commissionerate_Country"  , "Bank_Country"];
+              dropdowns.forEach(id => {
+                  let dropdown = document.getElementById(id);
+                  countryList.forEach(state => {
+                      let option = new Option(state.Name, state.ID);
+                      dropdown.add(option);
+                  });
+              });
+          }
+
+               function SaveCompany() {
+
+              const identity = getIdentityDetails();
+              const contact = getContactCommunication();
+              const bank = getBankDetails();
+               const bankAdd = getAddressDetails("Bank");
+              const companyAddr = getAddressDetails("Company");
+              const central_ExciseAddr = getAddressDetails("Central_Excise");
+              const divisionAddr = getAddressDetails("Division");
+              const commissionerateAddr = getAddressDetails("Commissionerate");
+
+              const model = {
+                 CompanyID: identity.CompanyID,
+                CompanyName: identity.CompanyName,
+                CEegistration: identity.CEegistration,
+                CERange: identity.CERange,
+                 TINNO: identity.TINNO,
+                VATNO: identity.VATNO,
+                CSTNO: identity.CSTNO,
+                STNO: identity.STNO,
+                ECCNO: identity.ECCNO,
+                GSTNo: identity.GSTNo,
+                CompanyemailID: identity.CompanyemailID,
+
+                  Email: contact.Email,
+                  Website: contact.Website,
+                  Telephone: contact.Telephone,
+                  MobileNumbers: contact.MobileNumbers,
+                  AlternateEmail:contact.AlternateEmail,
+                  ContactPersonName:contact.ContactPersonName,
+                  OffMobileNO:contact.OffMobileNO,
+                  WhatsappNo:contact.WhatsappNo,
+
+                  CompanyAddr: {
+                      AddressLine1: companyAddr.AddressLine1,
+                      AddressLine2: companyAddr.AddressLine2,
+                       Landmark: companyAddr.Landmark,
+                      Pincode: companyAddr.Pincode,
+                      City: companyAddr.City,
+                      Country: companyAddr.Country,
+                      State: companyAddr.State
+                  },
+                  Central_ExciseAddr: {
+                      AddressLine1: central_ExciseAddr.AddressLine1,
+                      AddressLine2: central_ExciseAddr.AddressLine2,
+                       Landmark: central_ExciseAddr.Landmark,
+                      Pincode: central_ExciseAddr.Pincode,
+                      City: central_ExciseAddr.City,
+                       Country: central_ExciseAddr.Country,
+                      State: central_ExciseAddr.State
+                  },
+                   DivisionAddr: {
+                      AddressLine1: divisionAddr.AddressLine1,
+                      AddressLine2: divisionAddr.AddressLine2,
+                       Landmark: divisionAddr.Landmark,
+                      Pincode: divisionAddr.Pincode,
+                      City: divisionAddr.City,
+                       Country: divisionAddr.Country,
+                      State: divisionAddr.State
+                  },
+                   CommissionerateAddr: {
+                      AddressLine1: commissionerateAddr.AddressLine1,
+                      AddressLine2: commissionerateAddr.AddressLine2,
+                       Landmark: commissionerateAddr.Landmark,
+                      Pincode: commissionerateAddr.Pincode,
+                      City: commissionerateAddr.City,
+                       Country: commissionerateAddr.Country,
+                      State: commissionerateAddr.State
+                  },
+
+
+                  BankName: bank.BankName,
+                  AccountNo: bank.AccountNo,
+                  AccountType:bank.AccountType,
+                  AccountHolderName:bank.AccountHolderName,
+                  IFSCCode: bank.IFSCCode,
+                  BankAddressLine1: bankAdd.AddressLine1,
+                  BankAddressLine2: bankAdd.AddressLine2,
+                  BankLandmark: bankAdd.Landmark,
+                  BankPincode: bankAdd.Pincode,
+                  BankCountry: bankAdd.Country,
+                  BankCity: bankAdd.City,
+                  BankState: bankAdd.State
+              };
+
+              if (!ValidateModel(model)) {
+                return;
+            }
+
+              const id = parseInt(identity.CompanyID) || 0;
+              const actionUrl = id > 0
+                  ? '@Url.Action("UpdateCompanyProfile", "Users_Master")'
+                  : '@Url.Action("SaveCompanyProfile", "Users_Master")';
+
+
+              $.ajax({
+                  url: actionUrl,
+                  type: 'POST',
+                  data: { data: JSON.stringify(model) },
+                  success: function (response) {
+                      if (response.success) {
+                          Swal.fire({
+                              icon: 'success',
+                              title: 'Success!',
+                              text: response.message,
+                              confirmButtonColor: '#000080'
+                          }).then(() => {
+                              window.location.href = '@Url.Action("GetCompanyList", "Users_Master")';
+                          });
+                      } else {
+                          Swal.fire("Error", response.message, "error");
+                      }
+                  },
+                  error: function (xhr) {
+                      console.error(xhr.responseText);
+                      Swal.fire("Error", "A server-side error occurred.", "error");
+                  }
+              });
+          }
+
+           function ValidateModel(obj) {
+
+               console.log(obj);
+
+        const mobileRegex = /^[0-9]{10}$/;
+
+        const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+        const pincodeRegex = /^[0-9]{6}$/;
+        const websiteRegex = /^(www\.)[a-zA-Z0-9-]+\.[a-zA-Z]{2,}/;
+
+        for (let key in obj) {
+            let value = obj[key];
+            if (key === "Telephone" || key === "CompanyID" || key === "BankLandmark" || key === "BankAddressLine2" || key === "CEegistration"
+                    || key === "CERange" || key === "TINNO" ||  key === "VATNO" || key === "STNO" || key === "ECCNO"  || key === "CSTNO"  || key === "AlternateEmail") continue;
+
+        
+
+
+            if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+                for (let subKey in value) {
+                    if (subKey === "AddressLine2" || subKey === "Landmark" ) continue;
+
+                    let subValue = (value[subKey] || "").toString().trim();
+
+                    if (subValue === "") {
+                        Swal.fire("Required Field", `Please fill in ${subKey} for ${key.replace(/([A-Z])/g, ' $1')}`, "warning");
+                        return false;
+                    }
+
+                    if (subKey.toLowerCase().includes("pincode") || subKey === "Pincode") {
+                        if (!pincodeRegex.test(subValue)) {
+                            Swal.fire("Invalid Pincode", "Pincode must be exactly 6 digits.", "warning");
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            else {
+                let strValue = (value || "").toString().trim();
+
+                if (key !== "MobileNumbers" && strValue === "") {
+                    Swal.fire("Required Field", `Please enter ${key.replace(/([A-Z])/g, ' $1')}`, "warning");
+                    return false;
+                }
+
+                if (["OffMobileNO", "WhatsappNo"].includes(key)) {
+                    if (!mobileRegex.test(strValue)) {
+                        Swal.fire("Invalid Number", `${key.replace(/([A-Z])/g, ' $1')} must be 10 digits.`, "warning");
+                        return false;
+                    }
+                }
+
+
+                if (key === "GSTNo") {
+                    if (!gstRegex.test(strValue)) {
+                        Swal.fire("Invalid GST", "Please enter a valid 15-digit GST number.", "warning");
+                        return false;
+                    }
+                }
+
+
+                if (key === "Website") {
+                    if (!websiteRegex.test(strValue)) {
+                        Swal.fire("Invalid Website", "Website must start with www. (e.g., www.domain.com)", "warning");
+                        return false;
+                    }
+                }
+
+
+                if (key === "BankPincode") {
+                    if (!pincodeRegex.test(strValue)) {
+                        Swal.fire("Invalid Pincode", "Bank Pincode must be 6 digits.", "warning");
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+
+
+        function OnCountryChange(countryid, prefix) {
+
+            var cityDropdown = document.getElementById(prefix + "_State");
+            cityDropdown.innerHTML = '<option value="">-- Select _State --</option>';
+
+            if (!countryid) return;
+
+            $.ajax({
+                url: '/Users_Master/GetState',
+                type: "GET",
+                data: { countryid: countryid },
+                success: function (cityList) {
+                    cityList.forEach(function (city) {
+                        cityDropdown.add(new Option(city.name, city.id));
+                    });
+                }
+            });
+        }
+</script>

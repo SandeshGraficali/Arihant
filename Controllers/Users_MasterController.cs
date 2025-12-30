@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Data;
 
 namespace Arihant.Controllers
@@ -18,6 +19,25 @@ namespace Arihant.Controllers
         public Users_MasterController(DL_Users_Master _master)
         {
             _user = _master;
+        }
+
+        [HttpPost]
+        public JsonResult UpdateStatus(int id, bool status)
+        {
+            try
+            {
+
+                string result = _user.ActiveAndDeactiveConpany(id);
+
+                if (result == "1")
+                    return Json(new { success = true, message = "Company De-Activetd successfully!" });
+                else
+                    return Json(new { success = false, message = "Deactivation failed. Please try again." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
 
         [HttpPost]
@@ -44,7 +64,8 @@ namespace Arihant.Controllers
         {
             try
             {
-                string result = _user.UpdateCompanyDetails(data);
+                string createdBy = HttpContext.Session.GetString("UserName") ?? "System";
+                string result = _user.UpdateCompanyDetails(data , createdBy);
              
                 if (result == "1")
                     return Json(new { success = true, message = "Company Updated successfully!" });
@@ -65,22 +86,18 @@ namespace Arihant.Controllers
             return View(list);
         }
 
+ 
         [HttpGet]
         public IActionResult EditCompany(int id)
         {
-            List<C_Master> CMasterlist = _user.GetC_MasterList();
-            ViewBag.statelist = CMasterlist;
-            List<CompanyProfileModel> list = _user.GetAllCompanyMasters();
-            var companyDetail = list.FirstOrDefault(x => x.CompanyID == Convert.ToInt32( id));
+            ViewBag.countrylist = _user.GetC_MasterList();
+            var list = _user.GetAllCompanyMasters();
+            var companyDetail = list.FirstOrDefault(x => x.CompanyID == id);
 
-            if (companyDetail == null)
-            {
-                return NotFound();
-            }
+            if (companyDetail == null) return NotFound();
 
-            return View( companyDetail);
+            return View("CompanyForm", companyDetail); 
         }
-
 
         [HttpGet]
         public IActionResult GetCitiesByState(string stateId)
@@ -104,17 +121,41 @@ namespace Arihant.Controllers
             return Json(cities);
         }
 
+        [HttpGet]
+        public IActionResult GetState(string countryid)
+        {
+            DataSet ds = _user.GetC_MasterStateList(countryid);
+
+            var cities = new List<object>();
+
+            if (ds != null && ds.Tables.Count > 0)
+            {
+                foreach (System.Data.DataRow row in ds.Tables[0].Rows)
+                {
+                    cities.Add(new
+                    {
+                        id = row["ID"].ToString(),
+                        name = row["Name"].ToString()
+                    });
+                }
+            }
+
+            return Json(cities);
+        }
+
         [HttpPost]
         public IActionResult SaveCompanyProfile(string data)
         {
             try
             {
-               string result= _user.SaveCompanyDetails(data);
+                string createdBy = HttpContext.Session.GetString("UserName") ?? "System";
+                string result= _user.SaveCompanyDetails(data , createdBy);
+
 
                 if (result == "1")
                     return Json(new { success = true, message = "Company created successfully!" });
                 else
-                    return Json(new { success = false, message = "Failed to save company profile. Please try again." });
+                    return Json(new { success = false, message = "Company profile Details Alredy Exist Please try Other." });
             }
             catch (Exception ex)
             {
@@ -124,10 +165,18 @@ namespace Arihant.Controllers
 
         public IActionResult CompanyMaster()
         {
-            List<C_Master> list = _user.GetC_MasterList();
-            ViewBag.statelist = list;
+            ViewBag.countrylist = _user.GetC_MasterList();
+            return View("CompanyForm", new CompanyProfileModel()); 
+        }
+
+        public IActionResult CompanyForm()
+        {
+          
             return View();
         }
+
+
+
 
         [HttpPost]
         public JsonResult DeleteRole(int id)

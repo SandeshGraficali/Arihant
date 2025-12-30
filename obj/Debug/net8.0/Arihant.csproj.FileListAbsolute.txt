@@ -27,6 +27,7 @@ E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\Microsoft.IdentityModel.To
 E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
 E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\System.ClientModel.dll
 E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
+E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\System.Data.SqlClient.dll
 E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\System.Diagnostics.EventLog.dll
 E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
 E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\System.Memory.Data.dll
@@ -50,6 +51,11 @@ E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\runtimes\win\lib\net8.0\Mi
 E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
 E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
 E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\runtimes\win-arm64\native\sni.dll
+E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\runtimes\win-x64\native\sni.dll
+E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\runtimes\win-x86\native\sni.dll
+E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\runtimes\unix\lib\net8.0\System.Data.SqlClient.dll
+E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Data.SqlClient.dll
 E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.dll
 E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
 E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\GraficaliClasses.dll
@@ -62,6 +68,7 @@ E:\Work\Arihant\Code\Arihant\Arihant\obj\Debug\net8.0\Arihant.csproj.CoreCompile
 E:\Work\Arihant\Code\Arihant\Arihant\obj\Debug\net8.0\Arihant.MvcApplicationPartsAssemblyInfo.cache
 E:\Work\Arihant\Code\Arihant\Arihant\obj\Debug\net8.0\Arihant.RazorAssemblyInfo.cache
 E:\Work\Arihant\Code\Arihant\Arihant\obj\Debug\net8.0\Arihant.RazorAssemblyInfo.cs
+E:\Work\Arihant\Code\Arihant\Arihant\obj\Debug\net8.0\Arihant.sourcelink.json
 E:\Work\Arihant\Code\Arihant\Arihant\obj\Debug\net8.0\rjimswa.dswa.cache.json
 E:\Work\Arihant\Code\Arihant\Arihant\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
 E:\Work\Arihant\Code\Arihant\Arihant\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
@@ -79,10 +86,3 @@ E:\Work\Arihant\Code\Arihant\Arihant\obj\Debug\net8.0\refint\Arihant.dll
 E:\Work\Arihant\Code\Arihant\Arihant\obj\Debug\net8.0\Arihant.pdb
 E:\Work\Arihant\Code\Arihant\Arihant\obj\Debug\net8.0\Arihant.genruntimeconfig.cache
 E:\Work\Arihant\Code\Arihant\Arihant\obj\Debug\net8.0\ref\Arihant.dll
-E:\Work\Arihant\Code\Arihant\Arihant\obj\Debug\net8.0\Arihant.sourcelink.json
-E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\System.Data.SqlClient.dll
-E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\runtimes\win-arm64\native\sni.dll
-E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\runtimes\win-x64\native\sni.dll
-E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\runtimes\win-x86\native\sni.dll
-E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\runtimes\unix\lib\net8.0\System.Data.SqlClient.dll
-E:\Work\Arihant\Code\Arihant\Arihant\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Data.SqlClient.dll
