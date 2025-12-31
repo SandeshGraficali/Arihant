@@ -103,7 +103,7 @@
                     timer: 2000,
                     showConfirmButton: false
                 }).then(() => {
-                  
+                    window.location.href = '@Url.Action("Manage_Role_Master", "Users_Master")';
                 });
             }
             else if (response.result === "0") {

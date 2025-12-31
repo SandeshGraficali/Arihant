@@ -90,7 +90,7 @@
               $.post("@Url.Action("SaveRole", "Users_Master")", data, function (res) {
                 if (res.success) {
                     Swal.fire("Success", "Role saved successfully!", "success").then(() => {
-                        location.reload();
+                       window.location.href = '@Url.Action("Manage_Role_Master", "Users_Master")';
                     });
                 } else {
                     

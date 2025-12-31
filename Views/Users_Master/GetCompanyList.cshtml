@@ -56,7 +56,7 @@
             </div>
         </div>
         <div class="col-lg-12 floatleft BgColor1 Border1 BorderColor1 padding20 BorderRounded10 Shadow">
-            <table id="companyTable" class="table table-hover">
+            <table id="companyTable" class="TableStyle1>
                 <thead class="BgColor1 FontColor1">
                     <tr>
                         <th>Company Name</th>
@@ -80,15 +80,16 @@
                             <td>@item.Website</td>
                             <td>@item.MobileNumber</td>
                             <td>
-                                <div class="form-check form-switch custom-switch">
-                                    <input class="form-check-input" type="checkbox" role="switch"
-                                           id="status_@item.CompanyID"
-                                           @(item.IsActive == "1" ? "checked" : "")
-                                           onclick="ToggleStatus(@item.CompanyID, this.checked)">
-
-                                    <label class="form-check-label" for="status_@item.CompanyID">
-                                        @(item.IsActive == "1" ? "Active" : "Inactive")
-                                    </label>
+                       
+                                <div class="status-toggle" style="cursor:pointer;" onclick="ToggleStatus(@item.CompanyID, this)">
+                                    @if (item.IsActive == "1")
+                                    {
+                                        <img src="~/images/4-active.png" id="img_@item.CompanyID" data-status="1" style="width:55px;" alt="Active" />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/images/4-inactive.png" id="img_@item.CompanyID" data-status="0" style="width:55px;" alt="Inactive" />
+                                    }
                                 </div>
                             </td>
                             <td>
@@ -177,13 +178,17 @@
             }
         });
     }
-            function ToggleStatus(id, isChecked) {
-        const statusText = isChecked ? "Activate" : "Deactivate";
-        const checkbox = document.getElementById(`status_${id}`);
+               function ToggleStatus(id, container) {
+     
+        const img = $(container).find('img');
+        const currentStatus = img.attr('data-status'); 
+        const isActivating = (currentStatus === "0");
+
+        const actionText = isActivating ? "Activate" : "Deactivate";
 
         Swal.fire({
             title: 'Are you sure?',
-            text: `Do you want to ${statusText} this company?`,
+            text: `Do you want to ${actionText} this company?`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -191,31 +196,31 @@
             confirmButtonText: 'Yes, change it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                // User confirmed, proceed with AJAX
+               
                 $.ajax({
                     url: '/Users_Master/UpdateStatus',
                     type: 'POST',
-                    data: { id: id, status: isChecked },
+                   
+                    data: { id: id, status: isActivating ? "1" : "0" },
                     success: function (response) {
-                        if (response.success) {
-                            Swal.fire('Success!', response.message, 'success');
+                        if (response.success || response === "1") {
+                            Swal.fire('Success!', 'Status updated successfully.', 'success');
 
-                            // Update the label text
-                            const label = document.querySelector(`label[for='status_${id}']`);
-                            if (label) label.innerText = isChecked ? "Active" : "Inactive";
+                            if (isActivating) {
+                                img.attr('src', '/images/4-active.png');
+                                img.attr('data-status', "1");
+                            } else {
+                                img.attr('src', '/images/4-inactive.png');
+                                img.attr('data-status', "0");
+                            }
                         } else {
-                            Swal.fire('Error!', response.message, 'error');
-                            checkbox.checked = !isChecked; // Revert toggle
+                            Swal.fire('Error!', 'Could not update status.', 'error');
                         }
                     },
                     error: function () {
                         Swal.fire('Error!', 'Could not connect to the server.', 'error');
-                        checkbox.checked = !isChecked; // Revert toggle
                     }
                 });
-            } else {
-                // User cancelled, revert the toggle switch
-                checkbox.checked = !isChecked;
             }
         });
     }

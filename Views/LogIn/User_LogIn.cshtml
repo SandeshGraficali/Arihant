@@ -86,15 +86,7 @@
 				},
 				success: function (response) {
 					if (response.success) {
-						Swal.fire({
-							icon: 'success',
-							title: 'Success',
-							text: response.message,
-							timer: 1500,
-							showConfirmButton: false
-						}).then(() => {
-							window.location.href = '@Url.Action("Index", "Home")';
-						});
+						window.location.href = '@Url.Action("Index", "Home")';
 					} else {
 						Swal.fire({
 							icon: 'error',

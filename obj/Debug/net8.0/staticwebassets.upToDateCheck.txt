@@ -22,6 +22,7 @@ wwwroot\images\loginbg.jpg
 wwwroot\images\logo.png
 wwwroot\images\search.png
 wwwroot\images\Thumbs.db
+wwwroot\js\Common\Client.js
 wwwroot\js\Common\Partial.js
 wwwroot\js\dataTables.js
 wwwroot\js\jquery-2.1.1.min.js

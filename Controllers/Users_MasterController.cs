@@ -1,4 +1,5 @@
-﻿using Arihant.Models.Company_Master;
+﻿using Arihant.Models.Client;
+using Arihant.Models.Company_Master;
 using Arihant.Models.IP_Master;
 using Arihant.Models.Rights_Master;
 using Arihant.Models.User_Master;
@@ -19,6 +20,80 @@ namespace Arihant.Controllers
         public Users_MasterController(DL_Users_Master _master)
         {
             _user = _master;
+        }
+
+        [HttpPost]
+        public JsonResult SaveClient(string jsonData)
+        {
+            string ModifiedBy = HttpContext.Session.GetString("UserName") ?? "";
+            string result = _user.AddClientDetails(jsonData , ModifiedBy);
+
+            if (result == "1")
+                return Json(new { success = true, message = "User Added successfully!" });
+            else
+                return Json(new { success = false, message = result });
+           
+        }
+
+        public IActionResult AllClientMasterList()
+        {
+            List<ClientProfileModel> list = _user.GetAllClientMasters();
+
+            return View(list);
+        }
+
+
+        [HttpPost]
+        public JsonResult UpdateClientStatus(int id)
+        {
+            try
+            {
+
+                string result = _user.ActiveDeactiveClient(id);
+
+                if (result == "1")
+                    return Json(new { success = true, message = "Client De-Activetd successfully!" });
+                else
+                    return Json(new { success = false, message = "Client failed. Please try again." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
+        [HttpPost]
+        public JsonResult DeleteClient(int id)
+        {
+            try
+            {
+
+                string result = _user.DeleteClientbyID(id);
+
+                if (result == "1")
+                    return Json(new { success = true, message = "Client De-Activetd successfully!" });
+                else
+                    return Json(new { success = false, message = "Client failed. Please try again." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        public IActionResult ClientMaster(int? id)
+        {
+           ViewBag.countrylist = _user.GetC_MasterList();
+            ViewBag.ownerlist = _user.GetOwnerList();
+            if (id.HasValue && id.Value > 0)
+            {
+                
+                var clientData = _user.GetClientById(id.Value);
+                ViewBag.IsEdit = true;
+                return View(clientData);
+            }
+            ViewBag.IsEdit = false;
+            return View(new ClientSubmissionViewModel());
         }
 
         [HttpPost]
@@ -70,7 +145,7 @@ namespace Arihant.Controllers
                 if (result == "1")
                     return Json(new { success = true, message = "Company Updated successfully!" });
                 else
-                    return Json(new { success = false, message = "Failed to save company profile. Please try again." });
+                    return Json(new { success = false, message = "Company profile Details Alredy Exist Please try Other." });
             }
             catch (Exception ex)
             {
