@@ -1,16 +1,16 @@
 ﻿@using Arihant.Models.IP_Master
-
 @{
     ViewData["Title"] = "Customer List";
 }
-@model List<IP_Master_Model>
+@model List<IP_Master_Display>
+
 <link href="~/css/datatables.css" rel="stylesheet" />
 <link href="~/css/allmin.css" rel="stylesheet" />
 <link href="~/css/toggle.min.css" rel="stylesheet" />
-
 <link href="~/css/sumoselect.css" rel="stylesheet" />
-<style>
 
+<style>
+    /* Table & Wrapper Styles */
     .table-wrapper {
         margin: 50px auto;
         max-width: 95%;
@@ -18,65 +18,6 @@
         background: #fff;
         border-radius: 8px;
         box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    }
-
-    .custom-modal-overlay {
-        display: none;
-        position: fixed;
-        z-index: 9999;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0,0,0,0.5);
-    }
-
-
-    .custom-modal-content {
-        background-color: #fff;
-        margin: 5% auto;
-        padding: 20px;
-        border-radius: 8px;
-        width: 400px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        position: relative;
-    }
-
-    .modal-header-custom {
-        border-bottom: 1px solid #ddd;
-        padding-bottom: 10px;
-        margin-bottom: 15px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .form-group {
-        margin-bottom: 15px;
-    }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-    .error-msg {
-        color: red;
-        font-size: 12px;
-        display: none;
-    }
-
-    input.error {
-        border-color: red;
     }
 
     .action-bar {
@@ -88,96 +29,44 @@
         margin-right: auto;
     }
 
-    .btn-add-user {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 8px;
+    /* Global SweetAlert Fix - Forces alerts on top of the 9999 modal */
+    .swal2-container {
+        z-index: 10001 !important;
     }
 
-        .btn-add-user:hover {
-            background-color: #0056b3;
-        }
-
-
-    .table-wrapper {
-        margin-top: 10px;
-    }
-
-    /* Add this to your <style> tag */
-    .SumoSelect {
-        width: 100%;
-    }
-
-        .SumoSelect > .caption {
-            border-radius: 4px;
-            height: 38px;
-            padding-top: 8px;
-        }
-
-        .SumoSelect > .optWrapper > .options li.opt label {
-            margin-bottom: 0; /* Fixes checkbox alignment */
-        }
-
-    /* Modal Overlay */
+    /* Unified Modal Styles */
     .custom-modal-overlay {
         display: none;
         position: fixed;
-        top: 0;
+        z-index: 9999;
         left: 0;
+        top: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0,0,0,0.6);
-        z-index: 9999;
+        background-color: rgba(0, 31, 63, 0.85);
+        backdrop-filter: blur(4px);
     }
 
-    /* Modal Content Box */
     .custom-modal-content {
-        background: #fff;
-        width: 450px;
-        margin: 50px auto;
-        padding: 0;
+        background-color: #ffffff;
+        margin: 2% auto;
         border-radius: 8px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        position: relative;
-        font-family: Arial, sans-serif;
+        width: 55%;
+        min-width: 500px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        overflow: hidden;
+        font-family: sans-serif;
     }
 
     .modal-header-custom {
-        background: #0b50a6;
+        background-color: #001f3f;
         color: white;
-        padding: 15px;
-        border-radius: 8px 8px 0 0;
+        padding: 15px 20px;
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
 
-    .form-group {
-        margin: 15px;
-    }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .form-group input, .form-group select {
-            width: 93%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-    /* SVG Icon Button Styles */
     .btn-icon {
         background: none;
         border: none;
@@ -190,80 +79,269 @@
             transform: scale(1.1);
         }
 
-    .error-msg {
-        color: red;
-        font-size: 11px;
-        display: none;
+    .ip-table-container {
+        max-height: 250px;
+        overflow-y: auto;
+        border: 1px solid #eee;
+        margin-top: 10px;
     }
 
+    #modalIPTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        #modalIPTable th {
+            position: sticky;
+            top: 0;
+            background: #f4f7f9;
+            z-index: 10;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+            color: #001f3f;
+        }
+
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(2px);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+
+    .modal-content {
+        background: #fff;
+        width: 90%;
+        max-width: 600px;
+        max-height: 80%;
+        border: 2px solid #001f3f; /* Navy border */
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
+    /* Header */
+    .modal-header {
+        background: #001f3f; /* Navy blue */
+        color: #fff;
+        padding: 12px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 2px solid #0b50a6;
+        font-weight: 600;
+        font-size: 16px;
+    }
+
+    .close-btn {
+        cursor: pointer;
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    /* Body */
+    .modal-body {
+        padding: 15px;
+        overflow-y: auto;
+        flex: 1;
+        border-bottom: 2px solid #0b50a6;
+    }
+
+        .modal-body table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: Arial, sans-serif;
+            border: 1px solid #ddd;
+        }
+
+        .modal-body th, .modal-body td {
+            padding: 10px;
+            text-align: left;
+            border-right: 1px solid #ddd;
+        }
+
+            .modal-body th:last-child, .modal-body td:last-child {
+                border-right: none;
+            }
+
+        .modal-body thead tr {
+            background: #f4f7f9;
+            border-bottom: 1px solid #0b50a6;
+        }
+
+    /* Footer */
+    .modal-footer {
+        padding: 10px 15px;
+        text-align: right;
+        border-top: 2px solid #0b50a6;
+    }
+
+        .modal-footer button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background: #001f3f; /* Navy */
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
 </style>
 
-<div id="ipModal" class="custom-modal-overlay">
-    <div class="custom-modal-content">
+<div id="myCustomModal" class="custom-modal-overlay">
+    <div class="custom-modal-content" id="modalContainer">
         <div class="modal-header-custom">
-            <h3 id="modalTitle">IP Address</h3>
-            <button onclick="CloseModal()" style="background:none; border:none; color:white; cursor:pointer; font-size:20px;">&times;</button>
+            <span style="font-weight: bold; font-size: 18px; letter-spacing: 1px;" id="mainModalTitle">IP CONFIGURATION</span>
+            <span onclick="CloseCustomModal()" style="cursor: pointer; font-size: 24px; font-weight: bold;">&times;</span>
         </div>
 
-        <input type="hidden" id="txtID" />
+        <div style="padding: 20px;">
+            <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 20px;">
+                <label style="font-size: 12px; color: #001f3f; margin-bottom: 5px; font-weight: bold; display: block;">LOCATION NAME</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="hidden" id="LocationID" />
+                    <input type="text" id="editLocationName" placeholder="Enter Location Name" style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;" />
+                </div>
+            </div>
 
-        <div class="form-group">
-            <label>IP Address</label>
-            <input type="text" id="txtIPAdd" placeholder="192.168.1.1" />
-            <span id="errIP" class="error-msg">Required</span>
-        </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #001f3f; padding-bottom: 5px; margin-bottom: 10px;">
+                <h4 style="color: #001f3f; margin: 0;">IP Details Grid</h4>
+               
+            </div>
 
-        <div class="form-group">
-            <label>Name</label>
-            <input type="text" id="txtIPName" placeholder="Server Name" />
-            <span id="errName" class="error-msg">Required</span>
-        </div>
+            <div id="addIPForm" style=" background: #e9ecef; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                <div style="display: flex; gap: 10px; align-items: flex-end;">
+                    <div style="flex: 1.5;">
+                        <label style="display: block; font-size: 11px; font-weight: bold;">IP Name (e.g. Workstation 1)</label>
+                        <input type="text" id="newIPName" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                    <div style="flex: 1.5;">
+                        <label style="display: block; font-size: 11px; font-weight: bold;">IP Address</label>
+                        <input type="text" id="newIPAddress" placeholder="192.168.1.1" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                    <button onclick="SaveSingleIP()" style="background-color: #28a745; color: white; border: none; padding: 9px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">Add</button>
+                </div>
+            </div>
 
-        <div style="text-align:right; padding:15px; gap: 10px; display: flex; justify-content: flex-end;">
-            <button onclick="CloseModal()" style="padding:8px 15px; border-radius:4px; border:1px solid #ccc; cursor:pointer;">Cancel</button>
+            <div class="ip-table-container">
+                <table id="modalIPTable">
+                    <thead>
+                        <tr>
+                            <th>IP Name</th>
+                            <th>IP Address</th>
+                            <th style="text-align: center;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
 
-            <button id="btnAddSubmit" onclick="SaveNewIP()" style="display:none; padding:8px 15px; border-radius:4px; border:none; background:#28a745; color:white; cursor:pointer;">Save New IP</button>
-            <button id="btnUpdateSubmit" onclick="UpdateExistingIP()" style="display:none; padding:8px 15px; border-radius:4px; border:none; background:#0b50a6; color:white; cursor:pointer;">Update Changes</button>
+            <div style="margin-top: 20px; text-align: right; display: flex; gap: 10px; justify-content: flex-end;">
+                <button onclick="CloseCustomModal()" style="padding: 10px 20px; border-radius: 4px; border: 1px solid #ccc; cursor: pointer;">Cancel</button>
+                <button id="btnSubmitAction" onclick="UpdateLocation()" style="background-color: #001f3f; color: white; border: none; padding: 10px 25px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 200px;">Save Changes</button>
+            </div>
         </div>
     </div>
 </div>
+<div id="userModal" style="display:none" class="modal">
+    <div class="modal-content">
+ 
+        <div class="modal-header">
+            <span>Assigned Users</span>
+            <span class="close-btn" onclick="closeUserModal()">×</span>
+        </div>
+
+
+        <div class="modal-body">
+            <table>
+                <thead>
+                    <tr>
+                        <th>User Name</th>
+                        <th>Email</th>
+                        <th>Mobile</th>
+                    </tr>
+                </thead>
+                <tbody id="userModalBody">
+               
+                </tbody>
+            </table>
+        </div>
+
+        <div class="modal-footer">
+            <button onclick="closeUserModal()">Close</button>
+        </div>
+    </div>
+</div>
+    
 
 <div class="container">
     <div class="table-wrapper">
         <div class="action-bar">
-            <button id="btnOpenModal" class="btn-add-user" onclick="OpenAddModal()">
-                <i class="fas fa-plus"></i> Add IP
+            <button class="btn-add-user" onclick="OpenAddModal()" style="background-color: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                <i class="fas fa-plus"></i> Add New IP Master
             </button>
         </div>
         <h2 class="text-center">IP Master List</h2>
         <table id="IPList" class="TableStyle1" style="width:100%">
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>IP Address</th>
-                    <th>Name</th>
-                    <th>Actions</th>
+                    <th style="text-align:center;">#</th>
+                    <th style="text-align:center;">Location Name</th>
+                    <th style="text-align:center;">Total IPs</th>
+                    <th style="text-align:center;">Total Users</th>
+                    <th style="text-align:center;">IsActive</th>
+                    <th style="text-align:center;">Actions</th>
                 </tr>
             </thead>
+
             <tbody>
-                @if (Model != null)
+                @if (Model != null && Model.Any())
                 {
                     int i = 1;
                     foreach (var item in Model)
                     {
                         <tr>
-                            <td>@i</td>
-                            <td>@item.IPAdd</td>
-                            <td>@item.IP_Name</td>
-                            <td style="text-align:center;">
-                                <button class="btn-icon edit-btn" title="Edit"
-                                        onclick="EditIP('@item.ID', '@item.IPAdd', '@item.IP_Name')">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                                </button>
-                                <button class="btn-icon delete-btn" title="Delete" onclick="DeleteIP('@item.ID')">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                            <td style="text-align: center;">@i</td>
+                            <td style="text-align: center;">@item.LocationName</td>
+                            <td style="text-align: center;">@item.TotalIPCount</td>
+                            <td style="text-align:center; cursor:pointer; color:#0b50a6; font-weight:600;"
+                                onclick="ViewUsers(@item.LocationID)">
+                                @item.TotalUserCount
+                            </td>
+
+                            <td style="text-align: center;">
+                                <button class="btn-icon" title="@(item.IsActive == "1" ? "Deactivate" : "Activate")"
+                                        onclick="ToggleLocationStatus('@item.LocationID', '@item.IsActive')">
+                                    @if (item.IsActive == "1")
+                                    {
+                                        <img src="~/images/4-active.png"  />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/images/4-inactive.png" />
+                                    }
                                 </button>
                             </td>
+                            <td style="text-align: center;">
+                               
+                                <button class="btn-icon" title="Edit Location" onclick="ViewIPs('@item.LocationID', '@item.LocationName', '@item.TotalUserCount')">
+                                    <img src="~/images/edit.png" style="width:18px;height:18px;" />
+                                </button>
+                                <button class="btn-icon" title="Delete Location" onclick="DeleteLocation('@item.LocationID', '@item.LocationName', '@item.TotalUserCount')">
+                                    <img src="~/images/delete.png" style="width:18px;height:18px;" />
+                                </button>
+                            </td>
+                          
                         </tr>
                         i++;
                     }
@@ -272,143 +350,313 @@
         </table>
     </div>
 </div>
+
 <script src="~/js/jquery-3.7.1.js"></script>
-<script src="~/js/sumoselect.js"></script>
 <script src="~/js/datatables.js"></script>
 <script src="~/js/sweetalert2.js"></script>
-<script src="~/js/validation.js"></script>
+
 <script>
-            $.fn.dataTable.ext.errMode = 'none';
-
-     function OpenAddModal() {
-        $('#modalTitle').text("Add New IP Address");
-        $('#txtID').val("");
-        $('#txtIPAdd').val("");
-        $('#txtIPName').val("");
-
-        // UI Management: Show Add button, Hide Update button
-        $('#btnUpdateSubmit').hide();
-        $('#btnAddSubmit').show();
-
-        $('#ipModal').fadeIn(300); // jQuery show with animation
-    }
-       function SaveNewIP() {
-        var model = {
-             ID: '',
-            IPAdd: $('#txtIPAdd').val().trim(),
-            IP_Name: $('#txtIPName').val().trim()
-        };
-
-        if (model.IPAdd === "" || model.IP_Name === "") {
-            Swal.fire("Warning", "Please enter both IP and Name", "warning");
-            return;
-        }
-
-        $.post("@Url.Action("AddIPMaster", "Users_Master")", model, function (res) {
-            if (res.success) {
-                CloseModal();
-                Swal.fire("Success", "New IP saved successfully!", "success").then(() => {
-                    location.reload();
-                });
-            } else {
-                  CloseModal();
-                Swal.fire("Error", res.message || "Failed to add", "error");
-            }
-        });
-    }
-
-                function OpenModal() {
-        $('#modalTitle').text("Add IP Address");
-        $('#txtID').val("");
-        $('#txtIPAdd').val("");
-        $('#txtIPName').val("");
-        $('#ipModal').fadeIn(300); 
-        $('#btnSaveAdd').hide();
-      $('#btnSaveUpdate').show();
-       
-    }
-
-        function CloseModal() {
-        $('#ipModal').fadeOut(200); // jQuery hide with animation
-    }
-    function EditIP(id, ip, name) {
-        $('#modalTitle').text("Edit IP Address");
-        $('#txtID').val(id);
-        $('#txtIPAdd').val(ip);
-        $('#txtIPName').val(name);
-
-        // UI Management: Hide Add button, Show Update button
-        $('#btnAddSubmit').hide();
-        $('#btnUpdateSubmit').show();
-
-        $('#ipModal').fadeIn(300); // jQuery show with animation
-    }
-
-
-      function UpdateExistingIP() {
-        var model = {
-            ID: $('#txtID').val(),
-            IPAdd: $('#txtIPAdd').val().trim(),
-            IP_Name: $('#txtIPName').val().trim()
-        };
-
-        if (model.IPAdd === "" || model.IP_Name === "") {
-            Swal.fire("Warning", "Fields cannot be empty", "warning");
-            return;
-        }
-
-        $.post("@Url.Action("SaveIPMaster", "Users_Master")", model, function (res) {
-            if (res.success) {
-                CloseModal();
-                Swal.fire("Updated", "IP details updated successfully!", "success").then(() => {
-                    location.reload();
-                });
-            } else {
-                  CloseModal();
-                Swal.fire("Error", res.message || "Update failed", "error");
-            }
-        });
-    }
-  
-    function DeleteIP(id) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-               
-                $.post("@Url.Action("DeleteIPMaster", "Users_Master")", { id: id }, function (res) {
-                    if (res.success) {
-                        Swal.fire("Deleted!", res.message, "success").then(() => {
-                            location.reload();
-                        });
-                    } else {
-                        Swal.fire("Error!", res.message || "Failed to delete.", "error");
-                    }
-                }).fail(function() {
-                    Swal.fire("Error!", "Server communication failed.", "error");
-                });
-            }
-        });
-    }
+    let mouseDownInside = false;
 
     $(document).ready(function () {
-       
-      
-        $('#IPList').DataTable({
-            paging: true,
-            searching: true,
-            responsive: true,
-                language: {
-                emptyTable: "No Users Found",
-                zeroRecords: "No matching records found"
+    
+        $('#IPList').DataTable();
+        $(document).on('mousedown', function (e) {
+            mouseDownInside = $(e.target).closest('#modalContainer').length > 0;
+        });
+
+        $('#myCustomModal').on('click', function (e) {
+            if (e.target.id === "myCustomModal" && !mouseDownInside) {
+                CloseCustomModal();
             }
         });
 
+        
+        $('#modalIPTable tbody').on('click', '.btn-remove', function(e) {
+            e.stopPropagation();
+            $(this).closest('tr').fadeOut(200, function() { $(this).remove(); });
+        });
     });
+
+    function ToggleAddForm() {
+        $('#addIPForm').slideToggle(200);
+        $('#newIPName').focus();
+    }
+
+    function CloseCustomModal() {
+        $('#myCustomModal').fadeOut(200, function() {
+            $('#modalIPTable tbody').empty();
+            $('#LocationID').val('');
+            $('#editLocationName').val('');
+           
+        });
+    }
+
+
+    function OpenAddModal() {
+        $('#mainModalTitle').text('ADD NEW IP MASTER');
+        $('#btnSubmitAction').text('Save New IP Master').attr('onclick', 'SaveNewIP()');
+        $('#myCustomModal').css('display', 'block').hide().fadeIn(200);
+    }
+
+
+    function ViewIPs(locationId, locationName, userCount) {
+        $('#mainModalTitle').text('EDIT IP CONFIGURATION');
+        $('#btnSubmitAction').text('Update Configuration').attr('onclick', 'UpdateLocation()');
+        $('#btnSubmitAction').attr('data-usercount', userCount);
+        $("#LocationID").val(locationId);
+        $('#editLocationName').val(locationName);
+
+        $.ajax({
+            url: '@Url.Action("GetLocationDetails", "Users_Master")',
+            type: 'GET',
+            data: { locationId: locationId },
+            success: function (res) {
+                if (res.success) {
+                    $('#modalIPTable tbody').empty();
+                    res.ips.forEach(item => appendIPRow(item.iP_Name, item.ipAddress));
+                    $('#myCustomModal').css('display', 'block').hide().fadeIn(200);
+                }
+            }
+        });
+    }
+
+    function appendIPRow(name, ip) {
+        let row = `
+            <tr class="modal-grid-row" style="border-bottom: 1px solid #eee;">
+                <td style="padding: 10px;" class="col-name">
+                    <input type="text" value="${name}" style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+                </td>
+                <td style="padding: 10px; color: #666; font-family: monospace;" class="col-ip">${ip}</td>
+                <td style="padding: 10px; text-align:center;">
+                    <button class="btn-remove" style="background: #dc3545; color: white; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">Remove</button>
+                </td>
+            </tr>`;
+        $('#modalIPTable tbody').prepend(row);
+    }
+
+    function SaveSingleIP() {
+        let name = $("#newIPName").val().trim();
+        let ip = $("#newIPAddress").val().trim();
+
+        if (!name || !ip) {
+            Swal.fire({ title: "Required", text: "Please enter both IP Name and Address", icon: "info", target: '#myCustomModal' });
+            return;
+        }
+
+    
+        let isDuplicate = false;
+        $('#modalIPTable tbody tr').each(function () {
+            if ($(this).find('.col-ip').text().trim() === ip) { isDuplicate = true; return false; }
+        });
+
+        if (isDuplicate) {
+            Swal.fire({ title: "Duplicate", text: "This IP is already in the list", icon: "warning", target: '#myCustomModal' });
+            return;
+        }
+
+        appendIPRow(name, ip);
+        $("#newIPName, #newIPAddress").val('');
+        // ToggleAddForm();
+    }
+
+    
+        function UpdateLocation() {
+        let ipList = [];
+        $('#modalIPTable tbody tr').each(function () {
+            let n = $(this).find('.col-name input').val().trim();
+            let i = $(this).find('.col-ip').text().trim();
+            if (n) ipList.push({ IP_Name: n, IPAdd: i });
+        });
+
+        if (ipList.length === 0) {
+            Swal.fire({
+                title: "Required",
+                text: "At least one IP address is mandatory!",
+                icon: "warning",
+                target: document.getElementById('myCustomModal'),
+                didOpen: () => { document.querySelector('.swal2-container').style.zIndex = "10001"; }
+            });
+            return;
+        }
+
+        let loc = $("#editLocationName").val().trim();
+        if (!loc) {
+            Swal.fire({
+                title: "Required",
+                text: "Location name is required",
+                icon: "warning",
+                target: '#myCustomModal',
+                didOpen: () => { document.querySelector('.swal2-container').style.zIndex = "10001"; }
+            });
+            return;
+        }
+
+        let affectedUsers = $('#btnSubmitAction').attr('data-usercount') || 0;
+
+        Swal.fire({
+            title: "Confirm Update",
+            html: `Updating this location will affect <b style="color:red; font-size:18px;">${affectedUsers}</b> assigned user(s).<br>Do you want to proceed?`,
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#001f3f",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Update",
+            target: '#myCustomModal',
+            didOpen: () => { document.querySelector('.swal2-container').style.zIndex = "10001"; }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                
+                let model = { ID: $("#LocationID").val(), Location: loc, IPList: ipList };
+
+                $.post("@Url.Action("UpdateFullLocation", "Users_Master")", model, function(res) {
+                
+                    if (res === "1" || res.success) {
+                        Swal.fire({
+                            title: "Success",
+                            text: "Updated successfully",
+                            icon: "success",
+                            target: '#myCustomModal',
+                            didOpen: () => { document.querySelector('.swal2-container').style.zIndex = "10001"; }
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire({
+                            title: "Error",
+                            text: res.message || "Update failed",
+                            icon: "error",
+                            target: '#myCustomModal',
+                            didOpen: () => { document.querySelector('.swal2-container').style.zIndex = "10001"; }
+                        });
+                    }
+                });
+            }
+        });
+    }
+   
+    function SaveNewIP() {
+        let ipList = [];
+        $('#modalIPTable tbody tr').each(function () {
+            let n = $(this).find('.col-name input').val().trim();
+            let i = $(this).find('.col-ip').text().trim();
+            if (n) ipList.push({ IP_Name: n, IPAdd: i });
+        });
+
+        let loc = $("#editLocationName").val().trim();
+        if (!loc || ipList.length === 0) {
+            return Swal.fire({ title: "Missing Data", text: "Please provide a Location and at least one IP", icon: "warning", target: '#myCustomModal' });
+        }
+
+        let model = { Location: loc, IPList: ipList };
+
+        $.post("@Url.Action("AddIPMaster", "Users_Master")", model, function(res) {
+            if (res.success) {
+                Swal.fire({ title: "Saved", text: "Master created successfully", icon: "success", target: '#myCustomModal' }).then(() => location.reload());
+            } else {
+                Swal.fire({ title: "Error", text: res.message, icon: "error", target: '#myCustomModal' });
+            }
+        });
+    }
+
+        function ViewUsers(locationId) {
+
+        $('#userModalBody').empty();
+
+        $.ajax({
+            url: '@Url.Action("GetUsersByLocation", "Users_Master")',
+            type: 'GET',
+            data: { locationId: locationId },
+            success: function (res) {
+
+                if (!res.success) {
+                    alert(res.message);
+                    return;
+                }
+
+                if (res.users.length === 0) {
+                    $('#userModalBody').append(
+                        `<tr><td colspan="3" style="text-align:center;">No users found</td></tr>`
+                    );
+                } else {
+                    $.each(res.users, function (i, u) {
+                        $('#userModalBody').append(`
+                            <tr>
+                                <td style="padding:8px;">${u.userName}</td>
+                                <td style="padding:8px;">${u.emailID}</td>
+                                <td style="padding:8px;">${u.mobileNO}</td>
+                            </tr>
+                        `);
+                    });
+                }
+
+                  document.getElementById('userModal').style.display = 'flex';
+            }
+        });
+    }
+
+        function closeUserModal() {
+            document.getElementById('userModal').style.display = 'none';
+    }
+
+    function DeleteLocation(locationId, locationName, userCount) {
+ 
+    let warningText = userCount > 0 
+        ? `This location has ${userCount} assigned users. Deleting it will affect their access!` 
+        : `Are you sure you want to delete "${locationName}"?`;
+
+    Swal.fire({
+        title: "Confirm Delete",
+        text: warningText,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                    url: '@Url.Action("DeleteIPMaster", "Users_Master")',
+                    type: 'POST',
+                data: { id: locationId },
+                success: function (res) {
+                    if (res.success || res === "1") {
+                        Swal.fire("Deleted!", "Location has been removed.", "success")
+                            .then(() => location.reload());
+                    } else {
+                        Swal.fire("Error", res.message || "Failed to delete", "error");
+                    }
+                },
+                error: function() {
+                    Swal.fire("Error", "Server connection failed", "error");
+                }
+            });
+        }
+    });
+}
+
+
+    function ToggleLocationStatus(id, currentStatus) {
+        let action = currentStatus == "1" ? "Deactivate" : "Activate";
+
+        Swal.fire({
+            title: "Change Status?",
+            text: `Are you sure you want to ${action} this location?`,
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#001f3f",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Change it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                    $.post("@Url.Action("DeactiveteLocationMaster", "Users_Master")", { id: id }, function (res) {
+                    if (res === "1" || res.success) {
+                        Swal.fire("Updated!", "Status has been changed.", "success")
+                            .then(() => location.reload());
+                    } else {
+                        Swal.fire("Error", "Failed to update status", "error");
+                    }
+                });
+            }
+        });
+    }
+
 </script>

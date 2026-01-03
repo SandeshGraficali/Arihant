@@ -48,9 +48,7 @@ namespace Arihant.Controllers
         {
             try
             {
-
                 string result = _user.ActiveDeactiveClient(id);
-
                 if (result == "1")
                     return Json(new { success = true, message = "Client De-Activetd successfully!" });
                 else
@@ -70,7 +68,6 @@ namespace Arihant.Controllers
             {
 
                 string result = _user.DeleteClientbyID(id);
-
                 if (result == "1")
                     return Json(new { success = true, message = "Client De-Activetd successfully!" });
                 else
@@ -86,8 +83,7 @@ namespace Arihant.Controllers
            ViewBag.countrylist = _user.GetC_MasterList();
             ViewBag.ownerlist = _user.GetOwnerList();
             if (id.HasValue && id.Value > 0)
-            {
-                
+            {               
                 var clientData = _user.GetClientById(id.Value);
                 ViewBag.IsEdit = true;
                 return View(clientData);
@@ -101,7 +97,6 @@ namespace Arihant.Controllers
         {
             try
             {
-
                 string result = _user.ActiveAndDeactiveConpany(id);
 
                 if (result == "1")
@@ -120,7 +115,6 @@ namespace Arihant.Controllers
         {
             try
             {
-               
                 string result = _user.DeactiveConpany(CompanyID.ToString());
 
                 if (result == "1")
@@ -156,8 +150,7 @@ namespace Arihant.Controllers
 
         public IActionResult GetCompanyList()
         {
-            List<CompanyProfileModel>  list = _user.GetAllCompanyMasters();
-         
+            List<CompanyProfileModel>  list = _user.GetAllCompanyMasters();    
             return View(list);
         }
 
@@ -178,7 +171,6 @@ namespace Arihant.Controllers
         public IActionResult GetCitiesByState(string stateId)
         {
             DataSet ds = _user.GetC_MasterCityList(stateId);
-
             var cities = new List<object>();
 
             if (ds != null && ds.Tables.Count > 0)
@@ -200,7 +192,6 @@ namespace Arihant.Controllers
         public IActionResult GetState(string countryid)
         {
             DataSet ds = _user.GetC_MasterStateList(countryid);
-
             var cities = new List<object>();
 
             if (ds != null && ds.Tables.Count > 0)
@@ -225,7 +216,6 @@ namespace Arihant.Controllers
             {
                 string createdBy = HttpContext.Session.GetString("UserName") ?? "System";
                 string result= _user.SaveCompanyDetails(data , createdBy);
-
 
                 if (result == "1")
                     return Json(new { success = true, message = "Company created successfully!" });
@@ -262,7 +252,7 @@ namespace Arihant.Controllers
                 if (result == "1")
                     return Json(new { success = true, message = "Role deleted successfully!\"" });
                 else
-                    return Json(new { success = false, message = "IPCould not delete role. It might be in use." });
+                    return Json(new { success = false, message = "Could not delete role. It might be in use." });
             }
             catch (Exception ex)
             {
@@ -346,7 +336,6 @@ namespace Arihant.Controllers
         public IActionResult Role_Master()
         {
             List<MenuRightViewModel> allRights = _user.GetMenuRights();
-
             var groupedRights = allRights.GroupBy(x => x.Module).ToList();
 
             return View(groupedRights);
@@ -359,6 +348,42 @@ namespace Arihant.Controllers
             return View(allRights);
         }
 
+        [HttpPost]
+        public JsonResult UpdateFullLocation(IP_Master_Model model)
+        {
+            try
+            {
+                string user = HttpContext.Session.GetString("UserName") ?? "System";
+                string result = _user.UpdateLocation(model, user);
+
+                if (result == "1")
+                {
+                    return Json(new { success = true, message = "IP details updated successfully!" });
+                }
+                else if (result == "0")
+                {
+                    return Json(new { success = false, message = "Data already exists." });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Error: " + result });
+                }
+              
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetUsersByLocation(int locationId)
+        {
+            List<IP_Users> users = _user.GetIPMasterUserList(locationId);
+
+            return Json(new { success = true, users });
+        }
+
 
         [HttpPost]
         public JsonResult AddIPMaster(IP_Master_Model model)
@@ -367,15 +392,15 @@ namespace Arihant.Controllers
             try
             {
                 string ModifiedBy = HttpContext.Session.GetString("UserName") ?? "";
-                string result = _user.AddIPAddress(model , ModifiedBy);
-
+                 string result = _user.AddIPAddress(model , ModifiedBy);
+               
                 if (result == "1")
                 {
-                    return Json(new { success = true, message = "User details updated successfully!" });
+                    return Json(new { success = true, message = "IP details updated successfully!" });
                 }
                 else if (result == "0")
                 {
-                    return Json(new { success = false, message = "User ID already exists." });
+                    return Json(new { success = false, message = "Data already exists." });
                 }
                 else
                 {
@@ -387,38 +412,56 @@ namespace Arihant.Controllers
                 return Json(new { success = false, message = "Error: " + ex.Message });
 
             }
-           
+
         }
 
         [HttpPost]
-        public JsonResult SaveIPMaster(IP_Master_Model model)
+        public JsonResult SaveIPMaster(IPRowADd model)
         {
             try
             {
                 string ModifiedBy = HttpContext.Session.GetString("UserName") ?? "";
-                string result = _user.UpdateIPAddress(model , ModifiedBy);
+                string result = _user.UpdateIPAddress(model, ModifiedBy);
 
                 if (result == "1")
                 {
-                    return Json(new { success = true, message = "User details updated successfully!" });
+                    return Json(new { success = true, message = "IP details updated successfully!" });
                 }
                 else if (result == "0")
                 {
-                    return Json(new { success = false, message = "User ID already exists." });
+                    return Json(new { success = false, message = "IP  already exists." });
                 }
                 else
                 {
                     return Json(new { success = false, message = "Error: " + result });
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Json(new { success = false, message = "Error: " + ex.Message });
-                
+
             }
-           
+
 
         }
+
+        [HttpPost]
+        public JsonResult DeactiveteLocationMaster(string id)
+        {
+            try
+            {
+                string result = _user.DeactivateLocation(id);
+                if (result == "1")
+                    return Json(new { success = true, message = "IP DeActiveted successfully" });
+                else
+                    return Json(new { success = false, message = "IP not DeActiveted" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
 
         [HttpPost]
         public JsonResult DeleteIPMaster(string id)
@@ -457,8 +500,9 @@ namespace Arihant.Controllers
         [HttpPost]
         public JsonResult ActiveUser(string UserID)
         {
-            try {
-               string result= _user.ActiveUser(UserID);
+            try
+            {
+                string result = _user.ActiveUser(UserID);
                 if (result == "1")
                     return Json(new { success = true, isActive = true, message = "User Activated successfully" });
                 else
@@ -470,9 +514,18 @@ namespace Arihant.Controllers
             }
         }
 
+
+        [HttpGet]
+        public JsonResult GetLocationDetails(int locationId)
+        {
+            var data = _user.GetLocationDetails(locationId);
+            return Json(new { success = true, ips = data.IPs, users = data.Users });
+        }
+
+
         public IActionResult IP_Master()
         {
-            List < IP_Master_Model > IP_Masters = _user.GetIPMasterList();
+            List<IP_Master_Display> IP_Masters = _user.GetIPMasterList();
             return View(IP_Masters);
         }
 
@@ -483,8 +536,12 @@ namespace Arihant.Controllers
         public IActionResult User_Master_Dashboard()
         {
            
-            ViewBag.IPList = _user.GetIPList();   
-            List<IPViewModel_withIPS> result= _user.GetAllUsers();
+            ViewBag.LocationList = _user.GetLocationList();
+            ViewBag.RoleList = _user.GetRoleList();
+            List<IPViewModel_withIPS> result = _user.GetAllUsers();
+            List<MenuRightViewModel> allRights = _user.GetMenuRights();
+            var groupedRights = allRights.GroupBy(x => x.Module).ToList();
+            ViewBag.GroupedMenuRights = groupedRights;
             return View(result);
         }
 
@@ -497,7 +554,6 @@ namespace Arihant.Controllers
                 if (string.IsNullOrEmpty(model.UserID))
                     return Json(new { success = false, message = "User ID is missing" });
                 string ModifiedBy = HttpContext.Session.GetString("UserName") ?? "";
-
                 string result = _user.UpdateUser(model , ModifiedBy);
              
                 if (result == "1")
@@ -535,7 +591,7 @@ namespace Arihant.Controllers
                 }
                 else if (result == "0")
                 {
-                    return Json(new { success = false, message = "User ID already exists." });
+                    return Json(new { success = false, message = "User ID Or Email ID already exists." });
                 }
                 else
                 {

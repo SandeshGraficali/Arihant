@@ -33,7 +33,7 @@
             <div class="module-group" style="margin-bottom: 15px; border: 1px solid #eee; background: #fff; border-radius: 4px;">
                 <div style="background-color: #fcfcfc; padding: 10px; border-bottom: 1px solid #eee;">
                     <input type="checkbox" class="parent-check" id="mod_@group.Key" />
-                    <label for="mod_@group.Key" style="color: #a52a2a; font-weight: bold; margin-left: 8px; cursor: pointer; margin-bottom: 0;">@group.Key</label>
+                    <label for="mod_@group.Key" style="color: #144379; font-weight: bold; margin-left: 8px; cursor: pointer; margin-bottom: 0;">@group.Key</label>
                 </div>
 
                 <div class="child-rights row" style="padding: 10px 15px;">
@@ -49,9 +49,37 @@
         }
     </div>
 
-    <div style="text-align: right; margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
-        <button class="btn btn-primary" style="padding: 8px 35px; font-weight: bold;" onclick="SaveRole()">Save Role</button>
+    <div style="text-align: right; margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px; display: flex; justify-content: flex-end; gap: 10px;">
+        <!-- Back Button -->
+        <a href="@Url.Action("Manage_Role_Master", "Users_Master")"
+           class="btn btn-primary"
+           style=" padding: 8px 35px;
+    font-weight: bold;
+    border: solid;
+    background-color: #efefef;
+
+    border-color: gray;
+    color: black;
+    border-radius: 8px;">
+            Back
+        </a>
+
+  
+        <button type="button"
+                class="btn btn-primary"
+                style=" padding: 8px 35px;
+    font-weight: bold;
+    border: solid;
+    background-color: #efefef;
+
+    border-color: gray;
+    color: black;
+    border-radius: 8px;"
+                onclick="SaveRole()">
+            Save Role
+        </button>
     </div>
+
 </div>
 
 <script src="~/js/jquery-3.7.1.js"></script>

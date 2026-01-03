@@ -35,7 +35,7 @@
     .master-header {
       
         padding: 20px 25px;
-        color: #b08d57;
+        color: #144379;
     }
 
         .master-header h2 {
@@ -52,7 +52,7 @@
 
         .table-role-master thead th {
             background-color: #fcfaf7;
-            color: var(--secondary-gold);
+            color: #144379;
             padding: 15px 25px;
             text-align: center;
             font-size: 0.85rem;
@@ -102,7 +102,7 @@
     }
 
     .module-header {
-        color: var(--secondary-gold);
+        color: #144379;
         font-size: 0.8rem;
         font-weight: 700;
         text-transform: uppercase;
@@ -183,8 +183,16 @@
 
 
 <div class="master-container">
-    <div class="master-header">
+    <div class="master-header" style="display: flex; justify-content: space-between; align-items: center;">
         <h2>Role & Permission Management</h2>
+        <a href="@Url.Action("Role_Master", "Users_Master")" class="btn add-role-btn" style="    background-color: #144379;
+    color: white;
+    border-radius: 7px;
+    width: 88px;
+    margin-left: 20px;
+    text-align: center;    height: 27px;">
+           Add Role
+        </a>
     </div>
 
     <table class="table-role-master">
@@ -223,11 +231,16 @@
                     </td>
                     <td class="text-center" style="vertical-align: middle;">
                         <div style="display: flex; justify-content: center; gap: 10px;">
+                           @*  <img src="~/images/edit.png" />
                             <a href="@Url.Action("EditRole", "Users_Master", new { id = roleGroup.Key.RoleID })"
                                class="action-link edit-btn" title="Edit Role">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#007bff" viewBox="0 0 16 16">
                                     <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
                                 </svg>
+                            </a> *@
+                            <a href="@Url.Action("EditRole", "Users_Master", new { id = roleGroup.Key.RoleID })"
+                               class="action-link edit-btn" title="Edit Role">
+                                <img src="~/images/edit.png" alt="Edit Role" style="width:16px; height:16px;" />
                             </a>
 
                             <a href="javascript:void(0)" onclick="DeleteRole(@roleGroup.Key.RoleID)"

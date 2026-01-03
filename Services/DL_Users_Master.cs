@@ -20,7 +20,6 @@ namespace Arihant.Services
             gc = _gc;
         }
 
-
         public ClientSubmissionViewModel GetClientById(int clientId)
         {
             ClientSubmissionViewModel model = new ClientSubmissionViewModel();
@@ -31,16 +30,13 @@ namespace Arihant.Services
                 { "ClientID", new SqlParameter("@ClientID", clientId) }
             };
 
-         
             DataSet ds = gc.ExecuteStoredProcedureGetDataSet("SP_Update_Client", parameters.Values.ToArray());
 
             if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
    
                 DataRow dr = ds.Tables[0].Rows[0];
-
                 model.ClientID = Convert.ToInt32(dr["ClientID"]);
-
                 model.ClientDetails = new ClientDetailModel
                 {
                     ClientName = dr["ClientName"].ToString(),
@@ -129,8 +125,7 @@ namespace Arihant.Services
             {
                 { "Operation", new SqlParameter("@Operation", "Get_Client_Master") }
             };
-
-            
+           
             DataSet ds = gc.ExecuteStoredProcedureGetDataSet("SP_Update_Client", parameters.Values.ToArray());
 
             if (ds != null && ds.Tables.Count > 0)
@@ -235,6 +230,7 @@ namespace Arihant.Services
                 return "Error: " + ex.Message;
             }
         }
+
         public string DeactiveConpany(string ID)
         {
             var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
@@ -251,6 +247,7 @@ namespace Arihant.Services
 
             return finalResult;
         }
+
         public string ActiveAndDeactiveConpany(int ID )
         {
             var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
@@ -301,7 +298,6 @@ namespace Arihant.Services
 
             return finalResult;
         }
-
 
         public List<CompanyProfileModel> GetAllCompanyMasters()
         {
@@ -411,87 +407,87 @@ namespace Arihant.Services
                 var mobiles = model.MobileNumbers ?? new List<string>();
                 var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
                 var parameters = new Dictionary<string, SqlParameter>
-        {
+                {
    
-            { "CompanyName", new SqlParameter("@CompanyName", model.CompanyName ?? (object)DBNull.Value) },
-            { "CEegistration", new SqlParameter("@CEegistration", model.CEegistration ?? (object)DBNull.Value) },
-            { "CERange", new SqlParameter("@CERange", model.CERange ?? (object)DBNull.Value) },
-            { "TINNO", new SqlParameter("@TINNO", model.TINNO ?? (object)DBNull.Value) },
-            { "VATNO", new SqlParameter("@VATNO", model.VATNO ?? (object)DBNull.Value) },
-            { "CSTNO", new SqlParameter("@CSTNO", model.CSTNO ?? (object)DBNull.Value) },
-            { "STNO", new SqlParameter("@STNO", model.STNO ?? (object)DBNull.Value) },
-            { "ECCNO", new SqlParameter("@ECCNO", model.ECCNO ?? (object)DBNull.Value) },
-            { "GSTNo", new SqlParameter("@GSTNo", model.GSTNo ?? (object)DBNull.Value) },
+                    { "CompanyName", new SqlParameter("@CompanyName", model.CompanyName ?? (object)DBNull.Value) },
+                    { "CEegistration", new SqlParameter("@CEegistration", model.CEegistration ?? (object)DBNull.Value) },
+                    { "CERange", new SqlParameter("@CERange", model.CERange ?? (object)DBNull.Value) },
+                    { "TINNO", new SqlParameter("@TINNO", model.TINNO ?? (object)DBNull.Value) },
+                    { "VATNO", new SqlParameter("@VATNO", model.VATNO ?? (object)DBNull.Value) },
+                    { "CSTNO", new SqlParameter("@CSTNO", model.CSTNO ?? (object)DBNull.Value) },
+                    { "STNO", new SqlParameter("@STNO", model.STNO ?? (object)DBNull.Value) },
+                    { "ECCNO", new SqlParameter("@ECCNO", model.ECCNO ?? (object)DBNull.Value) },
+                    { "GSTNo", new SqlParameter("@GSTNo", model.GSTNo ?? (object)DBNull.Value) },
             
           
-            { "Email", new SqlParameter("@Email", model.Email ?? (object)DBNull.Value) },
-            { "AlternateEmail", new SqlParameter("@AlternateEmail", model.AlternateEmail ?? (object)DBNull.Value) },
-            { "ContactPersonName", new SqlParameter("@ContactPersonName", model.ContactPersonName ?? (object)DBNull.Value) },
-            { "OffMobileNO", new SqlParameter("@OffMobileNO", model.OffMobileNO ?? (object)DBNull.Value) },
-            { "WhatsappNo", new SqlParameter("@WhatsappNo", model.WhatsappNo ?? (object)DBNull.Value) },
-            { "Website", new SqlParameter("@Website", model.Website ?? (object)DBNull.Value) },
-            { "Telephone", new SqlParameter("@Telephone", model.Telephone ?? (object)DBNull.Value) },
+                    { "Email", new SqlParameter("@Email", model.Email ?? (object)DBNull.Value) },
+                    { "AlternateEmail", new SqlParameter("@AlternateEmail", model.AlternateEmail ?? (object)DBNull.Value) },
+                    { "ContactPersonName", new SqlParameter("@ContactPersonName", model.ContactPersonName ?? (object)DBNull.Value) },
+                    { "OffMobileNO", new SqlParameter("@OffMobileNO", model.OffMobileNO ?? (object)DBNull.Value) },
+                    { "WhatsappNo", new SqlParameter("@WhatsappNo", model.WhatsappNo ?? (object)DBNull.Value) },
+                    { "Website", new SqlParameter("@Website", model.Website ?? (object)DBNull.Value) },
+                    { "Telephone", new SqlParameter("@Telephone", model.Telephone ?? (object)DBNull.Value) },
 
           
-            { "Mobile1", new SqlParameter("@Mobile1", mobiles.Count > 0 ? mobiles[0] : (object)DBNull.Value) },
-            { "Mobile2", new SqlParameter("@Mobile2", mobiles.Count > 1 ? mobiles[1] : (object)DBNull.Value) },
-            { "Mobile3", new SqlParameter("@Mobile3", mobiles.Count > 2 ? mobiles[2] : (object)DBNull.Value) },
-              { "Mobile4", new SqlParameter("@Mobile4", mobiles.Count > 2 ? mobiles[2] : (object)DBNull.Value) },
-                { "Mobile5", new SqlParameter("@Mobile5", mobiles.Count > 2 ? mobiles[2] : (object)DBNull.Value) },
+                    { "Mobile1", new SqlParameter("@Mobile1", mobiles.Count > 0 ? mobiles[0] : (object)DBNull.Value) },
+                    { "Mobile2", new SqlParameter("@Mobile2", mobiles.Count > 1 ? mobiles[1] : (object)DBNull.Value) },
+                    { "Mobile3", new SqlParameter("@Mobile3", mobiles.Count > 2 ? mobiles[2] : (object)DBNull.Value) },
+                    { "Mobile4", new SqlParameter("@Mobile4", mobiles.Count > 2 ? mobiles[2] : (object)DBNull.Value) },
+                    { "Mobile5", new SqlParameter("@Mobile5", mobiles.Count > 2 ? mobiles[2] : (object)DBNull.Value) },
 
      
-            { "Comp_Addr1", new SqlParameter("@Comp_Addr1", model.CompanyAddr?.AddressLine1 ?? (object)DBNull.Value) },
-            { "Comp_Addr2", new SqlParameter("@Comp_Addr2", model.CompanyAddr?.AddressLine2 ?? (object)DBNull.Value) },
-            { "Comp_Landmark", new SqlParameter("@Comp_Landmark", model.CompanyAddr?.Landmark ?? (object)DBNull.Value) },
-            { "Comp_Pin", new SqlParameter("@Comp_Pin", model.CompanyAddr?.Pincode ?? (object)DBNull.Value) },
-            { "Comp_City", new SqlParameter("@Comp_City", model.CompanyAddr?.City ?? (object)DBNull.Value) },
-            { "Comp_State", new SqlParameter("@Comp_State", model.CompanyAddr?.State ?? (object)DBNull.Value) },
-            { "Comp_Country", new SqlParameter("@Comp_Country", model.CompanyAddr?.Country ?? (object)DBNull.Value) },
+                    { "Comp_Addr1", new SqlParameter("@Comp_Addr1", model.CompanyAddr?.AddressLine1 ?? (object)DBNull.Value) },
+                    { "Comp_Addr2", new SqlParameter("@Comp_Addr2", model.CompanyAddr?.AddressLine2 ?? (object)DBNull.Value) },
+                    { "Comp_Landmark", new SqlParameter("@Comp_Landmark", model.CompanyAddr?.Landmark ?? (object)DBNull.Value) },
+                    { "Comp_Pin", new SqlParameter("@Comp_Pin", model.CompanyAddr?.Pincode ?? (object)DBNull.Value) },
+                    { "Comp_City", new SqlParameter("@Comp_City", model.CompanyAddr?.City ?? (object)DBNull.Value) },
+                    { "Comp_State", new SqlParameter("@Comp_State", model.CompanyAddr?.State ?? (object)DBNull.Value) },
+                    { "Comp_Country", new SqlParameter("@Comp_Country", model.CompanyAddr?.Country ?? (object)DBNull.Value) },
 
-            { "CE_Addr1", new SqlParameter("@CE_Addr1", model.Central_ExciseAddr?.AddressLine1 ?? (object)DBNull.Value) },
-            { "CE_Addr2", new SqlParameter("@CE_Addr2", model.Central_ExciseAddr?.AddressLine2 ?? (object)DBNull.Value) },
-            { "CE_Landmark", new SqlParameter("@CE_Landmark", model.Central_ExciseAddr?.Landmark ?? (object)DBNull.Value) },
-            { "CE_Pin", new SqlParameter("@CE_Pin", model.Central_ExciseAddr?.Pincode ?? (object)DBNull.Value) },
-            { "CE_City", new SqlParameter("@CE_City", model.Central_ExciseAddr?.City ?? (object)DBNull.Value) },
-            { "CE_State", new SqlParameter("@CE_State", model.Central_ExciseAddr?.State ?? (object)DBNull.Value) },
-            { "CE_Country", new SqlParameter("@CE_Country", model.Central_ExciseAddr?.Country ?? (object)DBNull.Value) },
+                    { "CE_Addr1", new SqlParameter("@CE_Addr1", model.Central_ExciseAddr?.AddressLine1 ?? (object)DBNull.Value) },
+                    { "CE_Addr2", new SqlParameter("@CE_Addr2", model.Central_ExciseAddr?.AddressLine2 ?? (object)DBNull.Value) },
+                    { "CE_Landmark", new SqlParameter("@CE_Landmark", model.Central_ExciseAddr?.Landmark ?? (object)DBNull.Value) },
+                    { "CE_Pin", new SqlParameter("@CE_Pin", model.Central_ExciseAddr?.Pincode ?? (object)DBNull.Value) },
+                    { "CE_City", new SqlParameter("@CE_City", model.Central_ExciseAddr?.City ?? (object)DBNull.Value) },
+                    { "CE_State", new SqlParameter("@CE_State", model.Central_ExciseAddr?.State ?? (object)DBNull.Value) },
+                    { "CE_Country", new SqlParameter("@CE_Country", model.Central_ExciseAddr?.Country ?? (object)DBNull.Value) },
 
         
-            { "Div_Addr1", new SqlParameter("@Div_Addr1", model.DivisionAddr?.AddressLine1 ?? (object)DBNull.Value) },
-            { "Div_Addr2", new SqlParameter("@Div_Addr2", model.DivisionAddr?.AddressLine2 ?? (object)DBNull.Value) },
-            { "Div_Landmark", new SqlParameter("@Div_Landmark", model.DivisionAddr?.Landmark ?? (object)DBNull.Value) },
-            { "Div_Pin", new SqlParameter("@Div_Pin", model.DivisionAddr?.Pincode ?? (object)DBNull.Value) },
-            { "Div_City", new SqlParameter("@Div_City", model.DivisionAddr?.City ?? (object)DBNull.Value) },
-            { "Div_State", new SqlParameter("@Div_State", model.DivisionAddr?.State ?? (object)DBNull.Value) },
-            { "Div_Country", new SqlParameter("@Div_Country", model.DivisionAddr?.Country ?? (object)DBNull.Value) },
+                    { "Div_Addr1", new SqlParameter("@Div_Addr1", model.DivisionAddr?.AddressLine1 ?? (object)DBNull.Value) },
+                    { "Div_Addr2", new SqlParameter("@Div_Addr2", model.DivisionAddr?.AddressLine2 ?? (object)DBNull.Value) },
+                    { "Div_Landmark", new SqlParameter("@Div_Landmark", model.DivisionAddr?.Landmark ?? (object)DBNull.Value) },
+                    { "Div_Pin", new SqlParameter("@Div_Pin", model.DivisionAddr?.Pincode ?? (object)DBNull.Value) },
+                    { "Div_City", new SqlParameter("@Div_City", model.DivisionAddr?.City ?? (object)DBNull.Value) },
+                    { "Div_State", new SqlParameter("@Div_State", model.DivisionAddr?.State ?? (object)DBNull.Value) },
+                    { "Div_Country", new SqlParameter("@Div_Country", model.DivisionAddr?.Country ?? (object)DBNull.Value) },
 
          
-            { "Comm_Addr1", new SqlParameter("@Comm_Addr1", model.CommissionerateAddr?.AddressLine1 ?? (object)DBNull.Value) },
-            { "Comm_Addr2", new SqlParameter("@Comm_Addr2", model.CommissionerateAddr?.AddressLine2 ?? (object)DBNull.Value) },
-            { "Comm_Landmark", new SqlParameter("@Comm_Landmark", model.CommissionerateAddr?.Landmark ?? (object)DBNull.Value) },
-            { "Comm_Pin", new SqlParameter("@Comm_Pin", model.CommissionerateAddr?.Pincode ?? (object)DBNull.Value) },
-            { "Comm_City", new SqlParameter("@Comm_City", model.CommissionerateAddr?.City ?? (object)DBNull.Value) },
-            { "Comm_State", new SqlParameter("@Comm_State", model.CommissionerateAddr?.State ?? (object)DBNull.Value) },
-            { "Comm_Country", new SqlParameter("@Comm_Country", model.CommissionerateAddr?.Country ?? (object)DBNull.Value) },
+                    { "Comm_Addr1", new SqlParameter("@Comm_Addr1", model.CommissionerateAddr?.AddressLine1 ?? (object)DBNull.Value) },
+                    { "Comm_Addr2", new SqlParameter("@Comm_Addr2", model.CommissionerateAddr?.AddressLine2 ?? (object)DBNull.Value) },
+                    { "Comm_Landmark", new SqlParameter("@Comm_Landmark", model.CommissionerateAddr?.Landmark ?? (object)DBNull.Value) },
+                    { "Comm_Pin", new SqlParameter("@Comm_Pin", model.CommissionerateAddr?.Pincode ?? (object)DBNull.Value) },
+                    { "Comm_City", new SqlParameter("@Comm_City", model.CommissionerateAddr?.City ?? (object)DBNull.Value) },
+                    { "Comm_State", new SqlParameter("@Comm_State", model.CommissionerateAddr?.State ?? (object)DBNull.Value) },
+                    { "Comm_Country", new SqlParameter("@Comm_Country", model.CommissionerateAddr?.Country ?? (object)DBNull.Value) },
 
             
-            { "BankName", new SqlParameter("@BankName", model.BankName ?? (object)DBNull.Value) },
-            { "AccountNo", new SqlParameter("@AccountNo", model.AccountNo ?? (object)DBNull.Value) },
-            { "AccountHolderName", new SqlParameter("@AccountHolderName", model.AccountHolderName ?? (object)DBNull.Value) },
-            { "AccountType", new SqlParameter("@AccountType", model.AccountType ?? (object)DBNull.Value) },
-            { "IFSCCode", new SqlParameter("@IFSCCode", model.IFSCCode ?? (object)DBNull.Value) },
-            { "BankAddress", new SqlParameter("@BankAddress", model.BankAddressLine1 ?? (object)DBNull.Value) },
-            { "B_Landmark", new SqlParameter("@B_Landmark", model.BankLandmark ?? (object)DBNull.Value) },
-            { "B_PinCode", new SqlParameter("@B_PinCode", model.BankPincode ?? (object)DBNull.Value) },
-            { "B_City", new SqlParameter("@B_City", model.BankCity ?? (object)DBNull.Value) },
-            { "B_State", new SqlParameter("@B_State", model.BankState ?? (object)DBNull.Value) },
-            { "B_Country", new SqlParameter("@B_Country", model.BankCountry ?? (object)DBNull.Value) },
+                    { "BankName", new SqlParameter("@BankName", model.BankName ?? (object)DBNull.Value) },
+                    { "AccountNo", new SqlParameter("@AccountNo", model.AccountNo ?? (object)DBNull.Value) },
+                    { "AccountHolderName", new SqlParameter("@AccountHolderName", model.AccountHolderName ?? (object)DBNull.Value) },
+                    { "AccountType", new SqlParameter("@AccountType", model.AccountType ?? (object)DBNull.Value) },
+                    { "IFSCCode", new SqlParameter("@IFSCCode", model.IFSCCode ?? (object)DBNull.Value) },
+                    { "BankAddress", new SqlParameter("@BankAddress", model.BankAddressLine1 ?? (object)DBNull.Value) },
+                    { "B_Landmark", new SqlParameter("@B_Landmark", model.BankLandmark ?? (object)DBNull.Value) },
+                    { "B_PinCode", new SqlParameter("@B_PinCode", model.BankPincode ?? (object)DBNull.Value) },
+                    { "B_City", new SqlParameter("@B_City", model.BankCity ?? (object)DBNull.Value) },
+                    { "B_State", new SqlParameter("@B_State", model.BankState ?? (object)DBNull.Value) },
+                    { "B_Country", new SqlParameter("@B_Country", model.BankCountry ?? (object)DBNull.Value) },
             
             
-            { "CreatedBy", new SqlParameter("@CreatedBy", CreatedBy) },
+                    { "CreatedBy", new SqlParameter("@CreatedBy", CreatedBy) },
 
-            { "result", outParam }
-        };
+                    { "result", outParam }
+                };
                 var response = gc.ExecuteStoredProcedure("sp_SaveCompanyProfile", parameters);
                
                 string finalResult = response.OutputParameters["@result"]?.ToString();
@@ -504,7 +500,6 @@ namespace Arihant.Services
             }
         }
 
-
         public string UpdateCompanyDetails(string data , string Modifiedby)
         {
             try
@@ -515,85 +510,84 @@ namespace Arihant.Services
                 var mobiles = model.MobileNumbers ?? new List<string>();
                 var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
                 var parameters = new Dictionary<string, SqlParameter>
-        {
-            { "companyID", new SqlParameter("@companyID", model.CompanyID) },
-            { "CompanyName", new SqlParameter("@CompanyName", model.CompanyName ?? (object)DBNull.Value) },
-            { "CEegistration", new SqlParameter("@CEegistration", model.CEegistration ?? (object)DBNull.Value) },
-            { "CERange", new SqlParameter("@CERange", model.CERange ?? (object)DBNull.Value) },
-            { "TINNO", new SqlParameter("@TINNO", model.TINNO ?? (object)DBNull.Value) },
-            { "VATNO", new SqlParameter("@VATNO", model.VATNO ?? (object)DBNull.Value) },
-            { "CSTNO", new SqlParameter("@CSTNO", model.CSTNO ?? (object)DBNull.Value) },
-            { "STNO", new SqlParameter("@STNO", model.STNO ?? (object)DBNull.Value) },
-            { "ECCNO", new SqlParameter("@ECCNO", model.ECCNO ?? (object)DBNull.Value) },
-            { "GSTNo", new SqlParameter("@GSTNo", model.GSTNo ?? (object)DBNull.Value) },
-            { "CompanyemailID", new SqlParameter("@CompanyemailID", model.CompanyemailID ?? (object)DBNull.Value) },
+                {
+                    { "companyID", new SqlParameter("@companyID", model.CompanyID) },
+                    { "CompanyName", new SqlParameter("@CompanyName", model.CompanyName ?? (object)DBNull.Value) },
+                    { "CEegistration", new SqlParameter("@CEegistration", model.CEegistration ?? (object)DBNull.Value) },
+                    { "CERange", new SqlParameter("@CERange", model.CERange ?? (object)DBNull.Value) },
+                    { "TINNO", new SqlParameter("@TINNO", model.TINNO ?? (object)DBNull.Value) },
+                    { "VATNO", new SqlParameter("@VATNO", model.VATNO ?? (object)DBNull.Value) },
+                    { "CSTNO", new SqlParameter("@CSTNO", model.CSTNO ?? (object)DBNull.Value) },
+                    { "STNO", new SqlParameter("@STNO", model.STNO ?? (object)DBNull.Value) },
+                    { "ECCNO", new SqlParameter("@ECCNO", model.ECCNO ?? (object)DBNull.Value) },
+                    { "GSTNo", new SqlParameter("@GSTNo", model.GSTNo ?? (object)DBNull.Value) },
+                    { "CompanyemailID", new SqlParameter("@CompanyemailID", model.CompanyemailID ?? (object)DBNull.Value) },
 
-            // Contact Details
-            { "Email", new SqlParameter("@Email", model.Email ?? (object)DBNull.Value) },
-            { "AlternateEmail", new SqlParameter("@AlternateEmail", model.AlternateEmail ?? (object)DBNull.Value) },
-            { "ContactPersonName", new SqlParameter("@ContactPersonName", model.ContactPersonName ?? (object)DBNull.Value) },
-            { "OffMobileNO", new SqlParameter("@OffMobileNO", model.OffMobileNO ?? (object)DBNull.Value) },
-            { "WhatsappNo", new SqlParameter("@WhatsappNo", model.WhatsappNo ?? (object)DBNull.Value) },
-            { "Website", new SqlParameter("@Website", model.Website ?? (object)DBNull.Value) },
-            { "Telephone", new SqlParameter("@Telephone", model.Telephone ?? (object)DBNull.Value) },
+                  
+                    { "Email", new SqlParameter("@Email", model.Email ?? (object)DBNull.Value) },
+                    { "AlternateEmail", new SqlParameter("@AlternateEmail", model.AlternateEmail ?? (object)DBNull.Value) },
+                    { "ContactPersonName", new SqlParameter("@ContactPersonName", model.ContactPersonName ?? (object)DBNull.Value) },
+                    { "OffMobileNO", new SqlParameter("@OffMobileNO", model.OffMobileNO ?? (object)DBNull.Value) },
+                    { "WhatsappNo", new SqlParameter("@WhatsappNo", model.WhatsappNo ?? (object)DBNull.Value) },
+                    { "Website", new SqlParameter("@Website", model.Website ?? (object)DBNull.Value) },
+                    { "Telephone", new SqlParameter("@Telephone", model.Telephone ?? (object)DBNull.Value) },
 
-            // Mobiles
-            { "Mobile1", new SqlParameter("@Mobile1", mobiles.Count > 0 ? mobiles[0] : (object)DBNull.Value) },
-            { "Mobile2", new SqlParameter("@Mobile2", mobiles.Count > 1 ? mobiles[1] : (object)DBNull.Value) },
-            { "Mobile3", new SqlParameter("@Mobile3", mobiles.Count > 2 ? mobiles[2] : (object)DBNull.Value) },
-            { "Mobile4", new SqlParameter("@Mobile4", mobiles.Count > 3 ? mobiles[3] : (object)DBNull.Value) },
-            { "Mobile5", new SqlParameter("@Mobile5", mobiles.Count > 4 ? mobiles[4] : (object)DBNull.Value) },
+                    { "Mobile1", new SqlParameter("@Mobile1", mobiles.Count > 0 ? mobiles[0] : (object)DBNull.Value) },
+                    { "Mobile2", new SqlParameter("@Mobile2", mobiles.Count > 1 ? mobiles[1] : (object)DBNull.Value) },
+                    { "Mobile3", new SqlParameter("@Mobile3", mobiles.Count > 2 ? mobiles[2] : (object)DBNull.Value) },
+                    { "Mobile4", new SqlParameter("@Mobile4", mobiles.Count > 3 ? mobiles[3] : (object)DBNull.Value) },
+                    { "Mobile5", new SqlParameter("@Mobile5", mobiles.Count > 4 ? mobiles[4] : (object)DBNull.Value) },
 
-            // Addresses
-            { "Comp_Addr1", new SqlParameter("@Comp_Addr1", model.CompanyAddr?.AddressLine1 ?? (object)DBNull.Value) },
-            { "Comp_Addr2", new SqlParameter("@Comp_Addr2", model.CompanyAddr?.AddressLine2 ?? (object)DBNull.Value) },
-            { "Comp_Landmark", new SqlParameter("@Comp_Landmark", model.CompanyAddr?.Landmark ?? (object)DBNull.Value) },
-            { "Comp_Pin", new SqlParameter("@Comp_Pin", model.CompanyAddr?.Pincode ?? (object)DBNull.Value) },
-            { "Comp_City", new SqlParameter("@Comp_City", model.CompanyAddr?.City ?? (object)DBNull.Value) },
-            { "Comp_State", new SqlParameter("@Comp_State", model.CompanyAddr?.State ?? (object)DBNull.Value) },
-             { "Comp_Contry", new SqlParameter("@Comp_Contry", model.CompanyAddr.Country ?? (object)DBNull.Value) },
+              
+                    { "Comp_Addr1", new SqlParameter("@Comp_Addr1", model.CompanyAddr?.AddressLine1 ?? (object)DBNull.Value) },
+                    { "Comp_Addr2", new SqlParameter("@Comp_Addr2", model.CompanyAddr?.AddressLine2 ?? (object)DBNull.Value) },
+                    { "Comp_Landmark", new SqlParameter("@Comp_Landmark", model.CompanyAddr?.Landmark ?? (object)DBNull.Value) },
+                    { "Comp_Pin", new SqlParameter("@Comp_Pin", model.CompanyAddr?.Pincode ?? (object)DBNull.Value) },
+                    { "Comp_City", new SqlParameter("@Comp_City", model.CompanyAddr?.City ?? (object)DBNull.Value) },
+                    { "Comp_State", new SqlParameter("@Comp_State", model.CompanyAddr?.State ?? (object)DBNull.Value) },
+                     { "Comp_Contry", new SqlParameter("@Comp_Contry", model.CompanyAddr.Country ?? (object)DBNull.Value) },
 
-            { "CE_Addr1", new SqlParameter("@CE_Addr1", model.Central_ExciseAddr?.AddressLine1 ?? (object)DBNull.Value) },
-            { "CE_Addr2", new SqlParameter("@CE_Addr2", model.Central_ExciseAddr?.AddressLine2 ?? (object)DBNull.Value) },
-            { "CE_Landmark", new SqlParameter("@CE_Landmark", model.Central_ExciseAddr?.Landmark ?? (object)DBNull.Value) },
-            { "CE_Pin", new SqlParameter("@CE_Pin", model.Central_ExciseAddr?.Pincode ?? (object)DBNull.Value) },
-            { "CE_City", new SqlParameter("@CE_City", model.Central_ExciseAddr?.City ?? (object)DBNull.Value) },
-            { "CE_State", new SqlParameter("@CE_State", model.Central_ExciseAddr?.State ?? (object)DBNull.Value) },
-             { "CE_Contry", new SqlParameter("@CE_Contry", model.Central_ExciseAddr?.Country ?? (object)DBNull.Value) },
+                    { "CE_Addr1", new SqlParameter("@CE_Addr1", model.Central_ExciseAddr?.AddressLine1 ?? (object)DBNull.Value) },
+                    { "CE_Addr2", new SqlParameter("@CE_Addr2", model.Central_ExciseAddr?.AddressLine2 ?? (object)DBNull.Value) },
+                    { "CE_Landmark", new SqlParameter("@CE_Landmark", model.Central_ExciseAddr?.Landmark ?? (object)DBNull.Value) },
+                    { "CE_Pin", new SqlParameter("@CE_Pin", model.Central_ExciseAddr?.Pincode ?? (object)DBNull.Value) },
+                    { "CE_City", new SqlParameter("@CE_City", model.Central_ExciseAddr?.City ?? (object)DBNull.Value) },
+                    { "CE_State", new SqlParameter("@CE_State", model.Central_ExciseAddr?.State ?? (object)DBNull.Value) },
+                     { "CE_Contry", new SqlParameter("@CE_Contry", model.Central_ExciseAddr?.Country ?? (object)DBNull.Value) },
 
-            { "Div_Addr1", new SqlParameter("@Div_Addr1", model.DivisionAddr?.AddressLine1 ?? (object)DBNull.Value) },
-            { "Div_Addr2", new SqlParameter("@Div_Addr2", model.DivisionAddr?.AddressLine2 ?? (object)DBNull.Value) },
-            { "Div_Landmark", new SqlParameter("@Div_Landmark", model.DivisionAddr?.Landmark ?? (object)DBNull.Value) },
-            { "Div_Pin", new SqlParameter("@Div_Pin", model.DivisionAddr?.Pincode ?? (object)DBNull.Value) },
-            { "Div_City", new SqlParameter("@Div_City", model.DivisionAddr?.City ?? (object)DBNull.Value) },
-            { "Div_State", new SqlParameter("@Div_State", model.DivisionAddr?.State ?? (object)DBNull.Value) },
-            { "Div_Contry", new SqlParameter("@Div_Contry", model.DivisionAddr?.Country ?? (object)DBNull.Value) },
+                    { "Div_Addr1", new SqlParameter("@Div_Addr1", model.DivisionAddr?.AddressLine1 ?? (object)DBNull.Value) },
+                    { "Div_Addr2", new SqlParameter("@Div_Addr2", model.DivisionAddr?.AddressLine2 ?? (object)DBNull.Value) },
+                    { "Div_Landmark", new SqlParameter("@Div_Landmark", model.DivisionAddr?.Landmark ?? (object)DBNull.Value) },
+                    { "Div_Pin", new SqlParameter("@Div_Pin", model.DivisionAddr?.Pincode ?? (object)DBNull.Value) },
+                    { "Div_City", new SqlParameter("@Div_City", model.DivisionAddr?.City ?? (object)DBNull.Value) },
+                    { "Div_State", new SqlParameter("@Div_State", model.DivisionAddr?.State ?? (object)DBNull.Value) },
+                    { "Div_Contry", new SqlParameter("@Div_Contry", model.DivisionAddr?.Country ?? (object)DBNull.Value) },
 
-            { "Comm_Addr1", new SqlParameter("@Comm_Addr1", model.CommissionerateAddr?.AddressLine1 ?? (object)DBNull.Value) },
-            { "Comm_Addr2", new SqlParameter("@Comm_Addr2", model.CommissionerateAddr?.AddressLine2 ?? (object)DBNull.Value) },
-            { "Comm_Landmark", new SqlParameter("@Comm_Landmark", model.CommissionerateAddr?.Landmark ?? (object)DBNull.Value) },
-            { "Comm_Pin", new SqlParameter("@Comm_Pin", model.CommissionerateAddr?.Pincode ?? (object)DBNull.Value) },
-            { "Comm_City", new SqlParameter("@Comm_City", model.CommissionerateAddr?.City ?? (object)DBNull.Value) },
-            { "Comm_State", new SqlParameter("@Comm_State", model.CommissionerateAddr?.State ?? (object)DBNull.Value) },
-             { "Comm_Contry", new SqlParameter("@Comm_Contry", model.CommissionerateAddr?.Country ?? (object)DBNull.Value) },
+                    { "Comm_Addr1", new SqlParameter("@Comm_Addr1", model.CommissionerateAddr?.AddressLine1 ?? (object)DBNull.Value) },
+                    { "Comm_Addr2", new SqlParameter("@Comm_Addr2", model.CommissionerateAddr?.AddressLine2 ?? (object)DBNull.Value) },
+                    { "Comm_Landmark", new SqlParameter("@Comm_Landmark", model.CommissionerateAddr?.Landmark ?? (object)DBNull.Value) },
+                    { "Comm_Pin", new SqlParameter("@Comm_Pin", model.CommissionerateAddr?.Pincode ?? (object)DBNull.Value) },
+                    { "Comm_City", new SqlParameter("@Comm_City", model.CommissionerateAddr?.City ?? (object)DBNull.Value) },
+                    { "Comm_State", new SqlParameter("@Comm_State", model.CommissionerateAddr?.State ?? (object)DBNull.Value) },
+                     { "Comm_Contry", new SqlParameter("@Comm_Contry", model.CommissionerateAddr?.Country ?? (object)DBNull.Value) },
 
-            // Bank
-            { "BankName", new SqlParameter("@BankName", model.BankName ?? (object)DBNull.Value) },
-            { "AccountNo", new SqlParameter("@AccountNo", model.AccountNo ?? (object)DBNull.Value) },
-            { "AccountType", new SqlParameter("@AccountType", model.AccountType ?? (object)DBNull.Value) },
-            { "AccountHolderName", new SqlParameter("@AccountHolderName", model.AccountHolderName ?? (object)DBNull.Value) },
-            { "IFSCCode", new SqlParameter("@IFSCCode", model.IFSCCode ?? (object)DBNull.Value) },
-            { "BankAddress", new SqlParameter("@BankAddress", model.BankAddressLine1 ?? (object)DBNull.Value) },
-            { "BankAddress2", new SqlParameter("@BankAddress2", model.BankAddressLine2 ?? (object)DBNull.Value) },
-            { "B_Landmark", new SqlParameter("@B_Landmark", model.BankLandmark ?? (object)DBNull.Value) },
-            { "B_PinCode", new SqlParameter("@B_PinCode", model.BankPincode ?? (object)DBNull.Value) },
-            { "B_City", new SqlParameter("@B_City", model.BankCity ?? (object)DBNull.Value) },
-            { "B_State", new SqlParameter("@B_State", model.BankState ?? (object)DBNull.Value) },
-            { "B_Contry", new SqlParameter("@B_Contry", model.BankCountry ?? (object)DBNull.Value) },
-             { "ModifiedBy", new SqlParameter("@ModifiedBy", Modifiedby ?? (object)DBNull.Value) },
+                   
+                    { "BankName", new SqlParameter("@BankName", model.BankName ?? (object)DBNull.Value) },
+                    { "AccountNo", new SqlParameter("@AccountNo", model.AccountNo ?? (object)DBNull.Value) },
+                    { "AccountType", new SqlParameter("@AccountType", model.AccountType ?? (object)DBNull.Value) },
+                    { "AccountHolderName", new SqlParameter("@AccountHolderName", model.AccountHolderName ?? (object)DBNull.Value) },
+                    { "IFSCCode", new SqlParameter("@IFSCCode", model.IFSCCode ?? (object)DBNull.Value) },
+                    { "BankAddress", new SqlParameter("@BankAddress", model.BankAddressLine1 ?? (object)DBNull.Value) },
+                    { "BankAddress2", new SqlParameter("@BankAddress2", model.BankAddressLine2 ?? (object)DBNull.Value) },
+                    { "B_Landmark", new SqlParameter("@B_Landmark", model.BankLandmark ?? (object)DBNull.Value) },
+                    { "B_PinCode", new SqlParameter("@B_PinCode", model.BankPincode ?? (object)DBNull.Value) },
+                    { "B_City", new SqlParameter("@B_City", model.BankCity ?? (object)DBNull.Value) },
+                    { "B_State", new SqlParameter("@B_State", model.BankState ?? (object)DBNull.Value) },
+                    { "B_Contry", new SqlParameter("@B_Contry", model.BankCountry ?? (object)DBNull.Value) },
+                     { "ModifiedBy", new SqlParameter("@ModifiedBy", Modifiedby ?? (object)DBNull.Value) },
 
-            { "result", outParam }
-        };
+                    { "result", outParam }
+                };
                 var response = gc.ExecuteStoredProcedure("sp_Update_CompanyProfile", parameters);
 
                 string finalResult = response.OutputParameters["@result"]?.ToString();
@@ -606,7 +600,6 @@ namespace Arihant.Services
             }
         }
 
-
         public DataSet GetC_MasterCityList(string ID)
         {
               var parameters = new Dictionary<string, SqlParameter>
@@ -618,6 +611,7 @@ namespace Arihant.Services
             DataSet ds = gc.ExecuteStoredProcedureGetDataSet("sp_Get_C_Master", parameters.Values.ToArray());
             return ds;
         }
+
         public DataSet GetC_MasterStateList(string ID)
         {
             var parameters = new Dictionary<string, SqlParameter>
@@ -629,7 +623,6 @@ namespace Arihant.Services
             DataSet ds = gc.ExecuteStoredProcedureGetDataSet("sp_Get_C_Master", parameters.Values.ToArray());
             return ds;
         }
-
 
         public List<C_Master> GetC_MasterList()
         {
@@ -657,7 +650,6 @@ namespace Arihant.Services
                 }
             return list;
         }
-
 
         public List<C_Master> GetOwnerList()
         {
@@ -766,7 +758,6 @@ namespace Arihant.Services
             return rightsList;
         }
 
-
         public List<DTO_MenuRight> ManageRights()
         {
             List<DTO_MenuRight> rightsList = new List<DTO_MenuRight>();
@@ -801,24 +792,60 @@ namespace Arihant.Services
             return rightsList;
         }
 
-        public string AddIPAddress(IP_Master_Model model, string ModifiedBy)
+        public string UpdateLocation(IP_Master_Model model, string ModifiedBy)
         {
             try
             {
-                var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
-                var parameters = new Dictionary<string, SqlParameter>
+                var locOutParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
+                var locParams = new Dictionary<string, SqlParameter>
                 {
-                    { "ID", new SqlParameter("@ID", model.ID) },
-                    { "IP_Name", new SqlParameter("@IP_Name", model.IP_Name) },
-                    { "IPAdd", new SqlParameter("@IPAdd", model.IPAdd) },
+                    { "LocationID", new SqlParameter("@LocationID", model.ID) },
+                    { "LocationName", new SqlParameter("@LocationName", model.Location) },
                     { "ModifiedBy", new SqlParameter("@ModifiedBy", ModifiedBy) },
-                    { "Operation", new SqlParameter("@Operation", "ADD_IP_ADD") },
-                    { "result", outParam }
+                    { "Operation", new SqlParameter("@Operation", "Update_LOCATION") },
+                    { "result", locOutParam }
                 };
 
-                var response = gc.ExecuteStoredProcedure("sp_IP_Master", parameters);
-                string result = response.OutputParameters["@result"]?.ToString();
-                return result;
+                var locResponse = gc.ExecuteStoredProcedure("sp_IP_Master", locParams);
+                string locationID = locResponse.OutputParameters["@result"]?.ToString();
+                 if (locationID=="DUPLICATE")
+                {
+                    return "0";
+
+                }
+
+
+                if (!int.TryParse(locationID, out int currentLocID))
+                {
+                    return "Location Error: " + locationID;
+                }
+
+                string activeIPs = string.Join(",", model.IPList.Select(x => x.IPAdd));
+                var delParams = new Dictionary<string, SqlParameter>
+                    {
+                        { "LocationID", new SqlParameter("@LocationID", currentLocID) },
+                        { "IPAdd", new SqlParameter("@IPAdd", activeIPs) },
+                        { "Operation", new SqlParameter("@Operation", "DELETE_REMOVED_IPS") }
+                    };
+                gc.ExecuteStoredProcedure("sp_IP_Master", delParams);
+
+                foreach (var item in model.IPList)
+                {
+                    var ipOutParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
+                    var ipParams = new Dictionary<string, SqlParameter>
+                    {
+                        { "LocationID", new SqlParameter("@LocationID", currentLocID) },
+                        { "IPAdd", new SqlParameter("@IPAdd", item.IPAdd) },
+                        { "IP_Name", new SqlParameter("@IP_Name", item.IP_Name) },
+                        { "ModifiedBy", new SqlParameter("@ModifiedBy", ModifiedBy) },
+                        { "Operation", new SqlParameter("@Operation", "UPSERT_IP") },
+                        { "result", ipOutParam }
+                    };
+
+                    var ipResponse = gc.ExecuteStoredProcedure("sp_IP_Master", ipParams);
+                }
+
+                return "1";
             }
             catch (Exception ex)
             {
@@ -826,18 +853,75 @@ namespace Arihant.Services
             }
         }
 
-        public string UpdateIPAddress(IP_Master_Model model, string ModifiedBy)
+        public string AddIPAddress(IP_Master_Model model, string ModifiedBy)
+        {
+            try
+            {
+            
+                var locOutParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
+                var locParams = new Dictionary<string, SqlParameter>
+                {
+                    { "LocationName", new SqlParameter("@LocationName", model.Location) },
+                    { "ModifiedBy", new SqlParameter("@ModifiedBy", ModifiedBy) },
+                    { "Operation", new SqlParameter("@Operation", "ADD_LOCATION") },
+                    { "result", locOutParam }
+                };
+
+                var locResponse = gc.ExecuteStoredProcedure("sp_IP_Master", locParams);
+                string locationID = locResponse.OutputParameters["@result"]?.ToString();
+
+                if(locationID == "DUPLICATE")
+                {
+                    return "0";
+                }
+
+                if (!int.TryParse(locationID, out int newLocID))
+                {
+                    return "Location Error: " + locationID;
+                }
+
+                foreach (var item in model.IPList)
+                {
+                    var ipOutParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
+                    var ipParams = new Dictionary<string, SqlParameter>
+                    {
+                        { "LocationID", new SqlParameter("@LocationID", newLocID) },
+                        { "IPAdd", new SqlParameter("@IPAdd", item.IPAdd) },
+                        { "IP_Name", new SqlParameter("@IP_Name", item.IP_Name) },
+                        { "ModifiedBy", new SqlParameter("@ModifiedBy", ModifiedBy) },
+                        { "Operation", new SqlParameter("@Operation", "ADD_IP_ADD") },
+                        { "result", ipOutParam }
+                    };
+
+                    var ipResponse = gc.ExecuteStoredProcedure("sp_IP_Master", ipParams);
+                    string ipResult = ipResponse.OutputParameters["@result"]?.ToString();
+
+                    if (ipResult != "1")
+                    {
+                        return "0";
+                    }
+                }
+
+                return "1"; 
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        public string UpdateIPAddress(IPRowADd model, string ModifiedBy)
         {
             try
             {
                 var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
                 var parameters = new Dictionary<string, SqlParameter>
                 {
-                    { "ID", new SqlParameter("@ID", model.ID) },
+                  { "@LocationID", new SqlParameter("@LocationID", Convert.ToInt32( model.LocationID)) },
                     { "IP_Name", new SqlParameter("@IP_Name", model.IP_Name) },
                     { "IPAdd", new SqlParameter("@IPAdd", model.IPAdd) },
                     { "ModifiedBy", new SqlParameter("@ModifiedBy", ModifiedBy) },
-                    { "Operation", new SqlParameter("@Operation", "Update_IP_ADD") },
+                    { "Operation", new SqlParameter("@Operation", "Add_New_IP") },
                     { "result", outParam }
                 };
 
@@ -873,7 +957,6 @@ namespace Arihant.Services
             }
         }
 
-
         public string ActiveUser(string UserID)
         {
             try
@@ -895,7 +978,6 @@ namespace Arihant.Services
                 return ex.Message;
             }
         }
-
 
         public string DeactiveRole(string RoleID)
         {
@@ -920,15 +1002,14 @@ namespace Arihant.Services
         }
 
 
-
-        public string DeleteIP_ADD(string UserID)
+        public string DeleteIP_ADD(string LocationID)
         {
             try
             {
                 var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
                 var parameters = new Dictionary<string, SqlParameter>
                 {
-                    { "ID", new SqlParameter("@ID", UserID) },
+                    { "ID", new SqlParameter("@LocationID", Convert.ToInt32( LocationID)) },
                     { "Operation", new SqlParameter("@Operation", "Delete_IP") },
                     { "result", outParam }
                 };
@@ -944,15 +1025,82 @@ namespace Arihant.Services
         }
 
 
-
-        public List<IP_Master_Model> GetIPMasterList()
+        public string DeactivateLocation(string LocationID)
         {
-            List<IP_Master_Model> ipList = new List<IP_Master_Model>();
+            try
+            {
+                var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
+                var parameters = new Dictionary<string, SqlParameter>
+                {
+                    { "ID", new SqlParameter("@LocationID", Convert.ToInt32( LocationID)) },
+                    { "Operation", new SqlParameter("@Operation", "TOGGLE_LOCATION_STATUS") },
+                    { "result", outParam }
+                };
+
+                var response = gc.ExecuteStoredProcedure("sp_IP_Master", parameters);
+                string result = response.OutputParameters["@result"]?.ToString();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        public LocationDetailsDTO GetLocationDetails(int locationId)
+        {
+            var details = new LocationDetailsDTO();
+
+            try
+            {
+               
+                var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
+                var parameters = new Dictionary<string, SqlParameter>
+                {
+                    { "LocationID", new SqlParameter("@LocationID", locationId) },
+                    { "Operation", new SqlParameter("@Operation", "Get_IP_MasterUserList") },
+                    { "result", outParam }
+                };
+
+          
+                DataSet response = gc.ExecuteStoredProcedureGetDataSet("sp_IP_Master", parameters.Values.ToArray());
+
+                if (response.Tables.Count > 0)
+                {
+                    details.IPs = response.Tables[0].AsEnumerable().Select(r => new IPAddressDTO
+                    {
+                        IPAddrID = Convert.ToInt32(r["IPAddrID"]),
+                        IPAddress = r["IPAddress"].ToString(),
+                        IP_Name = r["IP_Name"].ToString()
+                    }).ToList();
+                }
+
+                if (response.Tables.Count > 1)
+                {
+                    details.Users = response.Tables[1].AsEnumerable().Select(r => new UserDTO
+                    {
+                        UserID = r["UserID"].ToString()
+                    }).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+             
+                throw new Exception("Error fetching location details from SP", ex);
+            }
+
+            return details;
+        }
+
+        public List<IP_Master_Display> GetIPMasterList()
+        {
+            List<IP_Master_Display> ipList = new List<IP_Master_Display>();
             try
             {
                 var parameters = new Dictionary<string, SqlParameter>
                     {
                         { "Operation", new SqlParameter("@Operation", "Get_IP_Master") }
+
 
                     };
 
@@ -962,11 +1110,13 @@ namespace Arihant.Services
                 {
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
-                        ipList.Add(new IP_Master_Model
+                        ipList.Add(new IP_Master_Display
                         {
-                            ID = dr["IPAddrID"].ToString(),
-                            IPAdd = dr["IPAddress"].ToString(),
-                            IP_Name = dr["IP_Name"].ToString()
+                            LocationID = dr["LocationID"].ToString(),
+                            LocationName = dr["LocationName"].ToString(),
+                            TotalIPCount = dr["TotalIPCount"].ToString(),
+                            TotalUserCount = dr["TotalUserCount"].ToString(),
+                            IsActive = dr["IsActive"].ToString()
                         });
                     }
                 }
@@ -978,14 +1128,52 @@ namespace Arihant.Services
             return ipList;
         }
 
-        public List<IPViewModel> GetIPList()
+
+        public List<IP_Users> GetIPMasterUserList(int id)
         {
-            List<IPViewModel> ipList = new List<IPViewModel>();
+            List<IP_Users> ipList = new List<IP_Users>();
             try
             {
                 var parameters = new Dictionary<string, SqlParameter>
                     {
-                        { "Operation", new SqlParameter("@Operation", "Get_IP_List") }
+                        { "Operation", new SqlParameter("@Operation", "Get_IP_MasterUserListIPAssigned") }
+                      , { "@LocationID", new SqlParameter("@LocationID",id) }
+
+
+                    };
+
+                DataSet ds = gc.ExecuteStoredProcedureGetDataSet("sp_IP_Master", parameters.Values.ToArray());
+
+                if (ds != null && ds.Tables.Count > 0)
+                {
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        ipList.Add(new IP_Users
+                        {
+                            UserName = dr["UserName"].ToString(),
+                            EmailID = dr["EmailID"].ToString(),
+                            MobileNO = dr["MobileNO"].ToString()
+                          
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return ipList;
+        }
+
+
+        public List<LocationList> GetLocationList()
+        {
+            List<LocationList> ipList = new List<LocationList>();
+            try
+            {
+                var parameters = new Dictionary<string, SqlParameter>
+                    {
+                        { "Operation", new SqlParameter("@Operation", "Get_Location_List") }
 
                     };
 
@@ -995,10 +1183,10 @@ namespace Arihant.Services
                 {
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
-                        ipList.Add(new IPViewModel
+                        ipList.Add(new LocationList
                         {
-                            IPAddrID = dr["IPAddrID"].ToString(),
-                            IPAddress = dr["IPAddress"].ToString()
+                            LocationID = dr["LocationID"].ToString(),
+                            LocationName = dr["LocationName"].ToString()
                         });
                     }
                 }
@@ -1009,6 +1197,40 @@ namespace Arihant.Services
             }
             return ipList;
         }
+
+        public List<RoleList> GetRoleList()
+        {
+            List<RoleList> ipList = new List<RoleList>();
+            try
+            {
+                var parameters = new Dictionary<string, SqlParameter>
+                    {
+                        { "Operation", new SqlParameter("@Operation", "Get_Role_List") }
+
+                    };
+
+                DataSet ds = gc.ExecuteStoredProcedureGetDataSet("sp_User_Master", parameters.Values.ToArray());
+
+                if (ds != null && ds.Tables.Count > 0)
+                {
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        ipList.Add(new RoleList
+                        {
+                            RoleID = dr["RoleID"].ToString(),
+                            RoleName = dr["RoleName"].ToString()
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return ipList;
+        }
+
+
         public List<IPViewModel_withIPS> GetAllUsers()
         {
             List<IPViewModel_withIPS> users = new List<IPViewModel_withIPS>();
@@ -1064,9 +1286,11 @@ namespace Arihant.Services
                     };
 
                 var response = gc.ExecuteStoredProcedure("sp_User_Master", parameters);
-                foreach (var ipid in user.IPAddrID)
+                if (user.IPAddrID != null && user.IPAddrID.Count > 0)
                 {
-                            var ipParams = new Dictionary<string, SqlParameter>
+                    foreach (var ipid in user.IPAddrID)
+                    {
+                        var ipParams = new Dictionary<string, SqlParameter>
                             {
                                 { "UserID", new SqlParameter("@UserID", user.UserID) },
                                 { "IPID", new SqlParameter("@IPID", ipid) },
@@ -1074,9 +1298,23 @@ namespace Arihant.Services
                                 { "CreatedBy", new SqlParameter("@CreatedBy", CreatedBy) },
                                 { "result", new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output } }
                             };
-                            gc.ExecuteStoredProcedure("sp_User_Master", ipParams);
+                        gc.ExecuteStoredProcedure("sp_User_Master", ipParams);
+                    }
                 }
-                return "1";
+                else
+                {
+                         var ipParams2 = new Dictionary<string, SqlParameter>
+                            {
+                                { "UserID", new SqlParameter("@UserID", user.UserID) },
+                                
+                                { "Operation", new SqlParameter("@Operation", "Remove_Assign_IP") },
+                                { "CreatedBy", new SqlParameter("@CreatedBy", CreatedBy) },
+                                { "result", new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output } }
+                            };
+                    gc.ExecuteStoredProcedure("sp_User_Master", ipParams2);
+
+                }
+                    return "1";
 
             }
             catch (Exception ex)
