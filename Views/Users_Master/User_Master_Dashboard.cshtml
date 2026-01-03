@@ -81,6 +81,14 @@
     .form-row-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
+        gap: 45px;
+        padding: 25px;
+    }
+
+
+    .form-row-gridNEW {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
         gap: 25px;
         padding: 25px;
     }
@@ -191,9 +199,7 @@
     }
 
     #locationWrapper, .access-policy-row {
-        background-color: #f3f4f6;
-        border-top: 1px solid #e5e7eb;
-        border-bottom: 1px solid #e5e7eb;
+   
     }
 </style>
 
@@ -207,12 +213,19 @@
         <form id="userForm">
             <input type="hidden" id="UserID_Hidden" />
 
-            <div class="form-row-grid">
+            <div class="form-row-gridNEW">
                 <div class="form-group">
                     <label>User Name</label>
                     <input type="text" id="UserName" name="UserName" placeholder="Full Name">
                     <span class="error-msg" id="err_UserName">User Name is required</span>
                 </div>
+
+                <div class="form-group">
+                    <label>User ID</label>
+                    <input type="text" id="UserName" name="UserName" placeholder="Full Name">
+                    <span class="error-msg" id="err_UserName">User Name is required</span>
+                </div>
+
                 <div class="form-group">
                     <label>Contact Number</label>
                     <input type="text" id="ContactNo" name="ContactNo" placeholder="10 Digit Mobile">
@@ -223,9 +236,7 @@
                     <input type="text" id="EmailID" name="EmailID" placeholder="email@domain.com">
                     <span class="error-msg" id="err_EmailID">Valid Email required</span>
                 </div>
-            </div>
 
-            <div class="form-row-grid" style="background: #fcfcfc; border-top: 1px solid #eee; border-bottom: 1px solid #eee;">
                 <div class="form-group">
                     <label>Password Expiry Date</label>
                     <input type="date" id="ExpiryDate" name="ExpiryDate">
@@ -242,6 +253,11 @@
                         }
                     </select>
                 </div>
+
+            </div>
+
+            <div class="form-row-gridNEW" >
+              
                 <div class="form-group">
                     <label>Network Access</label>
                     <div style="padding-top: 8px; display: flex; gap: 10px;">
@@ -249,29 +265,31 @@
                         <label style="font-weight:normal;"><input type="radio" name="AccessType" value="Office" id="radioOffice"> Office Based</label>
                     </div>
                 </div>
-            </div>
-
-            <div id="locationWrapper" style="display: none; padding: 15px 20px; background: #eef4ff;">
-                <div class="form-group">
-                    <label>Select Allowed Locations (IP Restriction)</label>
-                    <select id="LocationID" name="LocationID" multiple="multiple">
-                        @if (ViewBag.LocationList != null)
-                        {
-                            foreach (var loc in ViewBag.LocationList)
+                <div id="locationWrapper" style="display: none; padding: 15px 20px; ">
+                    <div class="form-group">
+                        <label>Select  Locations </label>
+                        <select id="LocationID" name="LocationID" multiple="multiple">
+                            @if (ViewBag.LocationList != null)
                             {
-                                <option value="@loc.LocationID">@loc.LocationName</option>
+                                foreach (var loc in ViewBag.LocationList)
+                                {
+                                    <option value="@loc.LocationID">@loc.LocationName</option>
+                                }
                             }
-                        }
-                    </select>
+                        </select>
+                    </div>
                 </div>
             </div>
+
+           
 
             <div id="passwordGroup" class="form-row-grid">
                 <div class="form-group">
-                    <label>Password</label>
+                    <label>           Password</label>
                     <input type="password" id="Password" name="Password">
                     <span class="error-msg" id="err_Password">Password required</span>
                 </div>
+                
                 <div class="form-group">
                     <label>Confirm Password</label>
                     <input type="password" id="ConfirmPassword" name="ConfirmPassword">
