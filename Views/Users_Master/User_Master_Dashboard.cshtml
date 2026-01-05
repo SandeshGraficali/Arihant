@@ -201,6 +201,13 @@
     #locationWrapper, .access-policy-row {
    
     }
+
+    #UserList th, 
+    #UserList td {
+        text-align: center;
+        vertical-align: middle; /* Keeps content centered vertically too */
+    }
+
 </style>
 
 <div id="userModal" class="custom-modal-overlay">
@@ -217,23 +224,27 @@
                 <div class="form-group">
                     <label>User Name</label>
                     <input type="text" id="UserName" name="UserName" placeholder="Full Name">
+                    <br />
                     <span class="error-msg" id="err_UserName">User Name is required</span>
                 </div>
 
                 <div class="form-group">
-                    <label>User ID</label>
+                    <label>User ID &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
                     <input type="text" id="UserName" name="UserName" placeholder="Full Name">
+                    <br />
                     <span class="error-msg" id="err_UserName">User Name is required</span>
                 </div>
 
                 <div class="form-group">
                     <label>Contact Number</label>
-                    <input type="text" id="ContactNo" name="ContactNo" placeholder="10 Digit Mobile">
+                    <input type="number" id="ContactNo" name="ContactNo" placeholder="10 Digit Mobile">
+                    <br />
                     <span class="error-msg" id="err_ContactNo">Invalid Number</span>
                 </div>
                 <div class="form-group">
                     <label>Email ID / Login ID</label>
                     <input type="text" id="EmailID" name="EmailID" placeholder="email@domain.com">
+                    <br />
                     <span class="error-msg" id="err_EmailID">Valid Email required</span>
                 </div>
 
@@ -287,12 +298,15 @@
                 <div class="form-group">
                     <label>           Password</label>
                     <input type="password" id="Password" name="Password">
+                    <br />
                     <span class="error-msg" id="err_Password">Password required</span>
                 </div>
                 
                 <div class="form-group">
                     <label>Confirm Password</label>
                     <input type="password" id="ConfirmPassword" name="ConfirmPassword">
+                    <br />
+
                     <span class="error-msg" id="err_ConfirmPassword">Mismatch</span>
                    
                 </div>
@@ -330,17 +344,20 @@
     <h2 class="text-center">User Master List</h2>
     <hr />
 
-    <table id="UserList" class="TableStyle1" style="width:100%">
+    <table id="UserList" class="TableStyle1 text-center" style="width:100%">
         <thead>
             <tr>
                 <th>#</th>
                 <th>User Name</th>
-                <th>User ID</th>
                 <th>Contact No</th>
                 <th>Email ID</th>
-                <th>Assigned IP</th>
+                <th>Access Type</th>
+                <th>Role</th>
+                <th>Location</th>
+                <th>Reset Password</th>
+                <th>Active</th>
                 <th>Actions</th>
-                <th>Status</th>
+             
             </tr>
         </thead>
         <tbody>
@@ -352,22 +369,29 @@
                     <tr>
                         <td class="text-center">@(i++)</td>
                         <td>@user.UserName</td>
-                        <td>@user.UserID</td>
                         <td>@user.ContactNo</td>
                         <td>@user.EmailID</td>
-                        <td>@user.AssignedIP</td>
+                        <td>@user.AccessType</td>
+                        <td>@user.AssignedRoles</td>
+                        <td>@user.AssignedLocations</td>
                         <td class="text-center">
-                            <button class="btn-icon" title="Edit" onclick="EditUser('@user.UserID', '@user.UserName', '@user.ContactNo', '@user.EmailID', '@user.AssignedIPs')">
-                                <img src="~/images/edit.png" width="18" />
-                            </button>
-                            <button class="btn-icon" title="Delete" onclick="DeleteUser('@user.UserID')">
+                            <button class="btn-icon" title="Delete" onclick="ResetUserPassword('@user.ID')">
                                 <img src="~/images/delete.png" width="18" />
                             </button>
                         </td>
                         <td class="text-center">
                             <img src="~/images/@(user.IsActive == "1" ? "4-active.png" : "4-inactive.png")"
-                                 style="cursor:pointer" onclick="ActiveUser('@user.UserID')" />
+                                 style="cursor:pointer" onclick="ActiveUser('@user.ID')" />
                         </td>
+                        <td class="text-center">
+                            <button class="btn-icon" title="Edit" onclick="EditUser('@user.ID')">
+                                <img src="~/images/edit.png" width="18" />
+                            </button>
+                            <button class="btn-icon" title="Delete" onclick="DeleteUser('@user.ID')">
+                                <img src="~/images/delete.png" width="18" />
+                            </button>
+                        </td>
+                      
                     </tr>
                 }
             }
@@ -382,14 +406,14 @@
 
 <script>
     $(document).ready(function () {
-        // 1. Initialize Plugins
+        
         $('#UserList').DataTable({ responsive: true });
 
-        // Use global variables for SumoSelect instances to reload them easily
+       
         $('#RoleID').SumoSelect({ search: true, selectAll: true, placeholder: 'Select Roles' });
         $('#LocationID').SumoSelect({ search: true, selectAll: true, placeholder: 'Select Locations' });
 
-        // 2. Conditional Toggles
+     
         $('input[name="AccessType"]').on('change', function() {
             if ($('#radioOffice').is(':checked')) {
                 $('#locationWrapper').slideDown();
@@ -407,7 +431,7 @@
             }
         });
 
-        // 3. Modal Controls
+    
         $('#btnOpenModal').on('click', function() {
             $('#userForm')[0].reset();
             $('#UserID_Hidden').val('');
@@ -427,7 +451,7 @@
             $('#userModal').fadeOut();
         });
 
-        // 4. Save/Update Execution
+   
         $('#btnSaveUser').on('click', function() {
             if (ValidateForm()) {
                 const isUpdate = $('#UserID_Hidden').val() !== "";
@@ -436,46 +460,149 @@
         });
     });
 
-    // --- Validation Logic ---
-    function ValidateForm() {
-        let isValid = true;
-        $('.error-msg').hide();
-        $('input').removeClass('error');
+ function ValidateForm() {
+    let isValid = true;
+    
+    $(".error-msg").hide();
+    $(".form-control, input, select").removeClass("is-invalid");
 
-        if ($('#UserName').val().trim() === "") { $('#err_UserName').show(); $('#UserName').addClass('error'); isValid = false; }
-        if ($('#ContactNo').val().length !== 10) { $('#err_ContactNo').show(); $('#ContactNo').addClass('error'); isValid = false; }
-
-        const emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
-        if (!emailRegex.test($('#EmailID').val())) { $('#err_EmailID').show(); $('#EmailID').addClass('error'); isValid = false; }
-
-        if ($('#passwordGroup').is(':visible')) {
-            if ($('#Password').val().length < 6) { $('#err_Password').show(); $('#Password').addClass('error'); isValid = false; }
-            if ($('#Password').val() !== $('#ConfirmPassword').val()) { $('#err_ConfirmPassword').show(); $('#ConfirmPassword').addClass('error'); isValid = false; }
-        }
-        return isValid;
+ 
+    const userName = $("#UserName").val().trim();
+    if (userName === "") {
+        $("#err_UserName").text("User Name is required").show();
+        $("#UserName").addClass("is-invalid");
+        isValid = false;
     }
 
-    // --- AJAX Functions ---
-    function AddUserData() {
-        // Collect Menu IDs from partial view if checked
-        let menuIds = [];
-        if($('#chkDirectAccess').is(':checked')){
-             $('#rightsWrapper input[type="checkbox"]:checked').each(function() { menuIds.push($(this).val()); });
+
+    const contactNo = $("#ContactNo").val().trim();
+    const intRegex = /^\d+$/;
+    if (contactNo !== "" && (!intRegex.test(contactNo) || contactNo.length < 10)) {
+        $("#err_ContactNo").text("Please enter a valid 10-digit numeric contact number").show();
+        $("#ContactNo").addClass("is-invalid");
+        isValid = false;
+    }
+
+
+    const emailID = $("#EmailID").val().trim();
+    const emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+    if (emailID === "" || !emailRegex.test(emailID)) {
+        $("#err_EmailID").text("A valid email address is required").show();
+        $("#EmailID").addClass("is-invalid");
+        isValid = false;
+    }
+
+
+      const expiryDateVal = $("#ExpiryDate").val();
+
+    if (!expiryDateVal) {
+        
+        alert("Please select a Password Expiry Date.");
+        $("#ExpiryDate").addClass("is-invalid");
+        isValid = false;
+    } else {
+     
+        const selectedDate = new Date(expiryDateVal);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (selectedDate < today) {
+            alert("Password Expiry Date cannot be in the past.");
+            $("#ExpiryDate").addClass("is-invalid");
+            isValid = false;
+        }
+    }
+
+    const selectedRoles = $("#RoleID").val();
+    if (!selectedRoles || selectedRoles.length === 0) {
+        alert("Please assign at least one Role.");
+        isValid = false;
+    }
+
+
+    const accessType = $("input[name='AccessType']:checked").val();
+    if (accessType === "Office") {
+        const selectedLocations = $("#LocationID").val();
+        if (!selectedLocations || selectedLocations.length === 0) {
+            alert("Please select at least one Location for Office-based access.");
+            isValid = false;
+        }
+    }
+
+
+    const isDirectAccess = $("#chkDirectAccess").is(':checked');
+    if (isDirectAccess) {
+        const selectedMenus = $("input[name='selectedMenus']:checked").length;
+        if (selectedMenus === 0) {
+            alert("You have enabled Direct Access. Please select at least one menu right.");
+            isValid = false;
+        }
+    }
+
+
+       const password = $("#Password").val();
+        const confirmPassword = $("#ConfirmPassword").val();
+
+        const alphanumericRegex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
+
+ 
+        if (password === "") {
+            $("#err_Password").text("Password is required").show();
+            $("#Password").addClass("is-invalid");
+            isValid = false;
+        }
+        else if (!alphanumericRegex.test(password)) {
+            $("#err_Password").text("Password must be alphanumeric (contain letters and numbers)").show();
+            $("#Password").addClass("is-invalid");
+            isValid = false;
         }
 
-        const data = {
-            UserName: $('#UserName').val(),
-            EmailID: $('#EmailID').val(),
-            ContactNo: $('#ContactNo').val(),
-            Password: $('#Password').val(),
-            ExpiryDate: $('#ExpiryDate').val(),
-            Roles: $('#RoleID').val(),
-            Locations: $('#LocationID').val(),
-            MenuIDs: menuIds
-        };
+      
+        if (confirmPassword === "") {
+            $("#err_ConfirmPassword").text("Please confirm your password").show();
+            $("#ConfirmPassword").addClass("is-invalid");
+            isValid = false;
+        }
+        else if (password !== confirmPassword) {
+            $("#err_ConfirmPassword").text("Passwords do not match").show();
+            $("#ConfirmPassword").addClass("is-invalid");
+            isValid = false;
+        }
+
+    return isValid;
+}
+
+
+    function AddUserData() {
+
+               var data = {
+                UserID: $("#UserID_Hidden").val(),
+                UserName: $("#UserName").val(),
+                ContactNo: $("#ContactNo").val(),
+                EmailID: $("#EmailID").val(),
+                ExpiryDate: $("#ExpiryDate").val(),
+                Password: $("#Password").val(),
+                AccessType: $("input[name='AccessType']:checked").val(),
+                IsDirectAccess: $("#chkDirectAccess").is(':checked'),
+                RoleIDs: $("#RoleID").val(), 
+                LocationIDs: $("#LocationID").val() 
+            };
+
+            var selectedMenus = [];
+            $("input[name='selectedMenus']:checked").each(function () {
+                selectedMenus.push($(this).val());
+            });
+                data.SelectedMenuRights = selectedMenus;
+
+
+                    if (!data.UserName || !data.EmailID) {
+                alert("Please fill in required fields.");
+                return;
+            }
 
         $.post('@Url.Action("AddUser", "Users_Master")', data, function(res) {
             if(res.success) {
+                     $('#userModal').fadeOut();
                 Swal.fire('Success', res.message, 'success').then(() => location.reload());
             } else {
                 Swal.fire('Error', res.message, 'error');
@@ -483,21 +610,58 @@
         });
     }
 
-    function EditUser(id, name, contact, email, ips) {
+       function EditUser(id) {
+       
         $('#userForm')[0].reset();
+        $('.error-msg').hide();
         $('#UserID_Hidden').val(id);
-        $('#UserName').val(name);
-        $('#ContactNo').val(contact);
-        $('#EmailID').val(email).prop('readonly', true).css('background', '#eee');
-        $('#passwordGroup').hide();
-
         $('#btnSaveUser').text('Update User');
         $('.modal-header-custom h3').text('Update User Details');
 
-        // Reset and reload SumoSelects for edit mode
-        $('#RoleID')[0].sumo.unSelectAll();
-        // Here you would typically fetch user details via AJAX and set RoleID/LocationID
+        $.get('@Url.Action("GetUserDetails", "Users_Master")', { id: id }, function (res) {
+            if (res.success) {
+                const d = res.data;
 
-        $('#userModal').fadeIn();
+                $("#UserName").val(d.userName);
+                $("#ContactNo").val(d.contactNo);
+                $("#EmailID").val(d.emailID).prop('readonly', true).css('background', '#f1f1f1'); 
+                $("#ExpiryDate").val(d.expiryDate);
+
+                // Set Password Fields (Optional: hide them during edit or leave blank)
+                $('#passwordGroup').hide();
+
+                // Handle Access Type (Radio Buttons)
+                $(`input[name='AccessType'][value='${d.accessType}']`).prop('checked', true).trigger('change');
+
+                // Handle SumoSelect (Multi-selects)
+                // First clear them, then select the returned IDs
+                $('#RoleID')[0].sumo.unSelectAll();
+                if (d.roleIDs) {
+                    d.roleIDs.forEach(val => $('#RoleID')[0].sumo.selectItem(val.toString()));
+                }
+
+                if (d.accessType === "Office" && d.locationIDs) {
+                    $('#LocationID')[0].sumo.unSelectAll();
+                    d.locationIDs.forEach(val => $('#LocationID')[0].sumo.selectItem(val.toString()));
+                    $('#locationWrapper').show();
+                }
+
+                // Handle Direct Access Checkbox
+                $('#chkDirectAccess').prop('checked', d.isDirectAccess).trigger('change');
+
+                // Handle Menu Rights Checkboxes
+                $("input[name='selectedMenus']").prop('checked', false);
+                if (d.selectedMenus) {
+                    d.selectedMenus.forEach(menuID => {
+                        $(`input[name='selectedMenus'][value='${menuID}']`).prop('checked', true);
+                    });
+                }
+
+                // 3. Show the Modal
+                $('#userModal').fadeIn();
+            } else {
+                Swal.fire('Error', 'Could not fetch user data', 'error');
+            }
+        });
     }
 </script>

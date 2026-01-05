@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Globalization;
 using System.Reflection;
 
 namespace Arihant.Services
@@ -1171,9 +1172,11 @@ namespace Arihant.Services
             List<LocationList> ipList = new List<LocationList>();
             try
             {
+                var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
                 var parameters = new Dictionary<string, SqlParameter>
                     {
-                        { "Operation", new SqlParameter("@Operation", "Get_Location_List") }
+                        { "Operation", new SqlParameter("@Operation", "Get_Location_List") },
+                         { "result", outParam }
 
                     };
 
@@ -1203,9 +1206,11 @@ namespace Arihant.Services
             List<RoleList> ipList = new List<RoleList>();
             try
             {
+                var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
                 var parameters = new Dictionary<string, SqlParameter>
                     {
-                        { "Operation", new SqlParameter("@Operation", "Get_Role_List") }
+                        { "Operation", new SqlParameter("@Operation", "Get_Role_List") },
+                           { "result", outParam }
 
                     };
 
@@ -1236,9 +1241,14 @@ namespace Arihant.Services
             List<IPViewModel_withIPS> users = new List<IPViewModel_withIPS>();
             try
             {
-                var parameters = new Dictionary<string, SqlParameter>
+                    var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250)
                     {
-                        { "Operation", new SqlParameter("@Operation", "Get_All_Users") }
+                        Direction = ParameterDirection.Output
+                    };
+                    var parameters = new Dictionary<string, SqlParameter>
+                    {
+                        { "Operation", new SqlParameter("@Operation", "Get_All_Users") },
+                             { "result", outParam }
                     };
 
                 DataSet ds = gc.ExecuteStoredProcedureGetDataSet("sp_User_Master", parameters.Values.ToArray());
@@ -1249,13 +1259,14 @@ namespace Arihant.Services
                     {
                         users.Add(new IPViewModel_withIPS
                         {
-                            UserID = dr["UserID"]?.ToString(),
+                            ID = dr["ID"]?.ToString(),
                             UserName = dr["UserName"]?.ToString(),
-                            ContactNo = dr["ContactNo"]?.ToString(),
                             EmailID = dr["EmailID"]?.ToString(),
-                            AssignedIP = dr["IPAddress"]?.ToString(),
-                            AssignedIPs = dr["AssignedIPs"]?.ToString(),
-                            IsActive = dr["IsActive"]?.ToString()
+                            ContactNo = dr["ContactNo"]?.ToString(),
+                            AccessType = dr["AccessType"]?.ToString(),
+                            IsActive = dr["IsActive"]?.ToString(),
+                            AssignedLocations = dr["AssignedLocations"]?.ToString(),
+                            AssignedRoles = dr["AssignedRoles"]?.ToString()
                         });
                     }
                 }
@@ -1324,9 +1335,9 @@ namespace Arihant.Services
 
         }
 
-        public string AddUser(UserViewModel user, string CreatedBy)
+        public string AddUser(UserSaveViewModel user, string CreatedBy)
         {
-            string isIPAssigned = (user.AssignedIP != null && user.AssignedIP.Count > 0) ? "Y" : "N";
+           
             string message = "0";
             try
             {
@@ -1335,47 +1346,31 @@ namespace Arihant.Services
                     Direction = ParameterDirection.Output
                 };
 
-                var parameters = new Dictionary<string, SqlParameter>
-                {
-                    { "UserName", new SqlParameter("@UserName", user.UserName ?? (object)DBNull.Value) },
-                    { "UserID", new SqlParameter("@UserID", user.UserID ?? (object)DBNull.Value) },
-                    { "ContactNo", new SqlParameter("@ContactNo", user.ContactNo ?? (object)DBNull.Value) },
-                    { "AssignedIP", new SqlParameter("@AssignedIP", isIPAssigned?? (object)DBNull.Value) },
-                    { "Password", new SqlParameter("@Password", user.Password ?? (object)DBNull.Value) },
-                    { "Email", new SqlParameter("@Email", user.EmailID ?? (object)DBNull.Value) },
-                    { "Operation", new SqlParameter("@Operation", "Add_User") },
-                    { "result", outParam }
-                };
+                string roleIdsStr = user.RoleIDs != null ? string.Join(",", user.RoleIDs) : null;
+                string locationIdsStr = user.LocationIDs != null ? string.Join(",", user.LocationIDs) : null;
+                string menuIdsStr = user.SelectedMenuRights != null ? string.Join(",", user.SelectedMenuRights) : null;
+
+                   var parameters = new Dictionary<string, SqlParameter>
+                    {
+                        { "UserName", new SqlParameter("@UserName", user.UserName ?? (object)DBNull.Value) },
+                        { "UserID", new SqlParameter("@UserID", user.EmailID ?? (object)DBNull.Value) },
+                        { "ContactNo", new SqlParameter("@ContactNo", user.ContactNo ?? (object)DBNull.Value) },
+                        { "Password", new SqlParameter("@Password", user.Password ?? (object)DBNull.Value) },
+                         { "AccessType", new SqlParameter("@AccessType", user.AccessType ?? (object)DBNull.Value) },
+                          { "CreatedBy", new SqlParameter("@CreatedBy", CreatedBy ?? (object)DBNull.Value) },
+                        { "Email", new SqlParameter("@Email", user.EmailID ?? (object)DBNull.Value) },
+                        { "RoleIDs", new SqlParameter("@RoleIDs", (object)roleIdsStr ?? DBNull.Value) },
+                        { "LocationIDs", new SqlParameter("@LocationIDs", (object)locationIdsStr ?? DBNull.Value) },
+                        { "MenuIDs", new SqlParameter("@MenuIDs", (object)menuIdsStr ?? DBNull.Value) },
+                        { "ExpiryDate", new SqlParameter("@ExpiryDate",user.ExpiryDate) },
+                        { "Operation", new SqlParameter("@Operation", "Add_User") },
+                        { "result", outParam }
+                    };
 
                 var response = gc.ExecuteStoredProcedure("sp_User_Master", parameters);
-                if (response.OutputParameters.ContainsKey("@result"))
-                {
-                    message = response.OutputParameters["@result"]?.ToString();
+                string result = response.OutputParameters["@result"]?.ToString();
+                return result;
 
-                    if (message != "0")
-                    {
-                        if (user.AssignedIP != null && user.AssignedIP.Count > 0)
-                        {
-                            foreach (var ipid in user.AssignedIP)
-                            {
-                                var ipParams = new Dictionary<string, SqlParameter>
-                                {
-                                    { "UserID", new SqlParameter("@UserID", message) },
-                                      { "CreatedBy", new SqlParameter("@CreatedBy", CreatedBy) },
-                                    { "IPID", new SqlParameter("@IPID", ipid) },
-                                    { "Operation", new SqlParameter("@Operation", "Assign_IP") },
-                                    { "result", new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output } }
-                                };
-                                gc.ExecuteStoredProcedure("sp_User_Master", ipParams);
-                            }
-                        }
-                        return "1";
-                    }
-                    else
-                    {
-                        return "0";
-                    }
-                }
             }
             catch (Exception ex)
             {

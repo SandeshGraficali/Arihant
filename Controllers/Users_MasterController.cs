@@ -576,12 +576,38 @@ namespace Arihant.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult GetUserDetails(string id)
+        {
+      
+            var user = _user.GetUserByID(id);
+            if (user == null) return NotFound();
+
+            return Json(new
+            {
+                success = true,
+                data = new
+                {
+                    userID = user.ID,
+                    userName = user.UserName,
+                    contactNo = user.ContactNo,
+                    emailID = user.EmailID,
+                    expiryDate = user.ExpiryDate?.ToString("yyyy-MM-dd"), // Format for HTML date input
+                    accessType = user.AccessType,
+                    roleIDs = user.RoleIDs, // Should be a list/array for SumoSelect
+                    locationIDs = user.LocationIDs, // Should be a list/array
+                    isDirectAccess = user.IsDirectAccess,
+                    selectedMenus = user.SelectedMenuRights
+                }
+            });
+        }
+
         [HttpPost]
-        public IActionResult AddUser(UserViewModel model)
+        public IActionResult AddUser(UserSaveViewModel model)
         {
             try
             {
-                string ModifiedBy = HttpContext.Session.GetString("UserName") ?? "";
+                string ModifiedBy = HttpContext.Session.GetString("UserName") ?? "System";
 
                 string result = _user.AddUser(model, ModifiedBy);
 
