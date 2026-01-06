@@ -113,6 +113,7 @@
         }
 
         .form-group input[type="text"],
+        .form-group input[type="number"],
         .form-group input[type="password"],
         .form-group input[type="date"],
         .form-group select {
@@ -125,9 +126,9 @@
             font-size: 0.95rem;
         }
 
-   
 
-    
+
+
     /* Action Buttons */
     .btn-icon {
         background: none;
@@ -141,42 +142,42 @@
         }
 
 
-        .btn {
-    padding: 10px 24px;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.2s;
-    cursor: pointer;
-    border: none;
-}
+    .btn {
+        padding: 10px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.2s;
+        cursor: pointer;
+        border: none;
+    }
 
-.btn-success {
-    background-color: var(--success-green) !important;
-    color: white;
-    box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
-}
+    .btn-success {
+        background-color: var(--success-green) !important;
+        color: white;
+        box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+    }
 
-.btn-success:hover {
-    background-color: #059669 !important;
-    transform: translateY(-1px);
-}
+        .btn-success:hover {
+            background-color: #059669 !important;
+            transform: translateY(-1px);
+        }
 
-.btn-secondary {
-    background-color: #e5e7eb;
-    color: #4b5563;
-}
+    .btn-secondary {
+        background-color: #e5e7eb;
+        color: #4b5563;
+    }
 
-.btn-secondary:hover {
-    background-color: #d1d5db;
-}
+        .btn-secondary:hover {
+            background-color: #d1d5db;
+        }
 
-/* Error Messages */
-.error-msg {
-    color: var(--error-red);
-    font-size: 11px;
-    margin-top: 4px;
-    font-weight: 500;
-}
+    /* Error Messages */
+    .error-msg {
+        color: var(--error-red);
+        font-size: 11px;
+        margin-top: 4px;
+        font-weight: 500;
+    }
 
     :root {
         --primary-blue: #1e3a8a;
@@ -199,10 +200,9 @@
     }
 
     #locationWrapper, .access-policy-row {
-   
     }
 
-    #UserList th, 
+    #UserList th,
     #UserList td {
         text-align: center;
         vertical-align: middle; /* Keeps content centered vertically too */
@@ -230,7 +230,7 @@
 
                 <div class="form-group">
                     <label>User ID &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-                    <input type="text" id="UserName" name="UserName" placeholder="Full Name">
+                    <input type="text" id="UserID" name="UserID" placeholder="Full Name">
                     <br />
                     <span class="error-msg" id="err_UserName">User Name is required</span>
                 </div>
@@ -242,7 +242,7 @@
                     <span class="error-msg" id="err_ContactNo">Invalid Number</span>
                 </div>
                 <div class="form-group">
-                    <label>Email ID / Login ID</label>
+                    <label>Email ID &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
                     <input type="text" id="EmailID" name="EmailID" placeholder="email@domain.com">
                     <br />
                     <span class="error-msg" id="err_EmailID">Valid Email required</span>
@@ -267,13 +267,13 @@
 
             </div>
 
-            <div class="form-row-gridNEW" >
-              
+            <div class="form-row-gridNEW">
+
                 <div class="form-group">
                     <label>Network Access</label>
                     <div style="padding-top: 8px; display: flex; gap: 10px;">
                         <label style="font-weight:normal;"><input type="radio" name="AccessType" value="Open" checked> Open</label>
-                        <label style="font-weight:normal;"><input type="radio" name="AccessType" value="Office" id="radioOffice"> Office Based</label>
+                        <label style="font-weight:normal;"><input type="radio" name="AccessType" value="Office" id="radioOffice"> Office / Factory</label>
                     </div>
                 </div>
                 <div id="locationWrapper" style="display: none; padding: 15px 20px; ">
@@ -292,7 +292,7 @@
                 </div>
             </div>
 
-           
+
 
             <div id="passwordGroup" class="form-row-grid">
                 <div class="form-group">
@@ -301,17 +301,16 @@
                     <br />
                     <span class="error-msg" id="err_Password">Password required</span>
                 </div>
-                
+
                 <div class="form-group">
                     <label>Confirm Password</label>
                     <input type="password" id="ConfirmPassword" name="ConfirmPassword">
                     <br />
 
                     <span class="error-msg" id="err_ConfirmPassword">Mismatch</span>
-                   
+
                 </div>
                 <div class="form-group">
-                   
                 </div>
             </div>
 
@@ -322,7 +321,7 @@
                     </label>
                 </div>
 
-                <div id="rightsWrapper" style="display: none; margin-top: 15px; border: 1px solid #ddd; border-radius: 4px; max-height: 250px; overflow-y: auto;">
+                <div id="rightsWrapper" style="display: none; margin-top: 15px; border: 1px solid #ddd; border-radius: 4px; max-height: 650px; overflow-y: auto;">
                     <partial name="~/Views/Shared/Menu/_MenuRightsPartial.cshtml" model="ViewBag.GroupedMenuRights" />
                 </div>
             </div>
@@ -351,13 +350,13 @@
                 <th>User Name</th>
                 <th>Contact No</th>
                 <th>Email ID</th>
-                <th>Access Type</th>
+               
                 <th>Role</th>
-                <th>Location</th>
+                <th>Location Access</th>
                 <th>Reset Password</th>
                 <th>Active</th>
                 <th>Actions</th>
-             
+
             </tr>
         </thead>
         <tbody>
@@ -371,12 +370,17 @@
                         <td>@user.UserName</td>
                         <td>@user.ContactNo</td>
                         <td>@user.EmailID</td>
-                        <td>@user.AccessType</td>
+                       
                         <td>@user.AssignedRoles</td>
                         <td>@user.AssignedLocations</td>
                         <td class="text-center">
-                            <button class="btn-icon" title="Delete" onclick="ResetUserPassword('@user.ID')">
-                                <img src="~/images/delete.png" width="18" />
+                            <button class="btn-icon" title="Reset" onclick="ResetUserPassword('@user.ID')">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e67e22" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 2v6h-6"></path>
+                                    <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+                                    <rect x="3" width="18" height="11" y="11" rx="2" ry="2"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
                             </button>
                         </td>
                         <td class="text-center">
@@ -391,7 +395,7 @@
                                 <img src="~/images/delete.png" width="18" />
                             </button>
                         </td>
-                      
+
                     </tr>
                 }
             }
@@ -405,262 +409,435 @@
 <script src="~/js/sweetalert2.js"></script>
 
 <script>
-    $(document).ready(function () {
-        
-        $('#UserList').DataTable({ responsive: true });
+        $(document).ready(function () {
 
-       
-        $('#RoleID').SumoSelect({ search: true, selectAll: true, placeholder: 'Select Roles' });
-        $('#LocationID').SumoSelect({ search: true, selectAll: true, placeholder: 'Select Locations' });
+            $('#UserList').DataTable({ responsive: true });
 
-     
-        $('input[name="AccessType"]').on('change', function() {
-            if ($('#radioOffice').is(':checked')) {
-                $('#locationWrapper').slideDown();
-            } else {
-                $('#locationWrapper').slideUp();
+
+            $('#RoleID').SumoSelect({ search: true, selectAll: true, placeholder: 'Select Roles' });
+            $('#LocationID').SumoSelect({ search: true, selectAll: true, placeholder: 'Select Locations' });
+
+
+            $('input[name="AccessType"]').on('change', function() {
+                if ($('#radioOffice').is(':checked')) {
+                    $('#locationWrapper').slideDown();
+                } else {
+                    $('#locationWrapper').slideUp();
+                    $('#LocationID')[0].sumo.unSelectAll();
+                }
+            });
+
+            $('#chkDirectAccess').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $('#rightsWrapper').slideDown();
+                } else {
+                    $('#rightsWrapper').slideUp();
+                }
+            });
+
+
+            $('#btnOpenModal').on('click', function() {
+                $('#userForm')[0].reset();
+                $('#UserID_Hidden').val('');
+                $('#EmailID').prop('readonly', false).css('background', '#fff');
+                $('#passwordGroup').show();
+                $('#locationWrapper, #rightsWrapper').hide();
+                $('#RoleID')[0].sumo.unSelectAll();
                 $('#LocationID')[0].sumo.unSelectAll();
-            }
+                $('.error-msg').hide();
+                $('input').removeClass('error');
+                $('#btnSaveUser').text('Add User');
+                $('.modal-header-custom h3').text('Add New User');
+                $('#userModal').fadeIn();
+            });
+
+            $('#btnCloseX, #btnCancel').on('click', function() {
+                $('#userModal').fadeOut();
+            });
+
+
+            $('#btnSaveUser').on('click', function() {
+                if (ValidateForm()) {
+                    const isUpdate = $('#UserID_Hidden').val() !== "";
+                    isUpdate ? UpdateUserData() : AddUserData();
+                }
+            });
         });
 
-        $('#chkDirectAccess').on('change', function() {
-            if ($(this).is(':checked')) {
-                $('#rightsWrapper').slideDown();
-            } else {
-                $('#rightsWrapper').slideUp();
-            }
-        });
+     function ValidateForm() {
+        let isValid = true;
 
-    
-        $('#btnOpenModal').on('click', function() {
-            $('#userForm')[0].reset();
-            $('#UserID_Hidden').val('');
-            $('#EmailID').prop('readonly', false).css('background', '#fff');
-            $('#passwordGroup').show();
-            $('#locationWrapper, #rightsWrapper').hide();
-            $('#RoleID')[0].sumo.unSelectAll();
-            $('#LocationID')[0].sumo.unSelectAll();
-            $('.error-msg').hide();
-            $('input').removeClass('error');
-            $('#btnSaveUser').text('Add User');
-            $('.modal-header-custom h3').text('Add New User');
-            $('#userModal').fadeIn();
-        });
-
-        $('#btnCloseX, #btnCancel').on('click', function() {
-            $('#userModal').fadeOut();
-        });
-
-   
-        $('#btnSaveUser').on('click', function() {
-            if (ValidateForm()) {
-                const isUpdate = $('#UserID_Hidden').val() !== "";
-                isUpdate ? UpdateUserData() : AddUserData();
-            }
-        });
-    });
-
- function ValidateForm() {
-    let isValid = true;
-    
-    $(".error-msg").hide();
-    $(".form-control, input, select").removeClass("is-invalid");
-
- 
-    const userName = $("#UserName").val().trim();
-    if (userName === "") {
-        $("#err_UserName").text("User Name is required").show();
-        $("#UserName").addClass("is-invalid");
-        isValid = false;
-    }
+        $(".error-msg").hide();
+        $(".form-control, input, select").removeClass("is-invalid");
 
 
-    const contactNo = $("#ContactNo").val().trim();
-    const intRegex = /^\d+$/;
-    if (contactNo !== "" && (!intRegex.test(contactNo) || contactNo.length < 10)) {
-        $("#err_ContactNo").text("Please enter a valid 10-digit numeric contact number").show();
-        $("#ContactNo").addClass("is-invalid");
-        isValid = false;
-    }
+        const userName = $("#UserName").val().trim();
+        if (userName === "") {
+            $("#err_UserName").text("User Name is required").show();
+            $("#UserName").addClass("is-invalid");
+            isValid = false;
+        }
 
 
-    const emailID = $("#EmailID").val().trim();
-    const emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
-    if (emailID === "" || !emailRegex.test(emailID)) {
-        $("#err_EmailID").text("A valid email address is required").show();
-        $("#EmailID").addClass("is-invalid");
-        isValid = false;
-    }
+        const contactNo = $("#ContactNo").val().trim();
+        const intRegex = /^\d+$/;
+        if (contactNo !== "" && (!intRegex.test(contactNo) || contactNo.length < 10)) {
+            $("#err_ContactNo").text("Please enter a valid 10-digit numeric contact number").show();
+            $("#ContactNo").addClass("is-invalid");
+            isValid = false;
+        }
 
 
-      const expiryDateVal = $("#ExpiryDate").val();
+        const emailID = $("#EmailID").val().trim();
+        const emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+        if (emailID === "" || !emailRegex.test(emailID)) {
+            $("#err_EmailID").text("A valid email address is required").show();
+            $("#EmailID").addClass("is-invalid");
+            isValid = false;
+        }
 
-    if (!expiryDateVal) {
-        
-        alert("Please select a Password Expiry Date.");
-        $("#ExpiryDate").addClass("is-invalid");
-        isValid = false;
-    } else {
-     
-        const selectedDate = new Date(expiryDateVal);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
 
-        if (selectedDate < today) {
-            alert("Password Expiry Date cannot be in the past.");
+          const expiryDateVal = $("#ExpiryDate").val();
+
+        if (!expiryDateVal) {
+
+            alert("Please select a Password Expiry Date.");
             $("#ExpiryDate").addClass("is-invalid");
             isValid = false;
+        } else {
+
+            const selectedDate = new Date(expiryDateVal);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (selectedDate < today) {
+                alert("Password Expiry Date cannot be in the past.");
+                $("#ExpiryDate").addClass("is-invalid");
+                isValid = false;
+            }
         }
+
+        const selectedRoles = $("#RoleID").val();
+        if (!selectedRoles || selectedRoles.length === 0) {
+            alert("Please assign at least one Role.");
+            isValid = false;
+        }
+
+
+        const accessType = $("input[name='AccessType']:checked").val();
+        if (accessType === "Office") {
+            const selectedLocations = $("#LocationID").val();
+            if (!selectedLocations || selectedLocations.length === 0) {
+                alert("Please select at least one Location for Office-based access.");
+                isValid = false;
+            }
+        }
+
+
+        const isDirectAccess = $("#chkDirectAccess").is(':checked');
+        if (isDirectAccess) {
+            const selectedMenus = $("input[name='selectedMenus']:checked").length;
+            if (selectedMenus === 0) {
+                alert("You have enabled Direct Access. Please select at least one menu right.");
+                isValid = false;
+            }
+        }
+
+                    let isUpdate = $('#UserID_Hidden').val() !== "";
+
+                        if(isUpdate)
+                        {
+
+                        }
+                        else{
+
+                            const password = $("#Password").val();
+                            const confirmPassword = $("#ConfirmPassword").val();
+
+                            const alphanumericRegex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
+
+
+                            if (password === "") {
+                                $("#err_Password").text("Password is required").show();
+                                $("#Password").addClass("is-invalid");
+                                isValid = false;
+                            }
+                            else if (!alphanumericRegex.test(password)) {
+                                $("#err_Password").text("Password must be alphanumeric (contain letters and numbers)").show();
+                                $("#Password").addClass("is-invalid");
+                                isValid = false;
+                            }
+
+
+                            if (confirmPassword === "") {
+                                $("#err_ConfirmPassword").text("Please confirm your password").show();
+                                $("#ConfirmPassword").addClass("is-invalid");
+                                isValid = false;
+                            }
+                            else if (password !== confirmPassword) {
+                                $("#err_ConfirmPassword").text("Passwords do not match").show();
+                                $("#ConfirmPassword").addClass("is-invalid");
+                                isValid = false;
+                            }
+
+                        }
+
+        return isValid;
     }
 
-    const selectedRoles = $("#RoleID").val();
-    if (!selectedRoles || selectedRoles.length === 0) {
-        alert("Please assign at least one Role.");
-        isValid = false;
-    }
+
+        function AddUserData() {
+
+                   var data = {
+                        UserID: $("#UserID").val(),
+                    UserName: $("#UserName").val(),
+                    ContactNo: $("#ContactNo").val(),
+                    EmailID: $("#EmailID").val(),
+                    ExpiryDate: $("#ExpiryDate").val(),
+                    Password: $("#Password").val(),
+                    AccessType: $("input[name='AccessType']:checked").val(),
+                    IsDirectAccess: $("#chkDirectAccess").is(':checked'),
+                    RoleIDs: $("#RoleID").val(),
+                    LocationIDs: $("#LocationID").val()
+                };
+
+                var selectedMenus = [];
+                $("input[name='selectedMenus']:checked").each(function () {
+                    selectedMenus.push($(this).val());
+                });
+                    data.SelectedMenuRights = selectedMenus;
 
 
-    const accessType = $("input[name='AccessType']:checked").val();
-    if (accessType === "Office") {
-        const selectedLocations = $("#LocationID").val();
-        if (!selectedLocations || selectedLocations.length === 0) {
-            alert("Please select at least one Location for Office-based access.");
-            isValid = false;
+                        if (!data.UserName || !data.EmailID) {
+                    alert("Please fill in required fields.");
+                    return;
+                }
+
+                $.post('@Url.Action("AddUser", "Users_Master")', data, function(res) {
+                    if (res.success) {
+                      
+                        Swal.fire({
+                            title: 'Success',
+                            text: res.message,
+                            icon: 'success',
+                            target: document.getElementById('userModal'),
+                            customClass: {
+                                container: 'high-z-index' 
+                            }
+                        }).then(() => {
+                            $('#userModal').fadeOut();
+                            location.reload();
+                        });
+                    } else {
+                    
+                        Swal.fire({
+                            title: 'Error',
+                            text: res.message,
+                            icon: 'error',
+                            target: document.getElementById('userModal')
+                        });
+                    }
+                });
         }
-    }
 
+           function EditUser(id) {
 
-    const isDirectAccess = $("#chkDirectAccess").is(':checked');
-    if (isDirectAccess) {
-        const selectedMenus = $("input[name='selectedMenus']:checked").length;
-        if (selectedMenus === 0) {
-            alert("You have enabled Direct Access. Please select at least one menu right.");
-            isValid = false;
+            $('#userForm')[0].reset();
+            $('.error-msg').hide();
+            $('#UserID_Hidden').val(id);
+
+            $('#btnSaveUser').text('Update User');
+            $('.modal-header-custom h3').text('Update User Details');
+
+            $.get('@Url.Action("GetUserDetails", "Users_Master")', { id: id }, function (res) {
+                if (res.success) {
+                    const d = res.data;
+
+                    $("#UserName").val(d.userName);
+                                 $("#UserID").val(d.userID);
+                    $("#ContactNo").val(d.contactNo);
+                    $("#EmailID").val(d.emailID).prop('readonly', true).css('background', '#f1f1f1');
+                    $("#ExpiryDate").val(d.expiryDate);
+                    $('#passwordGroup').hide();
+                    $(`input[name='AccessType'][value='${d.accessType}']`).prop('checked', true).trigger('change');
+                    $('#RoleID')[0].sumo.unSelectAll();
+                    if (d.roleIDs) {
+                        d.roleIDs.forEach(val => $('#RoleID')[0].sumo.selectItem(val.toString()));
+                    }
+
+                    if (d.accessType === "Office" && d.locationIDs) {
+                        $('#LocationID')[0].sumo.unSelectAll();
+                        d.locationIDs.forEach(val => $('#LocationID')[0].sumo.selectItem(val.toString()));
+                        $('#locationWrapper').show();
+                    }
+                    $('#chkDirectAccess').prop('checked', d.isDirectAccess).trigger('change');
+                    $("input[name='selectedMenus']").prop('checked', false);
+                    if (d.selectedMenus) {
+                        d.selectedMenus.forEach(menuID => {
+                            $(`input[name='selectedMenus'][value='${menuID}']`).prop('checked', true);
+                        });
+                    }
+
+                        $("#btnSaveUser").text("Update User");
+                    $('#userModal').fadeIn();
+                } else {
+                    Swal.fire('Error', 'Could not fetch user data', 'error');
+                }
+            });
         }
-    }
 
 
-       const password = $("#Password").val();
-        const confirmPassword = $("#ConfirmPassword").val();
-
-        const alphanumericRegex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
-
- 
-        if (password === "") {
-            $("#err_Password").text("Password is required").show();
-            $("#Password").addClass("is-invalid");
-            isValid = false;
-        }
-        else if (!alphanumericRegex.test(password)) {
-            $("#err_Password").text("Password must be alphanumeric (contain letters and numbers)").show();
-            $("#Password").addClass("is-invalid");
-            isValid = false;
-        }
-
-      
-        if (confirmPassword === "") {
-            $("#err_ConfirmPassword").text("Please confirm your password").show();
-            $("#ConfirmPassword").addClass("is-invalid");
-            isValid = false;
-        }
-        else if (password !== confirmPassword) {
-            $("#err_ConfirmPassword").text("Passwords do not match").show();
-            $("#ConfirmPassword").addClass("is-invalid");
-            isValid = false;
-        }
-
-    return isValid;
-}
-
-
-    function AddUserData() {
-
-               var data = {
-                UserID: $("#UserID_Hidden").val(),
-                UserName: $("#UserName").val(),
-                ContactNo: $("#ContactNo").val(),
-                EmailID: $("#EmailID").val(),
-                ExpiryDate: $("#ExpiryDate").val(),
-                Password: $("#Password").val(),
-                AccessType: $("input[name='AccessType']:checked").val(),
-                IsDirectAccess: $("#chkDirectAccess").is(':checked'),
-                RoleIDs: $("#RoleID").val(), 
-                LocationIDs: $("#LocationID").val() 
+            function UpdateUserData() {
+             
+            var userObj = {
+                UserID: $('#UserID').val(),
+                UserName: $('#UserName').val().trim(),
+                ContactNo: $('#ContactNo').val().trim(),
+                EmailID: $('#EmailID').val().trim(),
+                ExpiryDate: $('#ExpiryDate').val(),
+                AccessType: $('input[name="AccessType"]:checked').val(),
+                IsDirectAccess: $('#chkDirectAccess').is(':checked'),
+                RoleIDs: $('#RoleID').val() || [],
+                LocationIDs: $('#LocationID').val() || []
             };
 
+
             var selectedMenus = [];
-            $("input[name='selectedMenus']:checked").each(function () {
-                selectedMenus.push($(this).val());
-            });
-                data.SelectedMenuRights = selectedMenus;
-
-
-                    if (!data.UserName || !data.EmailID) {
-                alert("Please fill in required fields.");
-                return;
+            if (userObj.IsDirectAccess) {
+                $("input[name='selectedMenus']:checked").each(function () {
+                    selectedMenus.push(parseInt($(this).val()));
+                });
             }
+            userObj.SelectedMenuRights = selectedMenus;
 
-        $.post('@Url.Action("AddUser", "Users_Master")', data, function(res) {
-            if(res.success) {
-                     $('#userModal').fadeOut();
-                Swal.fire('Success', res.message, 'success').then(() => location.reload());
-            } else {
-                Swal.fire('Error', res.message, 'error');
+
+            $.ajax({
+                    url: '@Url.Action("UpdateUser", "Users_Master")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(userObj),
+
+                success: function (response) {
+                    if (response.success) {
+                            $('#UserID_Hidden').val('');
+                         Swal.fire({
+                        title: 'Success',
+                        text: 'User updated successfully!',
+                        icon: 'success',
+                        confirmButtonText: 'OK',
+                      
+                        target: document.getElementById('userModal')
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
+                    });
+                    } else {
+                        alert("Update Failed: " + response.message);
+
+                    }
+                },
+                error: function (err) {
+                    console.error(err);
+                    alert("An error occurred while updating the user.");
+
+                }
+            });
+        }
+
+
+            function ActiveUser(userId) {
+     
+        var $imgElement = $(event.target);
+
+        $.ajax({
+            url: '@Url.Action("ActiveUser", "Users_Master")',
+            type: 'POST',
+            data: { UserID: userId },
+            success: function (response) {
+                if (response.success) {
+               
+                    if (response.isActive) {
+                        $imgElement.attr("src", "/images/4-active.png");
+                    } else {
+                        $imgElement.attr("src", "/images/4-inactive.png");
+                    }
+
+                  
+                    console.log(response.message);
+                } else {
+                    alert("Error: " + response.message);
+                }
+            },
+            error: function () {
+                alert("Failed to connect to the server.");
             }
         });
     }
 
-       function EditUser(id) {
-       
-        $('#userForm')[0].reset();
-        $('.error-msg').hide();
-        $('#UserID_Hidden').val(id);
-        $('#btnSaveUser').text('Update User');
-        $('.modal-header-custom h3').text('Update User Details');
 
-        $.get('@Url.Action("GetUserDetails", "Users_Master")', { id: id }, function (res) {
-            if (res.success) {
-                const d = res.data;
 
-                $("#UserName").val(d.userName);
-                $("#ContactNo").val(d.contactNo);
-                $("#EmailID").val(d.emailID).prop('readonly', true).css('background', '#f1f1f1'); 
-                $("#ExpiryDate").val(d.expiryDate);
+        function DeleteUser(userId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to delete this user? This action can be undone by admin.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                
+                $.ajax({
+                    url: '@Url.Action("DeleteUser", "Users_Master")',
+                    type: 'POST',
+                    data: { UserID: userId },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire(
+                                'Deleted!',
+                                response.message,
+                                'success'
+                            ).then(() => {
+                                location.reload(); 
+                            });
+                        } else {
+                            Swal.fire('Error!', response.message, 'error');
+                        }
+                    },
+                    error: function () {
+                        Swal.fire('Error!', 'Could not reach the server.', 'error');
+                    }
+                });
+            }
+        });
+    }
 
-                // Set Password Fields (Optional: hide them during edit or leave blank)
-                $('#passwordGroup').hide();
 
-                // Handle Access Type (Radio Buttons)
-                $(`input[name='AccessType'][value='${d.accessType}']`).prop('checked', true).trigger('change');
-
-                // Handle SumoSelect (Multi-selects)
-                // First clear them, then select the returned IDs
-                $('#RoleID')[0].sumo.unSelectAll();
-                if (d.roleIDs) {
-                    d.roleIDs.forEach(val => $('#RoleID')[0].sumo.selectItem(val.toString()));
-                }
-
-                if (d.accessType === "Office" && d.locationIDs) {
-                    $('#LocationID')[0].sumo.unSelectAll();
-                    d.locationIDs.forEach(val => $('#LocationID')[0].sumo.selectItem(val.toString()));
-                    $('#locationWrapper').show();
-                }
-
-                // Handle Direct Access Checkbox
-                $('#chkDirectAccess').prop('checked', d.isDirectAccess).trigger('change');
-
-                // Handle Menu Rights Checkboxes
-                $("input[name='selectedMenus']").prop('checked', false);
-                if (d.selectedMenus) {
-                    d.selectedMenus.forEach(menuID => {
-                        $(`input[name='selectedMenus'][value='${menuID}']`).prop('checked', true);
-                    });
-                }
-
-                // 3. Show the Modal
-                $('#userModal').fadeIn();
-            } else {
-                Swal.fire('Error', 'Could not fetch user data', 'error');
+        function ResetUserPassword(userId) {
+        Swal.fire({
+            title: 'Reset Password?',
+            text: "The password will be reset to the default: 'Admin@123'",
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#aaa',
+            confirmButtonText: 'Yes, Reset it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '@Url.Action("ResetPassword", "Users_Master")',
+                    type: 'POST',
+                    data: { UserID: userId },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire('Success', 'Password has been reset successfully.', 'success');
+                        } else {
+                            Swal.fire('Error', response.message, 'error');
+                        }
+                    }
+                });
             }
         });
     }

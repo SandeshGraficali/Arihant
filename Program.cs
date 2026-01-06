@@ -2,7 +2,6 @@ using Arihant.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<DL_Users_Master>();
@@ -40,6 +39,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Users_Master}/{action=User_Master_Dashboard}/{id?}");
+    pattern: "{controller=LogIn}/{action=User_LogIn}/{id?}");
 
 app.Run();

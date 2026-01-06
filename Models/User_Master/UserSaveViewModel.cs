@@ -2,7 +2,7 @@
 {
     public class UserSaveViewModel
     {
-        public int? UserID { get; set; }
+        public string? UserID { get; set; }
         public string UserName { get; set; }
         public string ContactNo { get; set; }
         public string EmailID { get; set; }
@@ -15,4 +15,7 @@
         public List<int> LocationIDs { get; set; }
         public List<int> SelectedMenuRights { get; set; }
     }
+
+
+
 }

@@ -3,6 +3,7 @@ using Arihant.Models.Company_Master;
 using Arihant.Models.IP_Master;
 using Arihant.Models.Rights_Master;
 using Arihant.Models.User_Master;
+using Azure;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -793,60 +794,93 @@ namespace Arihant.Services
             return rightsList;
         }
 
+        //public string UpdateLocation(IP_Master_Model model, string ModifiedBy)
+        //{
+        //    try
+        //    {
+        //        var locOutParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
+        //        var locParams = new Dictionary<string, SqlParameter>
+        //        {
+        //            { "LocationID", new SqlParameter("@LocationID", model.ID) },
+        //            { "LocationName", new SqlParameter("@LocationName", model.Location) },
+        //            { "ModifiedBy", new SqlParameter("@ModifiedBy", ModifiedBy) },
+        //            { "Operation", new SqlParameter("@Operation", "Update_LOCATION") },
+        //            { "result", locOutParam }
+        //        };
+
+        //        var locResponse = gc.ExecuteStoredProcedure("sp_IP_Master", locParams);
+        //        string locationID = locResponse.OutputParameters["@result"]?.ToString();
+        //         if (locationID=="DUPLICATE")
+        //        {
+        //            return "0";
+
+        //        }
+
+
+        //        if (!int.TryParse(locationID, out int currentLocID))
+        //        {
+        //            return "Location Error: " + locationID;
+        //        }
+
+        //        string activeIPs = string.Join(",", model.IPList.Select(x => x.IPAdd));
+        //        var delParams = new Dictionary<string, SqlParameter>
+        //            {
+        //                { "LocationID", new SqlParameter("@LocationID", currentLocID) },
+        //                { "IPAdd", new SqlParameter("@IPAdd", activeIPs) },
+        //                { "Operation", new SqlParameter("@Operation", "DELETE_REMOVED_IPS") }
+        //            };
+        //        gc.ExecuteStoredProcedure("sp_IP_Master", delParams);
+
+        //        foreach (var item in model.IPList)
+        //        {
+        //            var ipOutParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
+        //            var ipParams = new Dictionary<string, SqlParameter>
+        //            {
+        //                { "LocationID", new SqlParameter("@LocationID", currentLocID) },
+        //                { "IPAdd", new SqlParameter("@IPAdd", item.IPAdd) },
+        //                { "IP_Name", new SqlParameter("@IP_Name", item.IP_Name) },
+        //                { "ModifiedBy", new SqlParameter("@ModifiedBy", ModifiedBy) },
+        //                { "Operation", new SqlParameter("@Operation", "UPSERT_IP") },
+        //                { "result", ipOutParam }
+        //            };
+
+        //            var ipResponse = gc.ExecuteStoredProcedure("sp_IP_Master", ipParams);
+        //        }
+
+        //        return "1";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return ex.Message;
+        //    }
+        //}
+
         public string UpdateLocation(IP_Master_Model model, string ModifiedBy)
         {
             try
             {
-                var locOutParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
-                var locParams = new Dictionary<string, SqlParameter>
+       
+                string ipNames = string.Join(",", model.IPList.Select(x => x.IP_Name.Replace(",", "")));
+                string ipAddresses = string.Join(",", model.IPList.Select(x => x.IPAdd));
+
+                var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
+
+                var parameters = new Dictionary<string, SqlParameter>
                 {
+                    { "Operation", new SqlParameter("@Operation", "UPDATE_LOCATION_FULL") },
                     { "LocationID", new SqlParameter("@LocationID", model.ID) },
                     { "LocationName", new SqlParameter("@LocationName", model.Location) },
+                    { "IP_Name", new SqlParameter("@IP_Name", ipNames) },
+                    { "IPAdd", new SqlParameter("@IPAdd", ipAddresses) },
                     { "ModifiedBy", new SqlParameter("@ModifiedBy", ModifiedBy) },
-                    { "Operation", new SqlParameter("@Operation", "Update_LOCATION") },
-                    { "result", locOutParam }
+                    { "result", outParam }
                 };
 
-                var locResponse = gc.ExecuteStoredProcedure("sp_IP_Master", locParams);
-                string locationID = locResponse.OutputParameters["@result"]?.ToString();
-                 if (locationID=="DUPLICATE")
-                {
-                    return "0";
+                var response = gc.ExecuteStoredProcedure("sp_IP_Master", parameters);
+                string dbResult = response.OutputParameters["@result"]?.ToString();
 
-                }
-
-
-                if (!int.TryParse(locationID, out int currentLocID))
-                {
-                    return "Location Error: " + locationID;
-                }
-
-                string activeIPs = string.Join(",", model.IPList.Select(x => x.IPAdd));
-                var delParams = new Dictionary<string, SqlParameter>
-                    {
-                        { "LocationID", new SqlParameter("@LocationID", currentLocID) },
-                        { "IPAdd", new SqlParameter("@IPAdd", activeIPs) },
-                        { "Operation", new SqlParameter("@Operation", "DELETE_REMOVED_IPS") }
-                    };
-                gc.ExecuteStoredProcedure("sp_IP_Master", delParams);
-
-                foreach (var item in model.IPList)
-                {
-                    var ipOutParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
-                    var ipParams = new Dictionary<string, SqlParameter>
-                    {
-                        { "LocationID", new SqlParameter("@LocationID", currentLocID) },
-                        { "IPAdd", new SqlParameter("@IPAdd", item.IPAdd) },
-                        { "IP_Name", new SqlParameter("@IP_Name", item.IP_Name) },
-                        { "ModifiedBy", new SqlParameter("@ModifiedBy", ModifiedBy) },
-                        { "Operation", new SqlParameter("@Operation", "UPSERT_IP") },
-                        { "result", ipOutParam }
-                    };
-
-                    var ipResponse = gc.ExecuteStoredProcedure("sp_IP_Master", ipParams);
-                }
-
-                return "1";
+                if (dbResult == "DUPLICATE") return "0";
+                return dbResult == "1" ? "1" : dbResult;
             }
             catch (Exception ex)
             {
@@ -957,6 +991,42 @@ namespace Arihant.Services
                 return ex.Message;
             }
         }
+
+
+        public string ResetPassword(string userId, string ModifiedBy)
+        {
+         
+            try
+            {
+                string defaultPassword = "Admin@123";
+                var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                var parameters = new Dictionary<string, SqlParameter>
+                {
+                    { "UserID", new SqlParameter("@UserID", userId) },
+                    { "Password", new SqlParameter("@Password", defaultPassword) },
+                    { "Operation", new SqlParameter("@Operation", "Reset_Password") },
+                   
+                    { "CreatedBy", new SqlParameter("@CreatedBy", ModifiedBy) },
+                    { "result", outParam }
+                };
+
+
+                var response =  gc.ExecuteStoredProcedure("sp_User_Master", parameters);
+                string result = response.OutputParameters["@result"]?.ToString();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                
+               return   "ERROR: " + ex.Message;
+            }
+           
+        }
+
 
         public string ActiveUser(string UserID)
         {
@@ -1278,62 +1348,99 @@ namespace Arihant.Services
             return users;
         }
 
-
-        public string UpdateUser(UserUpdateModel user, string CreatedBy)
+        public string UpdateUser(UserUpdateModel user, string modifiedBy)
         {
-            string isIPAssigned = (user.IPAddrID != null && user.IPAddrID.Count > 0) ? "Y" : "N";
             string message = "0";
-
             try
             {
+                var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
+
+                string roleStr = user.RoleIDs != null ? string.Join(",", user.RoleIDs) : "";
+                string locStr = user.LocationIDs != null ? string.Join(",", user.LocationIDs) : "";
+                string menuStr = user.SelectedMenuRights != null ? string.Join(",", user.SelectedMenuRights) : "";
+
                 var parameters = new Dictionary<string, SqlParameter>
-                    {
-                        { "UserName", new SqlParameter("@UserName", user.UserName ?? (object)DBNull.Value) },
-                        { "UserID", new SqlParameter("@UserID", user.UserID ?? (object)DBNull.Value) },
-                        { "ContactNo", new SqlParameter("@ContactNo", user.ContactNo ?? (object)DBNull.Value) },
-                        { "AssignedIP", new SqlParameter("@AssignedIP", isIPAssigned) },
-                        { "Email", new SqlParameter("@Email", user.EmailID ?? (object)DBNull.Value) },
-                        { "Operation", new SqlParameter("@Operation", "Update_User") }
-                    };
-
-                var response = gc.ExecuteStoredProcedure("sp_User_Master", parameters);
-                if (user.IPAddrID != null && user.IPAddrID.Count > 0)
                 {
-                    foreach (var ipid in user.IPAddrID)
-                    {
-                        var ipParams = new Dictionary<string, SqlParameter>
-                            {
-                                { "UserID", new SqlParameter("@UserID", user.UserID) },
-                                { "IPID", new SqlParameter("@IPID", ipid) },
-                                { "Operation", new SqlParameter("@Operation", "Update_Assign_IP") },
-                                { "CreatedBy", new SqlParameter("@CreatedBy", CreatedBy) },
-                                { "result", new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output } }
-                            };
-                        gc.ExecuteStoredProcedure("sp_User_Master", ipParams);
-                    }
-                }
-                else
-                {
-                         var ipParams2 = new Dictionary<string, SqlParameter>
-                            {
-                                { "UserID", new SqlParameter("@UserID", user.UserID) },
-                                
-                                { "Operation", new SqlParameter("@Operation", "Remove_Assign_IP") },
-                                { "CreatedBy", new SqlParameter("@CreatedBy", CreatedBy) },
-                                { "result", new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output } }
-                            };
-                    gc.ExecuteStoredProcedure("sp_User_Master", ipParams2);
+                    { "UserID", new SqlParameter("@UserID", user.UserID) }, 
+                    { "UserName", new SqlParameter("@UserName", user.UserName) },
+                    { "ContactNo", new SqlParameter("@ContactNo", user.ContactNo) },
+                    { "Email", new SqlParameter("@Email", user.EmailID) },
+                    { "AccessType", new SqlParameter("@AccessType", user.AccessType) },
+                    { "ExpiryDate", new SqlParameter("@ExpiryDate", user.ExpiryDate) },
+                    { "CreatedBy", new SqlParameter("@CreatedBy", modifiedBy) },
+                    { "RoleIDs", new SqlParameter("@RoleIDs", roleStr) },
+                    { "LocationIDs", new SqlParameter("@LocationIDs", locStr) },
+                    { "MenuIDs", new SqlParameter("@MenuIDs", menuStr) },
+                    { "Operation", new SqlParameter("@Operation", "Update_User") },
+                    { "result", outParam }
+                };
 
-                }
-                    return "1";
-
+             var response =   gc.ExecuteStoredProcedure("sp_User_Master", parameters);
+                string result = response.OutputParameters["@result"]?.ToString();
+                return result;
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                message = "ERROR: " + ex.Message;
             }
-
+            return message;
         }
+        public UserUpdateModel GetUserByID(string id)
+        {
+            UserUpdateModel user = null;
+            try
+            {
+                var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                var parameters = new Dictionary<string, SqlParameter>
+                {
+                    { "UserID", new SqlParameter("@UserID", id) },
+                    { "Operation", new SqlParameter("@Operation", "Get_User_By_ID") },
+                    { "result", outParam }
+                };
+
+               
+                DataSet ds = gc.ExecuteStoredProcedureGetDataSet("sp_User_Master", parameters.Values.ToArray());
+
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    DataRow dr = ds.Tables[0].Rows[0];
+                    user = new UserUpdateModel
+                    {
+                        
+                        ID = dr["ID"] != DBNull.Value ? Convert.ToInt32(dr["ID"]) : (int?)null,
+                        UserID = dr["UserID"].ToString(),
+                        UserName = dr["UserName"].ToString(),
+                        EmailID = dr["EmailID"].ToString(),
+                        ContactNo = dr["ContactNo"].ToString(),
+                        AccessType = dr["AccessType"].ToString(),
+                        ExpiryDate = dr["ExpiryDate"] != DBNull.Value ? Convert.ToDateTime(dr["ExpiryDate"]) : (DateTime?)null,
+
+                        RoleIDs = dr["RoleIDs"] != DBNull.Value ?
+                            dr["RoleIDs"].ToString().Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList() : new List<int>(),
+
+                        LocationIDs = dr["LocationIDs"] != DBNull.Value ?
+                            dr["LocationIDs"].ToString().Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList() : new List<int>(),
+
+                        SelectedMenuRights = dr["MenuIDs"] != DBNull.Value ?
+                            dr["MenuIDs"].ToString().Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList() : new List<int>()
+                    };
+
+                 
+                    user.IsDirectAccess = user.SelectedMenuRights != null && user.SelectedMenuRights.Any();
+                }
+            }
+            catch (Exception ex)
+            {
+                
+                throw;
+            }
+            return user;
+        }
+
 
         public string AddUser(UserSaveViewModel user, string CreatedBy)
         {
@@ -1353,7 +1460,7 @@ namespace Arihant.Services
                    var parameters = new Dictionary<string, SqlParameter>
                     {
                         { "UserName", new SqlParameter("@UserName", user.UserName ?? (object)DBNull.Value) },
-                        { "UserID", new SqlParameter("@UserID", user.EmailID ?? (object)DBNull.Value) },
+                        { "UserID", new SqlParameter("@UserID", user.UserID ?? (object)DBNull.Value) },
                         { "ContactNo", new SqlParameter("@ContactNo", user.ContactNo ?? (object)DBNull.Value) },
                         { "Password", new SqlParameter("@Password", user.Password ?? (object)DBNull.Value) },
                          { "AccessType", new SqlParameter("@AccessType", user.AccessType ?? (object)DBNull.Value) },

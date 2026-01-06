@@ -497,6 +497,29 @@ namespace Arihant.Controllers
             }
         }
 
+
+        [HttpPost]
+        public JsonResult ResetPassword(string UserID)
+        {
+            try
+            {
+               
+                
+                string ModifiedBy = HttpContext.Session.GetString("UserName") ?? "";
+                string result = _user.ResetPassword(UserID, ModifiedBy);
+
+                if (result == "1")
+                    return Json(new { success = true });
+                else
+                    return Json(new { success = false, message = "Reset failed" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
         [HttpPost]
         public JsonResult ActiveUser(string UserID)
         {
@@ -546,33 +569,30 @@ namespace Arihant.Controllers
         }
 
         [HttpPost]
-        public JsonResult UpdateUser(UserUpdateModel model)
+        public IActionResult UpdateUser([FromBody] UserUpdateModel model)
         {
             try
             {
+                if (model == null )
+                {
+                    return Json(new { success = false, message = "Invalid data provided." });
+                }
 
-                if (string.IsNullOrEmpty(model.UserID))
-                    return Json(new { success = false, message = "User ID is missing" });
-                string ModifiedBy = HttpContext.Session.GetString("UserName") ?? "";
-                string result = _user.UpdateUser(model , ModifiedBy);
-             
+                string modifiedBy = HttpContext.Session.GetString("UserName") ?? "System";
+                string result = _user.UpdateUser(model, modifiedBy);
+
                 if (result == "1")
                 {
-                    return Json(new { success = true, message = "User details updated successfully!" });
-                }
-                else if (result == "0")
-                {
-                    return Json(new { success = false, message = "User ID already exists." });
+                    return Json(new { success = true });
                 }
                 else
                 {
-                    return Json(new { success = false, message = "Error: " + result });
+                    return Json(new { success = false, message = result });
                 }
-
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "Server Error: " + ex.Message });
+                return Json(new { success = false, message = "Internal Server Error: " + ex.Message });
             }
         }
 
@@ -588,14 +608,14 @@ namespace Arihant.Controllers
                 success = true,
                 data = new
                 {
-                    userID = user.ID,
+                    userID = user.UserID,
                     userName = user.UserName,
                     contactNo = user.ContactNo,
                     emailID = user.EmailID,
-                    expiryDate = user.ExpiryDate?.ToString("yyyy-MM-dd"), // Format for HTML date input
+                    expiryDate = user.ExpiryDate?.ToString("yyyy-MM-dd"),
                     accessType = user.AccessType,
-                    roleIDs = user.RoleIDs, // Should be a list/array for SumoSelect
-                    locationIDs = user.LocationIDs, // Should be a list/array
+                    roleIDs = user.RoleIDs, 
+                    locationIDs = user.LocationIDs, 
                     isDirectAccess = user.IsDirectAccess,
                     selectedMenus = user.SelectedMenuRights
                 }
@@ -617,7 +637,7 @@ namespace Arihant.Controllers
                 }
                 else if (result == "0")
                 {
-                    return Json(new { success = false, message = "User ID Or Email ID already exists." });
+                    return Json(new { success = false, message = "User Email ID already exists." });
                 }
                 else
                 {
