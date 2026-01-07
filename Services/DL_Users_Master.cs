@@ -1390,12 +1390,15 @@ namespace Arihant.Services
                 string locationIdsStr = user.LocationIDs != null ? string.Join(",", user.LocationIDs) : null;
                 string menuIdsStr = user.SelectedMenuRights != null ? string.Join(",", user.SelectedMenuRights) : null;
 
-                   var parameters = new Dictionary<string, SqlParameter>
+
+                string encryptionKey = _configuration["EncryptionSettings:Key"];
+                string EncrPassword = gc.Encrypt(user.Password, encryptionKey);
+                var parameters = new Dictionary<string, SqlParameter>
                     {
                         { "UserName", new SqlParameter("@UserName", user.UserName ?? (object)DBNull.Value) },
                         { "UserID", new SqlParameter("@UserID", user.UserID ?? (object)DBNull.Value) },
                         { "ContactNo", new SqlParameter("@ContactNo", user.ContactNo ?? (object)DBNull.Value) },
-                        { "Password", new SqlParameter("@Password", user.Password ?? (object)DBNull.Value) },
+                        { "Password", new SqlParameter("@Password", EncrPassword?? (object)DBNull.Value) },
                         { "AccessType", new SqlParameter("@AccessType", user.AccessType ?? (object)DBNull.Value) },
                         { "CreatedBy", new SqlParameter("@CreatedBy", CreatedBy ?? (object)DBNull.Value) },
                         { "Email", new SqlParameter("@Email", user.EmailID ?? (object)DBNull.Value) },

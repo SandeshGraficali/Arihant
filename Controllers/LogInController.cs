@@ -76,11 +76,13 @@ namespace Arihant.Controllers
 
                 if (status == "Success")
                 {
+                    string Sesssion = _email.SetSession(email);
+                    HttpContext.Session.SetString("UserName", Sesssion);
                     return Json(new { success = true, message = "OTP Verified successfully." });
                 }
                 else if (status == "Expired")
                 {
-                    return Json(new { success = false, message = "OTP has expired. Please request a new one." });
+                    return Json(new { success = false, message = "Invalid OTP." });
                 }
                 else
                 {
@@ -104,7 +106,7 @@ namespace Arihant.Controllers
                 string bodyContent = $"Your OTP for password reset is: <b>{otp}</b>";
                 bool isSent = _email.SendEmail(Username, bodyContent);
                 _email.SaveOTP(Username, otp);
-                HttpContext.Session.SetString("UserName", Username);
+               
                 return Json(new { success = true, message = "Login successful!" });
             }
             else if (result == "3")

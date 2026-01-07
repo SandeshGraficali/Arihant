@@ -93,7 +93,7 @@ namespace Arihant.Services
         public int UpdateAccountPassword(string email, string password)
         {
             string encryptionKey = _configuration["EncryptionSettings:Key"];
-            string EncrPassword = gc.Encrypt(password , encryptionKey);
+            string EncrPassword = gc.Encrypt(password, encryptionKey);
             try
             {
                 var saveParamsnew = new Dictionary<string, SqlParameter>
@@ -106,12 +106,27 @@ namespace Arihant.Services
                 var response = gc.ExecuteStoredProcedure("SP_Email_Integration", saveParamsnew);
                 return 1;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return 0;
             }
-         
+
         }
+
+
+        public string SetSession(string email)
+        {
+            var parameters = new Dictionary<string, SqlParameter>
+            {
+                { "Operation", new SqlParameter("@Operation", "GetUserName") },
+                { "EmailID", new SqlParameter("@EmailID", email) }
+              
+            };
+
+            DataSet ds = gc.ExecuteStoredProcedureGetDataSet("SP_Email_Integration", parameters.Values.ToArray());
+            return ds.Tables[0].Rows[0]["UserName"].ToString();
+        }
+
         public string VerifyOTP(string email, string otp)
         {
             var parameters = new Dictionary<string, SqlParameter>
