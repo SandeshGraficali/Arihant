@@ -222,38 +222,38 @@
 
             <div class="form-row-gridNEW">
                 <div class="form-group">
-                    <label>User Name</label>
+                    <label>User Name</label> <span style="color:red;margin-left:3px;">*</span>
                     <input type="text" id="UserName" name="UserName" placeholder="Full Name">
                     <br />
                     <span class="error-msg" id="err_UserName">User Name is required</span>
                 </div>
 
-                <div class="form-group">
-                    <label>User ID &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                <div class="form-group"> 
+                    <label>User ID  <span style="color:red;margin-left:3px;">*</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
                     <input type="text" id="UserID" name="UserID" placeholder="Full Name">
                     <br />
-                    <span class="error-msg" id="err_UserName">User Name is required</span>
+                    <span class="error-msg" id="err_UserID">User Name is required</span>
                 </div>
 
                 <div class="form-group">
-                    <label>Contact Number</label>
+                    <label>Contact Number</label> <span style="color:red;margin-left:3px;">*</span>
                     <input type="number" id="ContactNo" name="ContactNo" placeholder="10 Digit Mobile">
                     <br />
                     <span class="error-msg" id="err_ContactNo">Invalid Number</span>
                 </div>
                 <div class="form-group">
-                    <label>Email ID &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                    <label>Email ID <span style="color:red;margin-left:3px;">*</span>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
                     <input type="text" id="EmailID" name="EmailID" placeholder="email@domain.com">
                     <br />
                     <span class="error-msg" id="err_EmailID">Valid Email required</span>
                 </div>
 
                 <div class="form-group">
-                    <label>Password Expiry Date</label>
+                    <label>Password Expiry Date</label> <span style="color:red;margin-left:3px;">*</span>
                     <input type="date" id="ExpiryDate" name="ExpiryDate">
                 </div>
                 <div class="form-group">
-                    <label>Assigned Role</label>
+                    <label>Assigned Role</label> <span style="color:red;margin-left:3px;">*</span>
                     <select id="RoleID" name="RoleID" multiple="multiple">
                         @if (ViewBag.RoleList != null)
                         {
@@ -270,7 +270,7 @@
             <div class="form-row-gridNEW">
 
                 <div class="form-group">
-                    <label>Network Access</label>
+                    <label>Network Access</label> <span style="color:red;margin-left:3px;">*</span>
                     <div style="padding-top: 8px; display: flex; gap: 10px;">
                         <label style="font-weight:normal;"><input type="radio" name="AccessType" value="Open" checked> Open</label>
                         <label style="font-weight:normal;"><input type="radio" name="AccessType" value="Office" id="radioOffice"> Office / Factory</label>
@@ -278,7 +278,7 @@
                 </div>
                 <div id="locationWrapper" style="display: none; padding: 15px 20px; ">
                     <div class="form-group">
-                        <label>Select  Locations </label>
+                        <label>Select  Locations </label> <span style="color:red;margin-left:3px;">*</span>
                         <select id="LocationID" name="LocationID" multiple="multiple">
                             @if (ViewBag.LocationList != null)
                             {
@@ -296,14 +296,14 @@
 
             <div id="passwordGroup" class="form-row-grid">
                 <div class="form-group">
-                    <label>           Password</label>
+                    <label>           Password</label> <span style="color:red;margin-left:3px;">*</span>
                     <input type="password" id="Password" name="Password">
                     <br />
                     <span class="error-msg" id="err_Password">Password required</span>
                 </div>
 
                 <div class="form-group">
-                    <label>Confirm Password</label>
+                    <label>Confirm Password</label> <span style="color:red;margin-left:3px;">*</span>
                     <input type="password" id="ConfirmPassword" name="ConfirmPassword">
                     <br />
 
@@ -464,6 +464,19 @@
             });
         });
 
+
+            function showModalAlert(message) {
+        Swal.fire({
+            title: 'Validation Error',
+            text: message,
+            icon: 'error',
+            confirmButtonColor: '#3085d6',
+           
+            target: document.getElementById('userModal')
+        });
+    }
+
+
      function ValidateForm() {
         let isValid = true;
 
@@ -479,13 +492,31 @@
         }
 
 
-        const contactNo = $("#ContactNo").val().trim();
-        const intRegex = /^\d+$/;
-        if (contactNo !== "" && (!intRegex.test(contactNo) || contactNo.length < 10)) {
-            $("#err_ContactNo").text("Please enter a valid 10-digit numeric contact number").show();
-            $("#ContactNo").addClass("is-invalid");
+          const userID = $("#UserID").val().trim();
+        if (userID === "") {
+            $("#err_UserID").text(" UserID is required").show();
+            $("#UserID").addClass("is-invalid");
             isValid = false;
         }
+
+
+            const contactNo = $("#ContactNo").val().trim();
+            const intRegex = /^\d{10}$/;
+            $("#err_ContactNo").hide();
+            $("#ContactNo").removeClass("is-invalid");
+
+            if (contactNo === "") {
+                showModalAlert("Contact Number is required.");
+                $("#ContactNo").addClass("is-invalid");
+                $("#err_ContactNo").text("Contact Number is required").show();
+                isValid = false;
+            }
+            else if (!intRegex.test(contactNo)) {
+                showModalAlert("Please enter a valid 10-digit numeric contact number.");
+                $("#ContactNo").addClass("is-invalid");
+                $("#err_ContactNo").text("Must be exactly 10 digits").show();
+                isValid = false;
+            }
 
 
         const emailID = $("#EmailID").val().trim();
@@ -501,7 +532,7 @@
 
         if (!expiryDateVal) {
 
-            alert("Please select a Password Expiry Date.");
+       showModalAlert("Please select a Password Expiry Date.");
             $("#ExpiryDate").addClass("is-invalid");
             isValid = false;
         } else {
@@ -511,7 +542,7 @@
             today.setHours(0, 0, 0, 0);
 
             if (selectedDate < today) {
-                alert("Password Expiry Date cannot be in the past.");
+               showModalAlert("Password Expiry Date cannot be in the past.");
                 $("#ExpiryDate").addClass("is-invalid");
                 isValid = false;
             }
@@ -519,7 +550,7 @@
 
         const selectedRoles = $("#RoleID").val();
         if (!selectedRoles || selectedRoles.length === 0) {
-            alert("Please assign at least one Role.");
+         showModalAlert("Please assign at least one Role.");
             isValid = false;
         }
 
@@ -528,7 +559,7 @@
         if (accessType === "Office") {
             const selectedLocations = $("#LocationID").val();
             if (!selectedLocations || selectedLocations.length === 0) {
-                alert("Please select at least one Location for Office-based access.");
+               showModalAlert("Please select at least one Location for Office-based access.");
                 isValid = false;
             }
         }
@@ -538,7 +569,7 @@
         if (isDirectAccess) {
             const selectedMenus = $("input[name='selectedMenus']:checked").length;
             if (selectedMenus === 0) {
-                alert("You have enabled Direct Access. Please select at least one menu right.");
+               showModalAlert("You have enabled Direct Access. Please select at least one menu right.");
                 isValid = false;
             }
         }

@@ -425,19 +425,6 @@
             });
         }
 
-        // function appendIPRow(name, ip) {
-        //     let row = `
-        //         <tr class="modal-grid-row" style="border-bottom: 1px solid #eee;">
-        //             <td style="padding: 10px;" class="col-name">
-        //                 <input type="text" value="${name}" style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
-        //             </td>
-        //             <td style="padding: 10px; color: #666; font-family: monospace;" class="col-ip">${ip}</td>
-        //             <td style="padding: 10px; text-align:center;">
-        //                 <button class="btn-remove" style="background: #dc3545; color: white; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">Remove</button>
-        //             </td>
-        //         </tr>`;
-        //     $('#modalIPTable tbody').prepend(row);
-        // }
 
             function appendIPRow(name, ip) {
             let row = `
@@ -528,115 +515,22 @@
         }
 
 
-        //     function UpdateLocation() {
-        //     let ipList = [];
-        //     let ipPattern = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-
-
-        //         $('#modalIPTable tbody tr').each(function () {
-        //             // This looks for an input first; if not found, it takes the text of the cell
-        //             let n = ($(this).find('.col-name input').val() || $(this).find('.col-name').text()).trim();
-        //             let i = ($(this).find('.col-ip input').val() || $(this).find('.col-ip').text()).trim();
-
-        //             console.log("Checking Row:", n, i); // Add this to debug in Browser Console (F12)
-
-        //             if (n && i) {
-        //                 if (!ipPattern.test(i)) {
-                       
-        //                     Swal.fire({
-        //                         title: "Invalid IP Detected",
-        //                         text: `The IP address "${i}" is not in the correct format.`,
-        //                         icon: "error",
-        //                         target: '#myCustomModal',
-        //                         didOpen: () => {
-        //                             const container = document.querySelector('.swal2-container');
-        //                             if (container) container.style.zIndex = "10001";
-        //                         }
-        //                     });
-        //                     return false;
-        //                 }
-        //                 ipList.push({ IP_Name: n, IPAdd: i });
-        //             }
-        //         });
-
-        //     if (ipList.length === 0) {
-        //         Swal.fire({
-        //             title: "Required",
-        //             text: "At least one IP address is mandatory!",
-        //             icon: "warning",
-        //             target: document.getElementById('myCustomModal'),
-        //             didOpen: () => { document.querySelector('.swal2-container').style.zIndex = "10001"; }
-        //         });
-        //         return;
-        //     }
-
-        //     let loc = $("#editLocationName").val().trim();
-        //     if (!loc) {
-        //         Swal.fire({
-        //             title: "Required",
-        //             text: "Location name is required",
-        //             icon: "warning",
-        //             target: '#myCustomModal',
-        //             didOpen: () => { document.querySelector('.swal2-container').style.zIndex = "10001"; }
-        //         });
-        //         return;
-        //     }
-
-        //     let affectedUsers = $('#btnSubmitAction').attr('data-usercount') || 0;
-
-        //     Swal.fire({
-        //         title: "Confirm Update",
-        //         html: `Updating this location will affect <b style="color:red; font-size:18px;">${affectedUsers}</b> assigned user(s).<br>Do you want to proceed?`,
-        //         icon: "question",
-        //         showCancelButton: true,
-        //         confirmButtonColor: "#001f3f",
-        //         cancelButtonColor: "#d33",
-        //         confirmButtonText: "Yes, Update",
-        //         target: '#myCustomModal',
-        //         didOpen: () => { document.querySelector('.swal2-container').style.zIndex = "10001"; }
-        //     }).then((result) => {
-        //         if (result.isConfirmed) {
-
-        //             let model = { ID: $("#LocationID").val(), Location: loc, IPList: ipList };
-
-        //             $.post("@Url.Action("UpdateFullLocation", "Users_Master")", model, function(res) {
-
-        //                 if (res === "1" || res.success) {
-        //                     Swal.fire({
-        //                         title: "Success",
-        //                         text: "Updated successfully",
-        //                         icon: "success",
-        //                         target: '#myCustomModal',
-        //                         didOpen: () => { document.querySelector('.swal2-container').style.zIndex = "10001"; }
-        //                     }).then(() => location.reload());
-        //                 } else {
-        //                     Swal.fire({
-        //                         title: "Error",
-        //                         text: res.message || "Update failed",
-        //                         icon: "error",
-        //                         target: '#myCustomModal',
-        //                         didOpen: () => { document.querySelector('.swal2-container').style.zIndex = "10001"; }
-        //                     });
-        //                 }
-        //             });
-        //         }
-        //     });
-        // }
+        
 
 
         function UpdateLocation() {
     let ipList = [];
-    let isValid = true; // Flag to track if validation passed
+    let isValid = true; 
     const ipPattern = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
 
-    // 1. Validate Table Data
+    
     $('#modalIPTable tbody tr').each(function () {
         let n = ($(this).find('.col-name input').val() || $(this).find('.col-name').text()).trim();
         let i = ($(this).find('.col-ip input').val() || $(this).find('.col-ip').text()).trim();
 
         if (n && i) {
             if (!ipPattern.test(i)) {
-                isValid = false; // Mark as invalid
+                isValid = false; 
                 Swal.fire({
                     title: "Invalid IP Detected",
                     text: `The IP address "${i}" is not in the correct format.`,
@@ -647,16 +541,16 @@
                         if (container) container.style.zIndex = "10001"; 
                     }
                 });
-                return false; // Break the jQuery loop
+                return false; 
             }
             ipList.push({ IP_Name: n, IPAdd: i });
         }
     });
 
-    // Exit function if any IP was invalid
+
     if (!isValid) return;
 
-    // 2. Validate List Length
+
     if (ipList.length === 0) {
         Swal.fire({
             title: "Required",
@@ -668,7 +562,7 @@
         return;
     }
 
-    // 3. Validate Location Name
+
     let loc = $("#editLocationName").val().trim();
     if (!loc) {
         Swal.fire({
@@ -681,7 +575,7 @@
         return;
     }
 
-    // 4. Confirmation and Save
+ 
     let affectedUsers = $('#btnSubmitAction').attr('data-usercount') || 0;
 
     Swal.fire({
@@ -703,7 +597,7 @@
             };
 
             $.post("@Url.Action("UpdateFullLocation", "Users_Master")", model, function(res) {
-                // Handle both string "1" and object { success: true }
+               
                 if (res === "1" || res.success === true) {
                     Swal.fire({
                         title: "Success",
@@ -725,36 +619,6 @@
         }
     });
 }
-
-
-        // function SaveNewIP() {
-        //     let ipList = [];
-
-        //     $('#modalIPTable tbody tr').each(function () {
-        //                 let n = $(this).find('.col-name input').val().trim();
-        //                let i = $(this).find('.col-ip input').val().trim();
-        //                  if (n && i) {
-        //                 ipList.push({ IP_Name: n, IPAdd: i });
-        //             }
-        //     });
-
-
-
-        //     let loc = $("#editLocationName").val().trim();
-        //     if (!loc || ipList.length === 0) {
-        //         return Swal.fire({ title: "Missing Data", text: "Please provide a Location and at least one IP", icon: "warning", target: '#myCustomModal' });
-        //     }
-
-        //     let model = { Location: loc, IPList: ipList };
-
-        //     $.post("@Url.Action("AddIPMaster", "Users_Master")", model, function(res) {
-        //         if (res.success) {
-        //             Swal.fire({ title: "Saved", text: "Master created successfully", icon: "success", target: '#myCustomModal' }).then(() => location.reload());
-        //         } else {
-        //             Swal.fire({ title: "Error", text: res.message, icon: "error", target: '#myCustomModal' });
-        //         }
-        //     });
-        // }
 
 
             function SaveNewIP() {

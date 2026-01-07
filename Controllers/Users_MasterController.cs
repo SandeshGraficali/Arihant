@@ -321,7 +321,8 @@ namespace Arihant.Controllers
             var particularRights = allAssigned.Where(x => x.RoleID == id).ToList();
             ViewBag.RoleName = particularRights.FirstOrDefault()?.RoleName ?? "New Role";
             ViewBag.RoleID = id;
-
+            var groupedRights = allMenus.GroupBy(x => x.Module).ToList();
+            ViewBag.GroupedMenuRights = groupedRights;
             var model = allMenus.Select(m => new EditRoleViewModel
             {
                 MenuID = m.MenuID,
@@ -337,7 +338,8 @@ namespace Arihant.Controllers
         {
             List<MenuRightViewModel> allRights = _user.GetMenuRights();
             var groupedRights = allRights.GroupBy(x => x.Module).ToList();
-
+   
+            ViewBag.GroupedMenuRights = groupedRights;
             return View(groupedRights);
         }
 

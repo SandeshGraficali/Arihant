@@ -10,6 +10,7 @@ using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Globalization;
 using System.Reflection;
+using System.Xml.Linq;
 
 namespace Arihant.Services
 {
@@ -794,67 +795,7 @@ namespace Arihant.Services
             return rightsList;
         }
 
-        //public string UpdateLocation(IP_Master_Model model, string ModifiedBy)
-        //{
-        //    try
-        //    {
-        //        var locOutParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
-        //        var locParams = new Dictionary<string, SqlParameter>
-        //        {
-        //            { "LocationID", new SqlParameter("@LocationID", model.ID) },
-        //            { "LocationName", new SqlParameter("@LocationName", model.Location) },
-        //            { "ModifiedBy", new SqlParameter("@ModifiedBy", ModifiedBy) },
-        //            { "Operation", new SqlParameter("@Operation", "Update_LOCATION") },
-        //            { "result", locOutParam }
-        //        };
-
-        //        var locResponse = gc.ExecuteStoredProcedure("sp_IP_Master", locParams);
-        //        string locationID = locResponse.OutputParameters["@result"]?.ToString();
-        //         if (locationID=="DUPLICATE")
-        //        {
-        //            return "0";
-
-        //        }
-
-
-        //        if (!int.TryParse(locationID, out int currentLocID))
-        //        {
-        //            return "Location Error: " + locationID;
-        //        }
-
-        //        string activeIPs = string.Join(",", model.IPList.Select(x => x.IPAdd));
-        //        var delParams = new Dictionary<string, SqlParameter>
-        //            {
-        //                { "LocationID", new SqlParameter("@LocationID", currentLocID) },
-        //                { "IPAdd", new SqlParameter("@IPAdd", activeIPs) },
-        //                { "Operation", new SqlParameter("@Operation", "DELETE_REMOVED_IPS") }
-        //            };
-        //        gc.ExecuteStoredProcedure("sp_IP_Master", delParams);
-
-        //        foreach (var item in model.IPList)
-        //        {
-        //            var ipOutParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
-        //            var ipParams = new Dictionary<string, SqlParameter>
-        //            {
-        //                { "LocationID", new SqlParameter("@LocationID", currentLocID) },
-        //                { "IPAdd", new SqlParameter("@IPAdd", item.IPAdd) },
-        //                { "IP_Name", new SqlParameter("@IP_Name", item.IP_Name) },
-        //                { "ModifiedBy", new SqlParameter("@ModifiedBy", ModifiedBy) },
-        //                { "Operation", new SqlParameter("@Operation", "UPSERT_IP") },
-        //                { "result", ipOutParam }
-        //            };
-
-        //            var ipResponse = gc.ExecuteStoredProcedure("sp_IP_Master", ipParams);
-        //        }
-
-        //        return "1";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return ex.Message;
-        //    }
-        //}
-
+      
         public string UpdateLocation(IP_Master_Model model, string ModifiedBy)
         {
             try
@@ -888,56 +829,32 @@ namespace Arihant.Services
             }
         }
 
+       
+
         public string AddIPAddress(IP_Master_Model model, string ModifiedBy)
         {
             try
             {
-            
-                var locOutParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
-                var locParams = new Dictionary<string, SqlParameter>
+
+                var xmlElements = model.IPList.Select(i =>new XElement("row",new XElement("IP", i.IPAdd),new XElement("Name", i.IP_Name) ));
+
+                string ipXml = new XElement("root", xmlElements).ToString();
+                var resultParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
+                var parameters = new Dictionary<string, SqlParameter>
                 {
+                    { "Operation", new SqlParameter("@Operation", "ADD_LOCATION_XML") },
                     { "LocationName", new SqlParameter("@LocationName", model.Location) },
                     { "ModifiedBy", new SqlParameter("@ModifiedBy", ModifiedBy) },
-                    { "Operation", new SqlParameter("@Operation", "ADD_LOCATION") },
-                    { "result", locOutParam }
+                    { "IPAdd", new SqlParameter("@IPAdd", ipXml) },
+                    { "result", resultParam }
                 };
 
-                var locResponse = gc.ExecuteStoredProcedure("sp_IP_Master", locParams);
-                string locationID = locResponse.OutputParameters["@result"]?.ToString();
+              
+                var response = gc.ExecuteStoredProcedure("sp_IP_Master", parameters);
+                string finalResult = response.OutputParameters["@result"]?.ToString();
 
-                if(locationID == "DUPLICATE")
-                {
-                    return "0";
-                }
-
-                if (!int.TryParse(locationID, out int newLocID))
-                {
-                    return "Location Error: " + locationID;
-                }
-
-                foreach (var item in model.IPList)
-                {
-                    var ipOutParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
-                    var ipParams = new Dictionary<string, SqlParameter>
-                    {
-                        { "LocationID", new SqlParameter("@LocationID", newLocID) },
-                        { "IPAdd", new SqlParameter("@IPAdd", item.IPAdd) },
-                        { "IP_Name", new SqlParameter("@IP_Name", item.IP_Name) },
-                        { "ModifiedBy", new SqlParameter("@ModifiedBy", ModifiedBy) },
-                        { "Operation", new SqlParameter("@Operation", "ADD_IP_ADD") },
-                        { "result", ipOutParam }
-                    };
-
-                    var ipResponse = gc.ExecuteStoredProcedure("sp_IP_Master", ipParams);
-                    string ipResult = ipResponse.OutputParameters["@result"]?.ToString();
-
-                    if (ipResult != "1")
-                    {
-                        return "0";
-                    }
-                }
-
-                return "1"; 
+                if (finalResult == "DUPLICATE") return "0";
+                return finalResult == "1" ? "1" : "Error: " + finalResult;
             }
             catch (Exception ex)
             {
@@ -1463,8 +1380,8 @@ namespace Arihant.Services
                         { "UserID", new SqlParameter("@UserID", user.UserID ?? (object)DBNull.Value) },
                         { "ContactNo", new SqlParameter("@ContactNo", user.ContactNo ?? (object)DBNull.Value) },
                         { "Password", new SqlParameter("@Password", user.Password ?? (object)DBNull.Value) },
-                         { "AccessType", new SqlParameter("@AccessType", user.AccessType ?? (object)DBNull.Value) },
-                          { "CreatedBy", new SqlParameter("@CreatedBy", CreatedBy ?? (object)DBNull.Value) },
+                        { "AccessType", new SqlParameter("@AccessType", user.AccessType ?? (object)DBNull.Value) },
+                        { "CreatedBy", new SqlParameter("@CreatedBy", CreatedBy ?? (object)DBNull.Value) },
                         { "Email", new SqlParameter("@Email", user.EmailID ?? (object)DBNull.Value) },
                         { "RoleIDs", new SqlParameter("@RoleIDs", (object)roleIdsStr ?? DBNull.Value) },
                         { "LocationIDs", new SqlParameter("@LocationIDs", (object)locationIdsStr ?? DBNull.Value) },
