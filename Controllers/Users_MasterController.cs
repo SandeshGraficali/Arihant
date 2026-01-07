@@ -614,7 +614,7 @@ namespace Arihant.Controllers
                     userName = user.UserName,
                     contactNo = user.ContactNo,
                     emailID = user.EmailID,
-                    expiryDate = user.ExpiryDate?.ToString("yyyy-MM-dd"),
+                    expiryDate = user.ExpiryDate,
                     accessType = user.AccessType,
                     roleIDs = user.RoleIDs, 
                     locationIDs = user.LocationIDs, 

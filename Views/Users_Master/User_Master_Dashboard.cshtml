@@ -250,10 +250,10 @@
 
                 <div class="form-group">
                     <label>Password Expiry Date</label> <span style="color:red;margin-left:3px;">*</span>
-                    <input type="date" id="ExpiryDate" name="ExpiryDate">
+                    <input type="number" id="ExpiryDate" name="ExpiryDate">
                 </div>
                 <div class="form-group">
-                    <label>Assigned Role</label> <span style="color:red;margin-left:3px;">*</span>
+                    <label>Assigned Role</label> 
                     <select id="RoleID" name="RoleID" multiple="multiple">
                         @if (ViewBag.RoleList != null)
                         {
@@ -528,32 +528,15 @@
         }
 
 
-          const expiryDateVal = $("#ExpiryDate").val();
+          const expiryDays = $("#ExpiryDate").val().trim();
+    if (expiryDays === "" || parseInt(expiryDays) <= 0) {
+        showModalAlert("Please enter a valid number of days for password expiry.");
+        $("#ExpiryDate").addClass("is-invalid");
+        $("#err_ExpiryDate").text("Days are required (Minimum 1)").show();
+        isValid = false;
+    }
 
-        if (!expiryDateVal) {
-
-       showModalAlert("Please select a Password Expiry Date.");
-            $("#ExpiryDate").addClass("is-invalid");
-            isValid = false;
-        } else {
-
-            const selectedDate = new Date(expiryDateVal);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            if (selectedDate < today) {
-               showModalAlert("Password Expiry Date cannot be in the past.");
-                $("#ExpiryDate").addClass("is-invalid");
-                isValid = false;
-            }
-        }
-
-        const selectedRoles = $("#RoleID").val();
-        if (!selectedRoles || selectedRoles.length === 0) {
-         showModalAlert("Please assign at least one Role.");
-            isValid = false;
-        }
-
+   
 
         const accessType = $("input[name='AccessType']:checked").val();
         if (accessType === "Office") {
@@ -709,6 +692,11 @@
                         });
                     }
 
+
+                    if (typeof refreshRightsCheckboxes === "function") {
+    refreshRightsCheckboxes();
+}
+
                         $("#btnSaveUser").text("Update User");
                     $('#userModal').fadeIn();
                 } else {
@@ -849,7 +837,7 @@
         function ResetUserPassword(userId) {
         Swal.fire({
             title: 'Reset Password?',
-            text: "The password will be reset to the default: 'Admin@123'",
+            text: "The password will be Send On Your Email",
             icon: 'info',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',

@@ -6,6 +6,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<DL_Users_Master>();
 builder.Services.AddTransient<DL_Login>();
+builder.Services.AddTransient<DL_Email>();
 builder.Services.AddScoped<GraficaliClasses.GraficaliClasses>(provider =>
 {
 
@@ -39,6 +40,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Users_Master}/{action=User_Master_Dashboard}/{id?}");
+    pattern: "{controller=LogIn}/{action=User_LogIn}/{id?}");
 
 app.Run();

@@ -11,6 +11,7 @@ using System.Data;
 using System.Globalization;
 using System.Reflection;
 using System.Xml.Linq;
+using static System.Net.WebRequestMethods;
 
 namespace Arihant.Services
 {
@@ -18,9 +19,13 @@ namespace Arihant.Services
     {
 
         private readonly GraficaliClasses.GraficaliClasses gc;
-        public DL_Users_Master(GraficaliClasses.GraficaliClasses _gc)
+        private readonly DL_Email _email;
+        private readonly IConfiguration _configuration;
+        public DL_Users_Master(GraficaliClasses.GraficaliClasses _gc, DL_Email user, IConfiguration configuration)
         {
             gc = _gc;
+            _email = user;
+            _configuration = configuration;
         }
 
         public ClientSubmissionViewModel GetClientById(int clientId)
@@ -909,13 +914,24 @@ namespace Arihant.Services
             }
         }
 
+        public string GenerateRandomPassword(int length = 8)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            Random random = new Random();
 
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
         public string ResetPassword(string userId, string ModifiedBy)
         {
          
             try
             {
-                string defaultPassword = "Admin@123";
+                string rawPassword = GenerateRandomPassword(10);
+                string encryptionKey = _configuration["EncryptionSettings:Key"];
+                string EncrPassword = gc.Encrypt(rawPassword, encryptionKey);
+                string bodyContent = $"Your Updated password reset is: <b>{rawPassword}</b>";
+                bool status= _email.SendEmail(ModifiedBy , bodyContent );
                 var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250)
                 {
                     Direction = ParameterDirection.Output
@@ -924,7 +940,7 @@ namespace Arihant.Services
                 var parameters = new Dictionary<string, SqlParameter>
                 {
                     { "UserID", new SqlParameter("@UserID", userId) },
-                    { "Password", new SqlParameter("@Password", defaultPassword) },
+                    { "Password", new SqlParameter("@Password", EncrPassword) },
                     { "Operation", new SqlParameter("@Operation", "Reset_Password") },
                    
                     { "CreatedBy", new SqlParameter("@CreatedBy", ModifiedBy) },
@@ -1334,7 +1350,7 @@ namespace Arihant.Services
                         EmailID = dr["EmailID"].ToString(),
                         ContactNo = dr["ContactNo"].ToString(),
                         AccessType = dr["AccessType"].ToString(),
-                        ExpiryDate = dr["ExpiryDate"] != DBNull.Value ? Convert.ToDateTime(dr["ExpiryDate"]) : (DateTime?)null,
+                        ExpiryDate = dr["ExpiryDate"].ToString(),
 
                         RoleIDs = dr["RoleIDs"] != DBNull.Value ?
                             dr["RoleIDs"].ToString().Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList() : new List<int>(),

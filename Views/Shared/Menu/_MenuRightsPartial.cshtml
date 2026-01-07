@@ -143,22 +143,69 @@
 <script>
     $(document).ready(function () {
       
-        $('.parent-check').on('change', function () {
-            $(this).closest('.module-card').find('.child-check').prop('checked', $(this).is(':checked'));
-        });
+        // $('.parent-check').on('change', function () {
+        //     $(this).closest('.module-card').find('.child-check').prop('checked', $(this).is(':checked'));
+        // });
 
-        $('.child-check').on('change', function () {
-            var $card = $(this).closest('.module-card');
-            var allChecked = $card.find('.child-check').length === $card.find('.child-check:checked').length;
-            $card.find('.parent-check').prop('checked', allChecked);
-        });
+        // $('.child-check').on('change', function () {
+        //     var $card = $(this).closest('.module-card');
+        //     var allChecked = $card.find('.child-check').length === $card.find('.child-check:checked').length;
+        //     $card.find('.parent-check').prop('checked', allChecked);
+        // });
 
 
+        // $('.module-card').each(function() {
+        //     var allChecked = $(this).find('.child-check').length === $(this).find('.child-check:checked').length;
+        //     if($(this).find('.child-check').length > 0) {
+        //         $(this).find('.parent-check').prop('checked', allChecked);
+        //     }
+        // });
+
+
+        function updateParentStatus($card) {
+        var $parent = $card.find('.parent-check');
+        var $children = $card.find('.child-check');
+        var checkedCount = $children.filter(':checked').length;
+
+        if (checkedCount === 0) {
+            // None checked
+            $parent.prop('checked', false);
+            $parent.prop('indeterminate', false);
+        } else if (checkedCount === $children.length) {
+            // All checked
+            $parent.prop('checked', true);
+            $parent.prop('indeterminate', false);
+        } else {
+            // Some checked (Partial state)
+            $parent.prop('checked', false);
+            $parent.prop('indeterminate', true);
+        }
+    }
+
+    // Event: Parent Checkbox Clicked
+    $('.parent-check').on('change', function () {
+        var isChecked = $(this).is(':checked');
+        $(this).closest('.module-card').find('.child-check').prop('checked', isChecked);
+        // When clicking parent, we remove indeterminate state
+        $(this).prop('indeterminate', false);
+    });
+
+    // Event: Child Checkbox Clicked
+    $(document).on('change', '.child-check', function () {
+        updateParentStatus($(this).closest('.module-card'));
+    });
+
+    // Initial load: logic for existing data
+    $('.module-card').each(function() {
+        updateParentStatus($(this));
+    });
+
+    // Expose function globally so main page can call it after setting values
+    window.refreshRightsCheckboxes = function() {
         $('.module-card').each(function() {
-            var allChecked = $(this).find('.child-check').length === $(this).find('.child-check:checked').length;
-            if($(this).find('.child-check').length > 0) {
-                $(this).find('.parent-check').prop('checked', allChecked);
-            }
+            updateParentStatus($(this));
         });
+    };
+
     });
 </script>

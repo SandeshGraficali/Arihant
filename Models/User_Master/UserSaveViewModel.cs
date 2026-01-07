@@ -6,7 +6,7 @@
         public string UserName { get; set; }
         public string ContactNo { get; set; }
         public string EmailID { get; set; }
-        public DateTime? ExpiryDate { get; set; }
+        public string? ExpiryDate { get; set; }
         public string Password { get; set; }
         public string AccessType { get; set; }
         public bool IsDirectAccess { get; set; }
