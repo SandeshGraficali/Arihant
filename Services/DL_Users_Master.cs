@@ -3,6 +3,7 @@ using Arihant.Models.Company_Master;
 using Arihant.Models.IP_Master;
 using Arihant.Models.Rights_Master;
 using Arihant.Models.User_Master;
+using Arihant.Models.Vender;
 using Azure;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +28,237 @@ namespace Arihant.Services
             _email = user;
             _configuration = configuration;
         }
+
+        public string UpdateVendorStatusService(int vendorId, bool status, string modifiedBy, string operation)
+        {
+            try
+            {
+                var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
+
+                var parameters = new Dictionary<string, SqlParameter>
+                {
+                    { "VendorID", new SqlParameter("@VendorID", vendorId) },
+                    { "IsActive", new SqlParameter("@IsActive", status) },
+                    { "ModifiedBy", new SqlParameter("@ModifiedBy", modifiedBy) },
+                    { "Operation", new SqlParameter("@Operation", operation) }, 
+                    { "result", outParam }
+                };
+
+                var response = gc.ExecuteStoredProcedure("sp_ManageVendorStatus", parameters);
+                return response.OutputParameters["@result"]?.ToString() ?? "Error: No response";
+            }
+            catch (Exception ex)
+            {
+                return "Error: " + ex.Message;
+            }
+        }
+        public string UpdateVendorStatusService(int vendorId, bool status, string modifiedBy)
+        {
+            try
+            {
+                var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
+
+                var parameters = new Dictionary<string, SqlParameter>
+            {
+                { "VendorID", new SqlParameter("@VendorID", vendorId) },
+                { "IsActive", new SqlParameter("@IsActive", status) },
+                { "ModifiedBy", new SqlParameter("@ModifiedBy", modifiedBy) },
+                { "Operation", new SqlParameter("@Operation", "TOGGLE_STATUS") },   
+                { "result", outParam }
+            };
+
+                var response = gc.ExecuteStoredProcedure("sp_ManageVendorStatus", parameters);
+                return response.OutputParameters["@result"]?.ToString() ?? "Error: No response";
+            }
+            catch (Exception ex)
+            {
+                return "Error: " + ex.Message;
+            }
+        }
+
+        public VendorMasterVM GetVendorByID(int id)
+        {
+            VendorMasterVM model = null;
+            var parameters = new Dictionary<string, SqlParameter>
+            {
+                { "Operation", new SqlParameter("@Operation", "Get_Vendor_By_ID") },
+                { "VendorID", new SqlParameter("@VendorID", id) }
+            };
+
+            DataSet ds = gc.ExecuteStoredProcedureGetDataSet("sp_GetVendorList", parameters.Values.ToArray());
+
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                DataRow dr = ds.Tables[0].Rows[0];
+                model = new VendorMasterVM
+                {   VendorID=id.ToString(),
+                    VendorName = dr["VendorName"].ToString(),
+                    GSTNo = dr["GSTNo"].ToString(),
+                    PANNO = dr["PanNo"].ToString(),
+                    Email = dr["ContactEmail"].ToString(),
+                    EmailID  = dr["EmailID"].ToString(),
+                    AlternateEmail = dr["AlternetEmail"].ToString(),
+                    Website = dr["Website"].ToString(),
+                    WhatsappNo = dr["WhatsAppNO"].ToString(),
+                    Tel1 = dr["Telephone"].ToString(),
+                    ContactPersonName = dr["ContactPersonName"].ToString(),
+                    MobileNo = dr["MobileNumber"].ToString(),
+                    OffMobileNO = dr["OfficeMobileNO"].ToString(),
+                    Remark = dr["Remark"].ToString(),
+                    Payment_Terms = dr["Payment_Terms"].ToString(),
+                    Compare_Payment_Terms = dr["Compare_Payment_Terms"].ToString()
+                };
+
+                // Map Addresses
+                foreach (DataRow adr in ds.Tables[1].Rows)
+                {
+                    model.AddressList.Add(new AddressVM
+                    {
+                        AddressTypeID = adr["AddressType"].ToString(),
+                        AddressLine1 = adr["FullAddress"].ToString(),
+                        AddressLine2 = adr["AddLine2"].ToString(),
+                        Pincode = adr["PinCode"].ToString(),
+                        Landmark = adr["Landmark"].ToString(),
+                        CityName = adr["CityName"].ToString(),
+                        CityID = adr["City"].ToString(),
+                        StateName = adr["StateName"].ToString(),
+                        CountryName = adr["CountryName"].ToString(),
+                        StateID = adr["State"].ToString(),
+                        CountryID = adr["Country"].ToString()
+                    });
+                }
+
+                // Map Banks
+                foreach (DataRow bdr in ds.Tables[2].Rows)
+                {
+                    model.BankList.Add(new BankVM
+                    {
+                        BankName = bdr["BankName"].ToString(),
+                        AccountNo = bdr["AccountNo"].ToString(),
+                        IFSCCode = bdr["IFSCCode"].ToString(),
+                        AccountType = bdr["AccountType"].ToString(),
+                        Landmark = bdr["Landmark"].ToString(),
+                        AccountHolderName = bdr["AccountHolderName"].ToString(),
+                        AddressLine1 = bdr["AddressLine1"].ToString(),
+                        AddressLine2 = bdr["AddLine2"].ToString(),
+                        CountryID = bdr["CountryID"].ToString(),
+                        StateID = bdr["StateID"].ToString(),
+                        CityID = bdr["CityID"].ToString(),
+
+                        Pincode = bdr["PinCode"].ToString()
+                    });
+                }
+            }
+            return model;
+        }
+
+        public List<VendorMasterVMView> GetVendorList()
+        {
+            List<VendorMasterVMView> vendors = new List<VendorMasterVMView>();
+            try
+            {
+                var parameters = new Dictionary<string, SqlParameter>
+                {
+                    { "Operation", new SqlParameter("@Operation", "Get_Vendor_List") }
+                };
+
+             
+                DataSet response = gc.ExecuteStoredProcedureGetDataSet("sp_GetVendorList", parameters.Values.ToArray());
+
+                if (response != null && response.Tables.Count > 0)
+                {
+                    foreach (DataRow dr in response.Tables[0].Rows)
+                    {
+                        vendors.Add(new VendorMasterVMView
+                        {
+                            VendorID = dr["VendorID"] != DBNull.Value ? dr["VendorID"].ToString() : "",
+                            VendorName = dr["VendorName"] != DBNull.Value ? dr["VendorName"].ToString() : "",
+                            GSTNo = dr["GSTNo"] != DBNull.Value ? dr["GSTNo"].ToString() : "",
+                            PANNO = dr["PanNo"] != DBNull.Value ? dr["PanNo"].ToString() : "",
+                            EmailID = dr["EmailID"] != DBNull.Value ? dr["EmailID"].ToString() : "",
+                            Payment_Terms = dr["Payment_Terms"] != DBNull.Value ? dr["Payment_Terms"].ToString() : "",
+                            ContactPersonName = dr["ContactPersonName"] != DBNull.Value ? dr["ContactPersonName"].ToString() : "",
+                            MobileNo = dr["MobileNumber"] != DBNull.Value ? dr["MobileNumber"].ToString() : "",
+                             IsActive = dr["IsActive"] != DBNull.Value ? dr["IsActive"].ToString() : ""
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+               
+                throw ex;
+            }
+            return vendors;
+        }
+
+        public string AddVendorDetails(VendorMasterVM model, string CreatedBy)
+        {
+            try
+            {
+                if (model == null)
+                    return "Error: Model is null";
+
+               
+                var contactList = new List<object>
+                    {
+                        new
+                        {
+                            Email = model.Email,
+                            AlternateEmail = model.AlternateEmail,
+                            ContactPersonName = model.ContactPersonName,
+                            OffMobileNO = model.OffMobileNO,
+                            WhatsappNo = model.WhatsappNo,
+                            Website = model.Website,
+                            Telephone = model.Tel1,
+                            Mobile1 = model.MobileNo,
+                            Mobile2 = "",
+                            Mobile3 = "",
+                            Mobile4 = "",
+                            Mobile5 = ""
+                        }
+                    };
+
+                var contactJson = System.Text.Json.JsonSerializer.Serialize(contactList);
+                var addressJson = System.Text.Json.JsonSerializer.Serialize(model.AddressList ?? new List<AddressVM>());
+                var bankJson = System.Text.Json.JsonSerializer.Serialize(model.BankList ?? new List<BankVM>());
+
+                var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                var parameters = new Dictionary<string, SqlParameter>
+                {
+                    { "VendorID", new SqlParameter("@VendorID", model.VendorID ?? (object)DBNull.Value) },
+                    { "VendorName", new SqlParameter("@VendorName", model.VendorName ?? (object)DBNull.Value) },
+                    { "GSTNo", new SqlParameter("@GSTNo", model.GSTNo ?? (object)DBNull.Value) },
+                    { "PanNo", new SqlParameter("@PanNo", model.PANNO) },
+                    { "EmailID", new SqlParameter("@EmailID", model.Email ?? (object)DBNull.Value) },
+                    { "Compare_Payment_Terms", new SqlParameter("@Compare_Payment_Terms", model.Compare_Payment_Terms ?? (object)DBNull.Value) },
+                    { "Payment_Terms", new SqlParameter("@Payment_Terms", model.Payment_Terms ?? (object)DBNull.Value) },
+                    { "Remark", new SqlParameter("@Remark", model.Remark ?? (object)DBNull.Value) },
+
+                    { "ContactJson", new SqlParameter("@ContactJson", contactJson) },
+                    { "AddressJson", new SqlParameter("@AddressJson", addressJson) },
+                    { "BankJson", new SqlParameter("@BankJson", bankJson) },
+
+                    { "CreatedBy", new SqlParameter("@CreatedBy", CreatedBy) },
+                    { "ModifiedBy", new SqlParameter("@ModifiedBy", DBNull.Value) },
+                    { "result", outParam }
+                };
+
+                var response = gc.ExecuteStoredProcedure("sp_SaveVendorMasterFull", parameters);
+
+                return response.OutputParameters["@result"]?.ToString() ?? "Error: No result from DB";
+            }
+            catch (Exception ex)
+            {
+                return "Error: " + ex.Message;
+            }
+        }
+
+
 
         public ClientSubmissionViewModel GetClientById(int clientId)
         {
@@ -656,6 +888,34 @@ namespace Arihant.Services
                         list.Add(obj);
                     }
                 }
+            return list;
+        }
+
+
+        public List<C_Master> GetC_MasterAddresList()
+        {
+            List<C_Master> list = new List<C_Master>();
+            var parameters = new Dictionary<string, SqlParameter>
+                {
+                    { "Operation", new SqlParameter("@Operation", "Get_C_MastersAddress") }
+                };
+
+            DataSet ds = gc.ExecuteStoredProcedureGetDataSet("sp_Get_C_Master", parameters.Values.ToArray());
+            if (ds != null && ds.Tables.Count > 0)
+            {
+                DataTable dt = ds.Tables[0];
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    C_Master obj = new C_Master
+                    {
+                        ID = row["ID"].ToString(),
+                        Name = row["Name"].ToString()
+                    };
+
+                    list.Add(obj);
+                }
+            }
             return list;
         }
 

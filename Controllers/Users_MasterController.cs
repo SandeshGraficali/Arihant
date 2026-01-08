@@ -3,9 +3,11 @@ using Arihant.Models.Company_Master;
 using Arihant.Models.IP_Master;
 using Arihant.Models.Rights_Master;
 using Arihant.Models.User_Master;
+using Arihant.Models.Vender;
 using Arihant.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -21,6 +23,104 @@ namespace Arihant.Controllers
         {
             _user = _master;
         }
+
+        [HttpPost]
+        public JsonResult UpdateVendorStatusNew(int vendorId, int status, string operation = "TOGGLE_STATUS")
+        {
+            // If operation is DELETE, we pass status as false/0 anyway
+            bool isActive = (status == 1);
+
+            // Call the same service method but pass the operation type
+            string result = _user.UpdateVendorStatusService(vendorId, isActive, "Admin", operation);
+
+            if (result.StartsWith("Success"))
+            {
+                return Json(new { success = true, message = result });
+            }
+            return Json(new { success = false, message = result });
+        }
+
+        public IActionResult EditVendor(int id)
+        {
+            var model = _user.GetVendorByID(id);
+            if (model == null) return NotFound();
+
+            ViewBag.IsEdit = true;
+            return View("Add_Vender", model); 
+        }
+
+
+        [HttpPost]
+        public JsonResult SaveVendor(string jsonData)
+        {
+            try
+            {
+                var options = new System.Text.Json.JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                var model = System.Text.Json.JsonSerializer.Deserialize<VendorMasterVM>(jsonData, options);
+
+      
+                string result = _user.AddVendorDetails(model, "Admin");
+
+                    if (result.StartsWith("Success", StringComparison.OrdinalIgnoreCase))
+                {
+                    return Json(new { success = true, message = result });
+                }
+                else
+                {
+                    return Json(new { success = false, message = result });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        public IActionResult Vender_Master()
+        {
+            var list = _user.GetVendorList();
+            return View(list);
+           
+        }
+
+        [HttpPost]
+        public JsonResult UpdateVendorStatus(int vendorId, int status)
+        {
+            
+            bool isActive = (status == 1);
+
+            string result = _user.UpdateVendorStatusService(vendorId, isActive, "Admin");
+
+            if (result.StartsWith("Success"))
+            {
+                return Json(new { success = true, message = result });
+            }
+            return Json(new { success = false, message = result });
+        }
+
+        public IActionResult Add_Vender(int id = 0)
+        {
+            ViewBag.countrylist = _user.GetC_MasterList();
+            ViewBag.Addresslist = _user.GetC_MasterAddresList();
+            Arihant.Models.Vender.VendorMasterVM model = new Arihant.Models.Vender.VendorMasterVM();
+
+            if (id > 0)
+            {
+               
+                model = _user.GetVendorByID(id);
+                ViewBag.IsEdit = true;
+            }
+            else
+            {
+                ViewBag.IsEdit = false;
+            }
+
+            return View(model);
+        }
+
 
         [HttpPost]
         public JsonResult SaveClient(string jsonData)
@@ -81,6 +181,7 @@ namespace Arihant.Controllers
         public IActionResult ClientMaster(int? id)
         {
            ViewBag.countrylist = _user.GetC_MasterList();
+           
             ViewBag.ownerlist = _user.GetOwnerList();
             if (id.HasValue && id.Value > 0)
             {               

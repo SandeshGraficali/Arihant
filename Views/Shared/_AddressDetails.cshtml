@@ -1,48 +1,47 @@
 ﻿@model string
 
 
-<div class="col-lg-12 padding5">
-    <label> Address Line 1 <span style="color:red">*</span></label>
-    <input type="text" id="@(Model)_AddressLine1" class="TextBox col-lg-12 BorderRounded5">
+<div class="col-lg-12 floatleft padding10">
+    <label>Address Line 1 <span style="color:red">*</span></label>
+    <input type="text" id="@(Model)_AddressLine1" class="TextBox col-lg-12 BorderRounded5" placeholder="Building, Street, Area">
 </div>
-<div class="col-lg-12 no-padding">
-    <div class="col-lg-6 floatleft padding5">
-        <label>Address Line 2</label>
-        <input type="text" id="@(Model)_AddressLine2" class="TextBox col-lg-12 BorderRounded5">
-    </div>
-    <div class="col-lg-6 floatleft padding5">
-        <label>Pincode <span style="color:red">*</span></label>
-        <input type="text" id="@(Model)_Pincode" class="TextBox col-lg-12 BorderRounded5">
-    </div>
-</div>
-<div class="col-lg-12 no-padding">
-    <div class="col-lg-6 floatleft padding5">
-        <label>Country</label> <span style="color:red">*</span>
-        <select id="@(Model)_Country" class="TextBox col-lg-12 BorderRounded5" onchange="OnCountryChange(this.value, '@(Model)')">
-            <option value="">-- Select  Country --</option>
-          
-        </select>
-    </div>
 
-   
-    <div class="col-lg-6 floatleft padding5">
-        <label>Landmark</label>
-        <input type="text" id="@(Model)_Landmark" class="TextBox col-lg-12 BorderRounded5">
-    </div>
+<div class="col-lg-4 floatleft padding10">
+    <label>Address Line 2</label>
+    <input type="text" id="@(Model)_AddressLine2" class="TextBox col-lg-12 BorderRounded5" placeholder="Landmark, Suite, etc.">
 </div>
-<div class="col-lg-12 no-padding">
-    
 
-    <div class="col-lg-6 floatleft padding5">
-        <label>State</label> <span style="color:red">*</span>
-        <select id="@(Model)_State" class="TextBox col-lg-12 BorderRounded5" onchange="OnStateChange(this.value, '@(Model)')">
-            <option value="">-- Select State --</option>
-        </select>
-    </div>
-    <div class="col-lg-6 floatleft padding5">
-        <label>City</label> <span style="color:red">*</span>
-        <select id="@(Model)_City" class="TextBox col-lg-12 BorderRounded5">
-            <option value="">-- Select City --</option>
-        </select>
-    </div>
+<div class="col-lg-4 floatleft padding10">
+    <label>Pincode <span style="color:red">*</span></label>
+    <input type="number" id="@(Model)_Pincode" class="TextBox col-lg-12 BorderRounded5" placeholder="6-digit code">
+</div>
+
+
+<div class="col-lg-4 floatleft padding10">
+    <label>Landmark</label>
+    <input type="text" id="@(Model)_Landmark" class="TextBox col-lg-12 BorderRounded5">
+</div>
+
+<div class="col-lg-4 floatleft padding10">
+    <label>Country</label> <span style="color:red">*</span>
+    <select id="@(Model)_Country" class="TextBox col-lg-12 BorderRounded5" onchange="OnCountryChange(this.value, '@(Model)')">
+        <option value="">-- Select  Country --</option>
+
+    </select>
+</div>
+
+
+
+<div class="col-lg-4 floatleft padding10">
+    <label>State <span style="color:red">*</span></label>
+    <select id="@(Model)_State" class="TextBox col-lg-12 BorderRounded5" onchange="OnStateChange(this.value, '@(Model)')">
+        <option value="">-- Select State --</option>
+    </select>
+</div>
+
+<div class="col-lg-4 floatleft padding10">
+    <label>City</label> <span style="color:red">*</span>
+    <select id="@(Model)_City" class="TextBox col-lg-12 BorderRounded5">
+        <option value="">-- Select City --</option>
+    </select>
 </div>
