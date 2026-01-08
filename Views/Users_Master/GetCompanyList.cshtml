@@ -174,7 +174,7 @@
             if (result.isConfirmed) {
                
                 $.ajax({
-                    url: '/Users_Master/UpdateStatus',
+                  url: '@Url.Action("UpdateStatus", "Users_Master")',
                     type: 'POST',
                    
                     data: { id: id, status: isActivating ? "1" : "0" },

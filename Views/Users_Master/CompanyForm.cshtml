@@ -347,7 +347,7 @@
             if (!countryid) return;
 
             $.ajax({
-                url: '/Users_Master/GetState',
+              url: '@Url.Action("GetState", "Users_Master")',
                 type: "GET",
                 data: { countryid: countryid },
                 success: function (cityList) {

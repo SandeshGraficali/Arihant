@@ -107,7 +107,7 @@ function OnCountryChange(countryid, prefix) {
     if (!countryid) return;
 
     $.ajax({
-        url: '/Users_Master/GetState',
+        url: '/ArihantERP/Users_Master/GetState',
         type: "GET",
         data: {
             countryid: countryid
@@ -140,7 +140,8 @@ function SaveClient() {
 
     var jsonString = JSON.stringify(finalData);
     $.ajax({
-        url: '@Url.Action("SaveClient", "Users_Master")',
+        url: '/ArihantERP/Users_Master/SaveClient',
+       
         type: 'POST',
 
         data: {
@@ -150,7 +151,8 @@ function SaveClient() {
             if (response.success) {
                 Swal.fire('Success', 'Information saved successfully!', 'success')
                     .then(() => {
-                        window.location.href = '@Url.Action("AllClientMasterList", "Users_Master")';
+                        window.location.href = '/ArihantERP/Users_Master/AllClientMasterList';
+                           
                     });
             } else {
                 Swal.fire('Error', response.message, 'error');

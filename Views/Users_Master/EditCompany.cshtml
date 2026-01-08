@@ -109,7 +109,9 @@
             if (!stateId) return;
 
             $.ajax({
-               url: '/Users_Master/GetCitiesByState',
+          //  url: '@Url.Action("GetCitiesByState", "Users_Master")',
+              url: '//")',
+          
                 type: "GET",
                 data: { stateId: stateId },
                 success: function (cityList) {
@@ -207,7 +209,7 @@
     function LoadCitiesAndSet(stateId, prefix, selectedCityId)
     {
         $.ajax({
-            url: '/Users_Master/GetCitiesByState',
+          url: '@Url.Action("GetCitiesByState", "Users_Master")',
             type: "GET",
             data: { stateId: stateId },
             success: function (cityList) {

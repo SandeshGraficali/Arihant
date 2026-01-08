@@ -930,8 +930,8 @@ namespace Arihant.Services
                 string rawPassword = GenerateRandomPassword(10);
                 string encryptionKey = _configuration["EncryptionSettings:Key"];
                 string EncrPassword = gc.Encrypt(rawPassword, encryptionKey);
-                string bodyContent = $"Your Updated password reset is: <b>{rawPassword}</b>";
-                bool status= _email.SendEmail(ModifiedBy , bodyContent );
+                string bodyContent = $"Please the Updated Creadential below <br/>User ID: <b>{userId}</b><br/> Password : <b>{rawPassword}</b>";
+                bool status= _email.SendEmail(ModifiedBy , bodyContent , "Login Credentials");
                 var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250)
                 {
                     Direction = ParameterDirection.Output
@@ -1412,6 +1412,11 @@ namespace Arihant.Services
 
                 var response = gc.ExecuteStoredProcedure("sp_User_Master", parameters);
                 string result = response.OutputParameters["@result"]?.ToString();
+
+
+                string bodyContent = $"Your User ID has been created. Kindly use your Email as your Username and Password: <b>{user.Password}</b>";
+                bool status = _email.SendEmail(user.EmailID, bodyContent,"User Created Successfully");
+
                 return result;
 
             }

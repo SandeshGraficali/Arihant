@@ -26,8 +26,8 @@ namespace Arihant.Controllers
             try
             {
                 string otp = new Random().Next(100000, 999999).ToString();
-                string bodyContent = $"Your OTP for password reset is: <b>{otp}</b>";
-                bool isSent = _email.SendEmail(email , bodyContent );
+                string bodyContent = $"Your OTP for Login: <b>{otp}</b>";
+                bool isSent = _email.SendEmail(email , bodyContent,"OTP for Login" );
                                _email.SaveOTP(email, otp);
 
                 if (isSent)
@@ -103,8 +103,8 @@ namespace Arihant.Controllers
             if (result == "1")
             {
                 string otp = new Random().Next(100000, 999999).ToString();
-                string bodyContent = $"Your OTP for password reset is: <b>{otp}</b>";
-                bool isSent = _email.SendEmail(Username, bodyContent);
+                string bodyContent = $"Your OTP for Login: <b>{otp}</b>";
+                bool isSent = _email.SendEmail(Username, bodyContent, "OTP for Login");
                 _email.SaveOTP(Username, otp);
                
                 return Json(new { success = true, message = "Login successful!" });

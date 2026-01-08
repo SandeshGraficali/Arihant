@@ -19,7 +19,7 @@ namespace Arihant.Services
             _configuration = configuration;
         }
 
-        public bool SendEmail(string EmailID , string bodyContent)
+        public bool SendEmail(string EmailID , string bodyContent,string Subject)
         {
             try
             {
@@ -46,7 +46,7 @@ namespace Arihant.Services
                     {
                         mail.From = new MailAddress(fromEmail, "Arihant Gold Plast");
                         mail.To.Add(EmailID);
-                        mail.Subject = "Reset Password OTP";
+                        mail.Subject = Subject;
 
                      
                         mail.Body = EmailFormatWithHeader(bodyContent);
@@ -146,7 +146,7 @@ namespace Arihant.Services
             strmsgbody.Append("<table width='600' align='center' cellpadding='0' cellspacing='0' style='border: solid 1px #2c3a40; font-family: Arial, sans-serif;'>");
             strmsgbody.Append("<tr><td bgcolor='#f8f8f8' style='padding: 20px; border-bottom: 1px solid #eeeeee;'>");
             strmsgbody.Append("<table width='100%'><tr>");
-            strmsgbody.Append("<td><img src='~/images/logo.png' width='160' alt='Arihant Gold Plast' /></td>");
+            strmsgbody.Append("<td><img src='https://graficali.co.in/Arihant/images/logo.png' style='display:block;  max-width:100px; height:auto;' alt='Arihant Gold Plast' /></td>");
             strmsgbody.Append("<td align='right' style='font-size: 12px; color: #666;'>Arihant Gold Plast Pvt</td>");
             strmsgbody.Append("</tr></table></td></tr>");
             strmsgbody.Append("<tr><td align='center' style='padding: 15px; background-color: #64b379; color: #ffffff; font-size: 18px; font-weight: bold;'>");

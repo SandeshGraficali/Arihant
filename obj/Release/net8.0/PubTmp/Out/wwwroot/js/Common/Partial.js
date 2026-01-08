@@ -13,14 +13,14 @@ function bindIdentityDetails(data) {
     $("input[name='CompanyemailID']").val(data.CompanyemailID);
 
 
-   
+
 }
 function SelectedValueCountryDropdown(prefix, value) {
     $(`#${prefix}_Country`).val(value);
 }
 function bindContactCommunication(data) {
     $("input[name='Email']").val(data.Email);
-    
+
     $("input[name='AlternateEmail']").val(data.AlternetEmail || "");
     $("input[name='ContactPersonName']").val(data.ContactPersonName || "");
     $("input[name='OffMobileNO']").val(data.OfficeMobileNO || "");
@@ -30,7 +30,7 @@ function bindContactCommunication(data) {
     $("input[name='Tel1']").val(data.Telephone);
     $("input[name='MobileNo']").first().val(data.MobileNumber);
 
-  
+
     const extraMobiles = [data.MobileNumber2, data.MobileNumber3, data.MobileNumber4, data.MobileNumber5];
     extraMobiles.forEach(mob => {
         if (mob && mob.toString().trim() !== "") {
@@ -47,7 +47,7 @@ function bindBankDetails(data) {
     $("select[name='AccountType']").val(data.AccountType); // Use select for dropdown
     $("input[name='IFSCCode']").val(data.IFSCCode);
 
-    
+
     $(`#B_AddressLine1`).val(data.Bank_Address1);
     $(`#B_AddressLine2`).val(data.Bank_Address2);
     $("#B_Landmark").val(data.Bank_Landmark);
@@ -69,12 +69,12 @@ function SelectedValueStateDropdawon(prefix, value) {
 
 
 function BindDropdown(prefix, stateId, selectedCityId) {
-    
+
     return new Promise((resolve) => {
         if (!stateId) { resolve(); return; }
 
         $.ajax({
-            url: '/Users_Master/GetCitiesByState',
+            url: '/ArihantERP/Users_Master/GetCitiesByState',
             type: "GET",
             data: { stateId: stateId },
             success: function (cityList) {
@@ -87,7 +87,7 @@ function BindDropdown(prefix, stateId, selectedCityId) {
                 });
 
                 $(cityDropdown).val(selectedCityId);
-                resolve(); 
+                resolve();
             },
             error: function () {
                 console.error("Error loading cities for " + prefix);
@@ -104,7 +104,7 @@ function BindDropdownState(prefix, countryid, selectedCityId) {
         if (!countryid) { resolve(); return; }
 
         $.ajax({
-            url: '/Users_Master/GetState',
+            url: '/ArihantERP/Users_Master/GetState',
             type: "GET",
             data: { countryid: countryid },
             success: function (cityList) {
@@ -165,7 +165,7 @@ function OnStateChange(stateId, prefix) {
     if (!stateId) return;
 
     $.ajax({
-        url: '/Users_Master/GetCitiesByState',
+        url: '/ArihantERP/Users_Master/GetCitiesByState',
         type: "GET",
         data: { stateId: stateId },
         success: function (cityList) {
@@ -175,7 +175,7 @@ function OnStateChange(stateId, prefix) {
         }
     });
 }
- 
+
 
 function getIdentityDetails() {
     return {
@@ -184,14 +184,14 @@ function getIdentityDetails() {
         CEegistration: $("input[name='CEegistration']").val().trim(),
         CERange: $("input[name='CERange']").val().trim(),
         TINNO: $("input[name='TINNO']").val().trim(),
-      
+
         VATNO: $("input[name='VATNO']").val().trim(),
         CSTNO: $("input[name='CSTNO']").val().trim(),
         STNO: $("input[name='STNO']").val().trim(),
         ECCNO: $("input[name='ECCNO']").val().trim(),
         GSTNo: $("input[name='GSTNo']").val().trim(),
         CompanyemailID: $("input[name='CompanyemailID']").val().trim()
-        
+
     };
 }
 
@@ -229,10 +229,6 @@ function getBankDetails() {
         AccountHolderName: $("input[name='AccountHolderName']").val(),
         AccountType: $("select[name='AccountType']").val(),
         IFSCCode: $("input[name='IFSCCode']").val()
-       
+
     };
 }
-
-
-
-
