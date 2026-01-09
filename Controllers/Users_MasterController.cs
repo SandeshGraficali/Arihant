@@ -27,10 +27,7 @@ namespace Arihant.Controllers
         [HttpPost]
         public JsonResult UpdateVendorStatusNew(int vendorId, int status, string operation = "TOGGLE_STATUS")
         {
-            // If operation is DELETE, we pass status as false/0 anyway
             bool isActive = (status == 1);
-
-            // Call the same service method but pass the operation type
             string result = _user.UpdateVendorStatusService(vendorId, isActive, "Admin", operation);
 
             if (result.StartsWith("Success"))
@@ -105,6 +102,7 @@ namespace Arihant.Controllers
         {
             ViewBag.countrylist = _user.GetC_MasterList();
             ViewBag.Addresslist = _user.GetC_MasterAddresList();
+            ViewBag.PurchaseList = _user.GetC_MasterPurchaseList();
             Arihant.Models.Vender.VendorMasterVM model = new Arihant.Models.Vender.VendorMasterVM();
 
             if (id > 0)

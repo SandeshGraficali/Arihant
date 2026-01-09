@@ -37,6 +37,22 @@
         padding: 8px 0;
         display: block;
     }
+
+    @@media (max-width: 768px) {
+        .col-lg-4, .col-lg-6, .col-lg-12 {
+            width: 100% !important;
+            float: none !important;
+            padding: 5px 5px !important;
+        }
+
+        .modal-content {
+            width: 95% !important;
+        }
+
+        .btn-save {
+            width: 100% !important;
+        }
+    }
 </style>
 <body class="bg">
     <div class="wrapper paddingLR10">
@@ -50,14 +66,44 @@
 
             <div class="col-lg-12 floatleft BgColor1 Border1 BorderColor1 padding20 BorderRounded10 Shadow marginB20" style="margin:10px;">
                 <div class="NormalTextBig FontColor1"><strong>Address Details</strong></div>
+                <button type="button" id="Add" class="btn-action btn-add" onclick="ShowAdd()">+ Add Address </button>
                 <hr />
-                <div class="col-lg-6 floatleft padding10 border-right">
-                    <div class="padding5"><strong> Address</strong></div>
-                    @Html.Partial("_AddressDetails", "Address")
+                <div id="MAinAddDive" style="display:none">
+                   
+                    <div class="clear"></div>
+
+                    @Html.Partial("_AddressDetails", "MainAddr")
+                    <div class="col-lg-4 floatleft padding10">
+                    </div>
+                    <div class="col-lg-4 floatleft padding10">
+                    </div>
+                    <div class="col-lg-2 floatleft padding10">
+                    </div>
+                    <div class="col-lg-2 floatleft padding10">
+                        <button type="button" id="AddMainADd" style="display:none" class="btn-action btn-add" onclick="AddAddressToGrid()">+ Add Address to List</button>
+                    </div>
+
                 </div>
-                <div class="col-lg-6 floatleft padding10">
-                    <div class="padding5"><strong>Delivery Address</strong></div>
-                    @Html.Partial("_AddressDetails", "Delivery")
+
+
+                <div class="grid-container">
+                    <table style="display:none" class="custom-grid" id="tblAddress">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Address 1</th>
+                                <th>Address 2</th>
+                                <th>Landmark</th>
+                                <th>Pincode</th>
+                                <th>City</th>
+                                <th>State</th>
+                                <th>Country</th>
+                                <th>GST No.</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
             </div>
 
@@ -142,7 +188,22 @@
             </div>
         </form>
     </div>
-
+    <div id="editModal" class="custom-modal">
+        <div class="modal-content Shadow">
+            <div class="section-header">
+                <div class="NormalTextBig FontColor1"><strong id="modalHeading">Edit Details</strong></div>
+                <button type="button" onclick="closeModal()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+            </div>
+            <hr />
+            <div id="modalInputs" class="clear"></div>
+            <div class="clear"></div>
+            <hr />
+            <div class="text-right">
+                <button type="button" class="btn-action" style="background:#6c757d; color:white;" onclick="closeModal()">Cancel</button>
+                <button type="button" class="btn-action btn-add" id="btnSaveUpdate">Update Details</button>
+            </div>
+        </div>
+    </div>
     <script src="~/js/jquery-3.7.1.js"></script>
     <script src="~/js/sumoselect.js"></script>
     <script src="~/js/datatables.js"></script>
@@ -167,6 +228,41 @@
         });
 
 
+         function DisplayBankDiv()
+        {
+                  $("#modalHeading").text("Add Bank Details");
+
+  
+        var bankContent = $('#BankDiv').html();
+        $("#modalInputs").html(bankContent);
+
+        $("#editModal").show();
+        $("#btnSaveUpdate").hide();
+        $("#btnModalAddBank").remove();
+        var addBtn = '<div class="col-lg-12 floatleft padding10 text-right">' +
+                     '<button type="button" id="btnModalAddBank" class="btn-action btn-add" onclick="AddBankToGrid()">+ Add Bank to List</button>' +
+                     '</div>';
+        $("#modalInputs").append(addBtn);
+        }
+
+        function ShowAdd()
+        {
+                $("#modalHeading").text("Add Address Details");
+
+
+        var addressContent = $('#MAinAddDive').html();
+        $("#modalInputs").html(addressContent);
+        $("#editModal").show();
+        $("#btnSaveUpdate").hide();
+        $("#btnModalAddAddr").remove();
+
+        var addBtn = '<div class="col-lg-12 floatleft padding10 text-right">' +
+                     '<button type="button" id="btnModalAddAddr" class="btn-action btn-add" onclick="AddAddressToGrid()">+ Add Address to List</button>' +
+                     '</div>';
+        $("#modalInputs").append(addBtn);
+
+        $('#MAinAddDive').hide();
+        }
         function PopulateEditForm(d) {
             console.log(JSON.stringify(d));
             if (!d) return;

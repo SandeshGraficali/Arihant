@@ -124,7 +124,8 @@ namespace Arihant.Services
                         StateName = adr["StateName"].ToString(),
                         CountryName = adr["CountryName"].ToString(),
                         StateID = adr["State"].ToString(),
-                        CountryID = adr["Country"].ToString()
+                        CountryID = adr["Country"].ToString(),
+                        GSTNO = adr["GSTNO"].ToString()
                     });
                 }
 
@@ -898,6 +899,34 @@ namespace Arihant.Services
             var parameters = new Dictionary<string, SqlParameter>
                 {
                     { "Operation", new SqlParameter("@Operation", "Get_C_MastersAddress") }
+                };
+
+            DataSet ds = gc.ExecuteStoredProcedureGetDataSet("sp_Get_C_Master", parameters.Values.ToArray());
+            if (ds != null && ds.Tables.Count > 0)
+            {
+                DataTable dt = ds.Tables[0];
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    C_Master obj = new C_Master
+                    {
+                        ID = row["ID"].ToString(),
+                        Name = row["Name"].ToString()
+                    };
+
+                    list.Add(obj);
+                }
+            }
+            return list;
+        }
+
+
+        public List<C_Master> GetC_MasterPurchaseList()
+        {
+            List<C_Master> list = new List<C_Master>();
+            var parameters = new Dictionary<string, SqlParameter>
+                {
+                    { "Operation", new SqlParameter("@Operation", "Get_C_MastersPurchase") }
                 };
 
             DataSet ds = gc.ExecuteStoredProcedureGetDataSet("sp_Get_C_Master", parameters.Values.ToArray());

@@ -74,7 +74,7 @@ function BindDropdown(prefix, stateId, selectedCityId) {
         if (!stateId) { resolve(); return; }
 
         $.ajax({
-            url: '/ArihantERP/Users_Master/GetCitiesByState',
+            url: '/Users_Master/GetCitiesByState',
             type: "GET",
             data: { stateId: stateId },
             success: function (cityList) {
@@ -104,7 +104,7 @@ function BindDropdownState(prefix, countryid, selectedCityId) {
         if (!countryid) { resolve(); return; }
 
         $.ajax({
-            url: '/ArihantERP/Users_Master/GetState',
+            url: '/Users_Master/GetState',
             type: "GET",
             data: { countryid: countryid },
             success: function (cityList) {
@@ -165,7 +165,7 @@ function OnStateChange(stateId, prefix) {
     if (!stateId) return;
 
     $.ajax({
-        url: '/ArihantERP/Users_Master/GetCitiesByState',
+        url: '/Users_Master/GetCitiesByState',
         type: "GET",
         data: { stateId: stateId },
         success: function (cityList) {
