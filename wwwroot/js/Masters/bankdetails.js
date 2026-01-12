@@ -8,10 +8,11 @@ function getBankTableData() {
         if (columns.length > 0) {
             bankList.push({
                 BankName: columns.eq(0).text().trim(),
-                AccountNo: columns.eq(1).text().trim(),
-                IFSCCode: columns.eq(2).text().trim(),
-                AccountType: columns.eq(3).text().trim(),
-                AccountHolderName: columns.eq(4).text().trim()
+                BranchName: columns.eq(1).text().trim(),
+                AccountNo: columns.eq(2).text().trim(),
+                IFSCCode: columns.eq(3).text().trim(),
+                AccountType: columns.eq(4).text().trim(),
+                AccountHolderName: columns.eq(5).text().trim()
             });
         }
     });
@@ -27,6 +28,7 @@ function bindBankTable(list) {
     list.forEach(bank => {
         let row = `<tr>
             <td>${bank.BankName || ''}</td>
+             <td>${bank.BranchName || ''}</td>
             <td>${bank.AccountNo || ''}</td>
             <td>${bank.IFSCCode || ''}</td>
             <td>${bank.AccountType || ''}</td>
@@ -35,13 +37,7 @@ function bindBankTable(list) {
                 <button type="button" class="btn-action btn-edit" onclick="OpenEditModal(this, 'BANK')">Edit</button>
                 <button type="button" class="btn-action btn-remove" onclick="$(this).closest('tr').remove()">Remove</button>
             </td>
-            <td style="display:none;">${bank.AddressLine1 || ''}</td>
-            <td style="display:none;">${bank.AddressLine2 || ''}</td>
-            <td style="display:none;">${bank.Pincode || ''}</td>
-            <td style="display:none;">${bank.Landmark || ''}</td>
-            <td style="display:none;">${bank.CountryID}</td>
-            <td style="display:none;">${bank.StateID}</td>
-            <td style="display:none;">${bank.CityID}</td>
+         
         </tr>`;
         $tbody.append(row);
     });
@@ -51,6 +47,7 @@ function bindBankTable(list) {
 function AddBankToGrid() {
     let modal = $("#modalInputs");
     let bName = modal.find("input[name='BankName']").val().trim();
+    let brnchName = modal.find("input[name='BranchName']").val().trim();
     let holder = modal.find("input[name='AccountHolderName']").val().trim();
     let accType = modal.find("select[name='AccountType']").val();
     let accNo = modal.find("input[name='AccountNo']").val().trim();
@@ -129,6 +126,7 @@ function AddBankToGrid() {
 
     let row = `<tr>
                         <td>${bName}</td>
+                         <td>${brnchName}</td>
                         <td>${accNo}</td>
                         <td>${ifsc}</td>
                         <td>${accType}</td>
@@ -179,10 +177,11 @@ function OpenEditModal(btn, type) {
         $("#modalInputs").html($('#BankDiv').html());
         let modal = $("#modalInputs");
         modal.find("input[name='BankName']").val(cells.eq(0).text());
-        modal.find("input[name='AccountNo']").val(cells.eq(1).text());
-        modal.find("input[name='IFSCCode']").val(cells.eq(2).text());
-        modal.find("select[name='AccountType']").val(cells.eq(3).text());
-        modal.find("input[name='AccountHolderName']").val(cells.eq(4).text());
+        modal.find("input[name='BranchName']").val(cells.eq(1).text());
+        modal.find("input[name='AccountNo']").val(cells.eq(2).text());
+        modal.find("input[name='IFSCCode']").val(cells.eq(3).text());
+        modal.find("select[name='AccountType']").val(cells.eq(4).text());
+        modal.find("input[name='AccountHolderName']").val(cells.eq(5).text());
     }
 
     $("#editModal").show();
@@ -260,6 +259,7 @@ $("#btnSaveUpdate").click(function () {
     } else {
 
         let bName = modal.find("input[name='BankName']").val().trim();
+        let branchName = modal.find("input[name='BranchName']").val().trim();
         let accNo = modal.find("input[name='AccountNo']").val().trim();
         let ifsc = modal.find("input[name='IFSCCode']").val().trim().toUpperCase();
         let accType = modal.find("select[name='AccountType']").val();
@@ -271,10 +271,11 @@ $("#btnSaveUpdate").click(function () {
         }
 
         cells.eq(0).text(bName);
-        cells.eq(1).text(accNo);
-        cells.eq(2).text(ifsc);
-        cells.eq(3).text(accType);
-        cells.eq(4).text(holder);
+        cells.eq(1).text(branchName);
+        cells.eq(2).text(accNo);
+        cells.eq(3).text(ifsc);
+        cells.eq(4).text(accType);
+        cells.eq(5).text(holder);
     }
 
     closeModal();

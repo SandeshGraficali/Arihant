@@ -96,6 +96,7 @@ namespace Arihant.Services
                     VendorName = dr["VendorName"].ToString(),
                     GSTNo = dr["GSTNo"].ToString(),
                     PANNO = dr["PanNo"].ToString(),
+                    TINNO = dr["TINNO"].ToString(),
                     Email = dr["ContactEmail"].ToString(),
                     EmailID  = dr["EmailID"].ToString(),
                     AlternateEmail = dr["AlternetEmail"].ToString(),
@@ -135,6 +136,7 @@ namespace Arihant.Services
                     model.BankList.Add(new BankDTO
                     {
                         BankName = bdr["BankName"].ToString(),
+                        BranchName = bdr["BranchName"].ToString(),
                         AccountNo = bdr["AccountNo"].ToString(),
                         IFSCCode = bdr["IFSCCode"].ToString(),
                         AccountType = bdr["AccountType"].ToString(),
@@ -227,6 +229,7 @@ namespace Arihant.Services
                     { "VendorName", new SqlParameter("@VendorName", model.VendorName ?? (object)DBNull.Value) },
                     { "GSTNo", new SqlParameter("@GSTNo", model.GSTNo ?? (object)DBNull.Value) },
                     { "PanNo", new SqlParameter("@PanNo", model.PANNO) },
+                       { "TINNO", new SqlParameter("@TINNO", model.TINNO) },
                     { "EmailID", new SqlParameter("@EmailID", model.EmailID ?? (object)DBNull.Value) },
                     { "Compare_Payment_Terms", new SqlParameter("@Compare_Payment_Terms", model.Compare_Payment_Terms ?? (object)DBNull.Value) },
                     { "Payment_Terms", new SqlParameter("@Payment_Terms", model.Payment_Terms ?? (object)DBNull.Value) },

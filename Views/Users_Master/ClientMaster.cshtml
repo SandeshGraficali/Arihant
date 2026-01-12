@@ -332,7 +332,7 @@
 
                 <button type="button" id="btnSaveClient" class="Button ButtonColor1 BorderRounded5" onclick="SaveClient()">
                     <i class="fa @(isEdit ? "fa-refresh" : "fa-save")"></i>
-                    @(isEdit ? "Update Client Profile" : "Save Client Profile")
+                    @(isEdit ? "Update Client Profile" : "Save")
                 </button>
 
             </div>
@@ -424,10 +424,10 @@
                   $('input[name="ClientName"]').val(d.clientDetails.clientName);
                   $('input[name="PANNo"]').val(d.clientDetails.panNo);
                   $('input[name="TINNO"]').val(d.clientDetails.tinno);
-                  $('input[name="VATNO"]').val(d.clientDetails.vatno);
-                   $('input[name="CSTNO"]').val(d.clientDetails.cstno);
-                  $('input[name="STNO"]').val(d.clientDetails.stno);
-                  $('input[name="ECCNO"]').val(d.clientDetails.eccno);
+                  // $('input[name="VATNO"]').val(d.clientDetails.vatno);
+                  //  $('input[name="CSTNO"]').val(d.clientDetails.cstno);
+                  // $('input[name="STNO"]').val(d.clientDetails.stno);
+                  // $('input[name="ECCNO"]').val(d.clientDetails.eccno);
                   $('input[name="GSTNo"]').val(d.clientDetails.gstNo);
 
                  if (d.clientDetails.clientType) {
@@ -507,6 +507,19 @@
                   ...getContactDetails()
             };
 
+
+                      if (!finalData.AddressList || finalData.AddressList.length === 0) {
+                    Swal.fire({ 
+                        icon: 'warning', 
+                        title: 'Required', 
+                        text: 'Please add at least one address.', 
+                        timer: 4000, 
+                        timerProgressBar: true 
+                    });
+                    return;
+                }
+
+
             console.log("Data to Save:", finalData);
 
             var jsonString = JSON.stringify(finalData);
@@ -541,11 +554,11 @@
 
 
             var taxFields = {
-                "TIN NO": client.TINNO,
-                "VAT NO": client.VATNO,
-                "CST NO": client.CSTNO,
-                "ST NO": client.STNO,
-                "ECC NO": client.ECCNO
+                "TIN NO": client.TINNO
+                // "VAT NO": client.VATNO,
+                // "CST NO": client.CSTNO,
+                // "ST NO": client.STNO,
+                // "ECC NO": client.ECCNO
             };
             for (var key in taxFields) {
                 if (taxFields[key] && parseFloat(taxFields[key]) < 0) {
@@ -626,10 +639,10 @@
                 ClientType: $('input[name="ClientType"]:checked').val(),
                 PANNo: $('#PANNo').val(),
                 TINNO: $('#TINNO').val(),
-                VATNO: $('#VATNO').val(),
-                CSTNO: $('#CSTNO').val(),
-                STNO: $('#STNO').val(),
-                ECCNO: $('#ECCNO').val(),
+                // VATNO: $('#VATNO').val(),
+                // CSTNO: $('#CSTNO').val(),
+                // STNO: $('#STNO').val(),
+                // ECCNO: $('#ECCNO').val(),
                 GSTNo: $('#GSTNo').val()
             };
         }

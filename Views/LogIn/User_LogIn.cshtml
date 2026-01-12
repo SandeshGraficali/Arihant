@@ -86,6 +86,7 @@
 				<div id="loginSectionVarify" class="Login" style="display:none">
 					<div class="col-lg-10 col-xs-11 col-lg-center padding5">
 						<div class="col-lg-textcenter padding10 Heading AllCaps FontColor3"><strong> </strong></div>
+						<div id="otpTimerDisplay" style="color: red; font-weight: bold; text-align: center; margin-bottom: 10px;"></div>
 						<div class="clear padding5"></div>
 						<input type="text" id="ValidateEmail" class="logintextbox col-lg-12 BorderRounded5" placeholder="Enter Email ID">
 						<div >
@@ -95,7 +96,7 @@
 
 						<div class="clear paddingTB20 floatright">
 							
-							
+							<a href="javascript:void(0)" onclick="showLogin()" class="JustLinks FontColor3 MediumText">Back to Login</a> &nbsp;
 							<button id="btnVerifyOTPNew" onclick="VerifyOTPAfterLogin()" class="Button ButtonColor2 BorderRounded5">Verify OTP</button>
 
 						</div>
@@ -156,6 +157,42 @@
     <script src="~/js/sweetalert2.js"></script>
 	<script>
 
+				let otpInterval; 
+
+		function startOTPTimer() {
+			let timeLeft = 300;
+			const timerDisplay = $('#otpTimerDisplay');
+			const otpInput = $('#txtOTPNew');
+			const verifyBtn = $('#btnVerifyOTPNew');
+			otpInput.prop('disabled', false);
+			verifyBtn.prop('disabled', false);
+			clearInterval(otpInterval);
+
+			otpInterval = setInterval(function () {
+				let minutes = Math.floor(timeLeft / 60);
+				let seconds = timeLeft % 60;
+				seconds = seconds < 10 ? '0' + seconds : seconds;
+				timerDisplay.text(`Time Remaining: ${minutes}:${seconds}`);
+
+				if (timeLeft <= 0) {
+					clearInterval(otpInterval);
+					timerDisplay.text("OTP Expired!");
+					otpInput.prop('disabled', true);
+					verifyBtn.prop('disabled', true);
+
+	
+					Swal.fire({
+						icon: 'error',
+						title: 'Expired',
+						text: 'Your OTP has expired. Please try logging in again.',
+						confirmButtonColor: '#d33'
+					});
+				}
+				timeLeft--;
+			}, 1000);
+		}
+
+
 		function UpdatePass()
 		{
 			    $('#loginSection').hide();
@@ -186,8 +223,9 @@
 					if (response.success) {
 						$('#loginSectionVarify').show();
 						$('#loginSection').hide();
-							$('#ValidateEmail').attr('readonly', true);
-								$('#ValidateEmail').val(username);
+					    $('#ValidateEmail').attr('readonly', true);
+						$('#ValidateEmail').val(username);
+						startOTPTimer();
 					
 					} else {
 						Swal.fire({

@@ -270,9 +270,10 @@
                         <thead>
                             <tr>
                                 <th>Bank Name</th>
+                                <th>Branch Name</th>
                                 <th>Account No</th>
                                 <th>IFSC</th>
-                                <th>Type</th>
+                                <th>Account Type</th>
                                 <th>Holder</th>
                                 <th>Action</th>
                             </tr>
@@ -285,7 +286,7 @@
             <div class="col-lg-12 floatleft padding20 text-right">
                 <div class="col-lg-12 floatleft padding20 text-right">
                     <button class="btn-action"
-                            style="background-color:blue; color:black; width:100px; font-size:16px;"
+                            style="background-color:#000080; color:white; width:100px; font-size:16px;"
                             onclick="location.href='@Url.Action("Vender_Master", "Users_Master")'">
                         Back
                     </button>
@@ -297,7 +298,7 @@
                     else
                     {
                         <button type="button"onclick="SaveCompany()" class="btn-action btn-save">
-                            Save Company Master
+                            Save
                         </button>
                     }
                 </div>
@@ -362,13 +363,13 @@
 
           function bindIdentityDetails(data) {
     $("#companyID").val(data.CompanyID || 0);
-    $("input[name='CompanyName']").val(data.CompanyName);
-    $("input[name='CEegistration']").val(data.Central_Excise_Registration);
-    $("input[name='CERange']").val(data.Central_Excise_Range);
+     $("input[name='CompanyName']").val(data.CompanyName);
+    // $("input[name='CEegistration']").val(data.Central_Excise_Registration);
+    // $("input[name='CERange']").val(data.Central_Excise_Range);
     $("input[name='TINNO']").val(data.TIN_NO);
-    $("input[name='VATNO']").val(data.VAT_NO);
-    $("input[name='CSTNO']").val(data.CSTNO);
-    $("input[name='STNO']").val(data.STNO);
+    // $("input[name='VATNO']").val(data.VAT_NO);
+    // $("input[name='CSTNO']").val(data.CSTNO);
+    // $("input[name='STNO']").val(data.STNO);
     $("input[name='ECCNO']").val(data.ECCNO);
     $("input[name='GSTNo']").val(data.GSTNo);
     $("input[name='CompanyemailID']").val(data.CompanyemailID);
@@ -393,7 +394,7 @@
         , fullModel.OfficeMobileNO
         , fullModel.WhatsAppNO
         , fullModel.Website
-            , fullModel.Telephone
+                , fullModel.Tel1
         , fullModel.MobileNumber
       );
 
@@ -489,12 +490,12 @@
       const model = {
         CompanyID: identity.CompanyID
         , CompanyName: identity.CompanyName
-        , CEegistration: identity.CEegistration
-        , CERange: identity.CERange
+        // , CEegistration: identity.CEegistration
+        // , CERange: identity.CERange
         , TINNO: identity.TINNO
-        , VATNO: identity.VATNO
-        , CSTNO: identity.CSTNO
-        , STNO: identity.STNO
+        // , VATNO: identity.VATNO
+        // , CSTNO: identity.CSTNO
+        // , STNO: identity.STNO
         , ECCNO: identity.ECCNO
         , GSTNo: identity.GSTNo
         , CompanyemailID: identity.CompanyemailID
@@ -509,10 +510,31 @@
             Swal.fire({ icon: 'warning', title: 'Required', text: 'Company Name is required.', timer: 4000, timerProgressBar: true });
             return;
         }
-        if (!model.GSTNo || model.GSTNo.trim() === "") {
-            Swal.fire({ icon: 'warning', title: 'Required', text: 'GST No. is required.', timer: 4000, timerProgressBar: true });
+          if (!model.GSTNo || model.GSTNo.trim() === "") {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Required',
+                text: 'GST No. is required.',
+                timer: 4000,
+                timerProgressBar: true
+            });
             return;
+        } else {
+      
+            const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+
+            if (!gstRegex.test(model.GSTNo.trim().toUpperCase())) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Format',
+                    text: 'Please enter a valid GST Number (e.g., 22AAAAA0000A1Z5).',
+                    timer: 4000,
+                    timerProgressBar: true
+                });
+                return;
+            }
         }
+
         if (!model.CompanyemailID || model.CompanyemailID.trim() === "") {
             Swal.fire({ icon: 'warning', title: 'Required', text: 'Company Email ID is required.', timer: 4000, timerProgressBar: true });
             return;
@@ -541,6 +563,28 @@
             return;
         }
 
+            if (!model.AddressList || model.AddressList.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Required',
+                text: 'Please add at least one address.',
+                timer: 4000,
+                timerProgressBar: true
+            });
+            return;
+        }
+
+
+        if (!model.BankList || model.BankList.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Required',
+                text: 'Please add at least one bank account detail.',
+                timer: 4000,
+                timerProgressBar: true
+            });
+            return;
+        }
 
                
       const id = parseInt(identity.CompanyID) || 0;
@@ -583,13 +627,12 @@
         return {
             CompanyID: $("#companyID").val(),
             CompanyName: $("input[name='CompanyName']").val().trim(),
-            CEegistration: $("input[name='CEegistration']").val().trim(),
-            CERange: $("input[name='CERange']").val().trim(),
+           
             TINNO: $("input[name='TINNO']").val().trim(),
 
-            VATNO: $("input[name='VATNO']").val().trim(),
-            CSTNO: $("input[name='CSTNO']").val().trim(),
-            STNO: $("input[name='STNO']").val().trim(),
+            // VATNO: $("input[name='VATNO']").val().trim(),
+            // CSTNO: $("input[name='CSTNO']").val().trim(),
+            // STNO: $("input[name='STNO']").val().trim(),
             ECCNO: $("input[name='ECCNO']").val().trim(),
             GSTNo: $("input[name='GSTNo']").val().trim(),
             CompanyemailID: $("input[name='CompanyemailID']").val().trim()

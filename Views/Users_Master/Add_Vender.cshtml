@@ -182,6 +182,7 @@
                 <div class="col-lg-4 floatleft padding10"><label>GST No.<span style="color:red;margin-left:3px">*</span></label><input type="text" id="GSTNo" name="GSTNo" class="TextBox" required></div>
                 <div class="col-lg-4 floatleft padding10"><label>Email ID</label><input type="email" id="EmailID" name="EmailID" class="TextBox"></div>
                 <div class="col-lg-4 floatleft padding10"><label>PAN NO.</label><input type="text" id="PANNO" name="PANNO" class="TextBox"></div>
+                <div class="col-lg-4 floatleft padding10"><label>TIN NO.</label><input type="text" id="TINNO" name="TINNO" class="TextBox"></div>
                 <div class="col-lg-4 floatleft padding10"><label>Compare Payment Terms</label><input type="text" name="Compare_Payment_Terms" class="TextBox"></div>
                 <div class="col-lg-4 floatleft padding10">
                     <label>Payment Terms (Days)</label>
@@ -287,9 +288,10 @@
                         <thead>
                             <tr>
                                 <th>Bank Name</th>
+                                <th>Branch Name</th>
                                 <th>Account No</th>
                                 <th>IFSC</th>
-                                <th>Type</th>
+                                <th>Account Type</th>
                                 <th>Holder</th>
                                 <th>Action</th>
                             </tr>
@@ -313,7 +315,7 @@
                     }
                     else
                     {
-                        <button type="submit" class="btn-action btn-save">Save Vendor Master</button>
+                        <button type="submit" class="btn-action btn-save">Save</button>
                     }
                 </div>
             </div>
@@ -436,6 +438,8 @@
           $("#Payment_Terms").val(fullModel.Payment_Terms);
           $("#PANNO")
             .val(fullModel.PANNO);
+             $("#TINNO")
+            .val(fullModel.TINNO);
           $("input[name='Compare_Payment_Terms']")
             .val(fullModel.Compare_Payment_Terms);
           $("input[name='Payment_Terms']")
@@ -531,6 +535,9 @@
             , VendorName: vendorName
             , GSTNO: gstNo
             , PANNO: $("#PANNO")
+              .val()
+              .trim()
+               , TINNO: $("#TINNO")
               .val()
               .trim()
             , EmailID: $("#EmailID")

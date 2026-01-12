@@ -10,6 +10,7 @@ namespace Arihant.Models.Vender
 
         public string? EmailID { get; set; }
         public string? PANNO { get; set; }
+        public string? TINNO { get; set; }
         public string? Compare_Payment_Terms { get; set; }
         public string? Payment_Terms { get; set; }
         public string? Remark { get; set; }
