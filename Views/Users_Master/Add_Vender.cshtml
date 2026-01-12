@@ -1,4 +1,5 @@
-﻿<head>
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+<head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="~/css/datatables.css" rel="stylesheet" />
     <link href="~/css/allmin.css" rel="stylesheet" />
@@ -152,28 +153,25 @@
         }
 
         @@media (max-width: 768px) {
-            .col-lg-4, .col-lg-6, .col-lg-12
+            .col-lg-4, .col-lg-6, .col-lg-12 {
+                width: 100% !important;
+                float: none !important;
+                padding: 5px 5px !important;
+            }
 
-        {
-            width: 100% !important;
-            float: none !important;
-            padding: 5px 5px !important;
-        }
+            .modal-content {
+                width: 95% !important;
+            }
 
-        .modal-content {
-            width: 95% !important;
-        }
-
-        .btn-save {
-            width: 100% !important;
-        }
-
+            .btn-save {
+                width: 100% !important;
+            }
         }
     </style>
 </head>
 
 <body class="bg">
-<br />
+    <br />
     <br />
     <div class="wrapper paddingLR10">
         <form id="VendorForm">
@@ -185,9 +183,10 @@
                 <div class="col-lg-4 floatleft padding10"><label>Email ID</label><input type="email" id="EmailID" name="EmailID" class="TextBox"></div>
                 <div class="col-lg-4 floatleft padding10"><label>PAN NO.</label><input type="text" id="PANNO" name="PANNO" class="TextBox"></div>
                 <div class="col-lg-4 floatleft padding10"><label>Compare Payment Terms</label><input type="text" name="Compare_Payment_Terms" class="TextBox"></div>
-                <div class="col-lg-4 floatleft padding10"><label>Payment Terms (Days)</label>
-                    
-          
+                <div class="col-lg-4 floatleft padding10">
+                    <label>Payment Terms (Days)</label>
+
+
 
                     <select id="Payment_Terms" class="TextBox">
                         <option value="">-- Select Type --</option>
@@ -199,9 +198,9 @@
                             }
                         }
                     </select>
-                    </div>
+                </div>
 
-               
+
                 <div class="col-lg-4 floatleft padding10"><label>Remark</label><input type="text" name="Vremark" class="TextBox"></div>
                 <div class="clear"></div>
             </div>
@@ -209,42 +208,40 @@
             <div class="col-lg-12 floatleft BgColor1 Border1 padding20 BorderRounded10 Shadow marginB20">
                 <div class="section-header">
                     <div class="NormalTextBig"><strong>Address Details</strong></div>
-                    <button type="button" id="Add"  class="btn-action btn-add" onclick="ShowAdd()">+ Add Address </button>
-                   
-                   
+                    <button type="button" id="Add" class="btn-action btn-add" onclick="ShowAdd()">+ Add Address </button>
+
+
                 </div>
                 <hr />
                 <div id="MAinAddDive" style="display:none">
-                <div class="col-lg-4 floatleft padding10">
-                    <label>Address Type<span style="color:red;margin-left:3px">*</span></label>
-                    <select id="ddlAddressType" class="TextBox">
-                        <option value="">-- Select Type --</option>
-                        @if (ViewBag.Addresslist != null)
-                        {
-                            foreach (var item in (IEnumerable<Arihant.Models.Company_Master.C_Master>)ViewBag.Addresslist)
+                    <div class="col-lg-4 floatleft padding10">
+                        <label>Address Type<span style="color:red;margin-left:3px">*</span></label>
+                        <select id="ddlAddressType" class="TextBox">
+                            <option value="">-- Select Type --</option>
+                            @if (ViewBag.Addresslist != null)
                             {
-                                <option value="@item.ID">@item.Name</option>
+                                foreach (var item in (IEnumerable<Arihant.Models.Company_Master.C_Master>)ViewBag.Addresslist)
+                                {
+                                    <option value="@item.ID">@item.Name</option>
+                                }
                             }
-                        }
-                    </select>
-                </div>
-                <div class="clear"></div>
-             
+                        </select>
+                    </div>
+                    <div class="clear"></div>
+
                     @Html.Partial("_AddressDetails", "MainAddr")
-                <div class="col-lg-4 floatleft padding10">
-                    
-                </div>
-                 <div class="col-lg-4 floatleft padding10">
-                    
-                </div>
+                    <div class="col-lg-4 floatleft padding10">
+                    </div>
+                    <div class="col-lg-4 floatleft padding10">
+                    </div>
                     <div class="col-lg-2 floatleft padding10">
                     </div>
                     <div class="col-lg-2 floatleft padding10">
                         <button type="button" id="AddMainADd" style="display:none" class="btn-action btn-add" onclick="AddAddressToGrid()">+ Add Address to List</button>
                     </div>
-                   
+
                 </div>
-            
+
 
                 <div class="grid-container">
                     <table style="display:none" class="custom-grid" id="tblAddress">
@@ -271,18 +268,18 @@
                 <div class="section-header">
                     <div class="NormalTextBig"><strong>Bank Details</strong></div>
                     <button type="button" id="AddBank" class="btn-action btn-add" onclick="DisplayBankDiv()">+ Add Bank </button>
-                   
+
                 </div>
                 <hr />
                 <div id="BankDiv" style="display:none">
                     @Html.Partial("_BankDetails", "MainBank")
                     <div class="clear"></div>
-                    
+
                 </div>
 
-                
+
                 <div class="col-lg-2 floatleft padding10">
-                   <button type="button" id="AddBankList" style="display:none" class="btn-action btn-add" onclick="AddBankToGrid()">+ Add Bank Account</button>
+                    <button type="button" id="AddBankList" style="display:none" class="btn-action btn-add" onclick="AddBankToGrid()">+ Add Bank Account</button>
                 </div>
 
                 <div class="grid-container">
@@ -305,7 +302,7 @@
             <div class="col-lg-12 floatleft padding20 text-right">
                 <div class="col-lg-12 floatleft padding20 text-right">
                     <button class="btn-action"
-                            style="background-color:blue; color:black; width:100px; font-size:16px;"
+                            style="background-color:#000080; color:white; width:100px; font-size:16px;"
                             onclick="location.href='@Url.Action("Vender_Master", "Users_Master")'">
                         Back
                     </button>
@@ -339,760 +336,239 @@
             </div>
         </div>
     </div>
-
+    <script>
+    
+        window.AppConfig = {
+            UserMasterBaseUrl: '@Url.Content(Configuration["ApiSettings:UserMasterBaseUrl"])'
+        };
+        console.log("AppConfig Initialized:", window.AppConfig);
+    </script>
     <script src="~/js/jquery-3.7.1.js"></script>
     <script src="~/js/sweetalert2.js"></script>
-
+    <script src="~/js/masters/address.js"></script>
+    <script src="~/js/masters/contactdetails.js"></script>
+    <script src="~/js/masters/bankdetails.js"></script>
     <script>
         var countryList = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.countrylist));
-        let currentRow = null;
-        let editType = "";
-                function getNameFromID(id, type, prefix = "MainAddr") {
-            if (!id) return "";
 
-           
-            if (type === "Country") {
-                let match = countryList.find(c => c.ID == id);
-                return match ? match.Name : "";
-            }
 
-            
-            let dropdown = document.getElementById(`${prefix}_${type}`);
-            if (dropdown) {
-                let option = Array.from(dropdown.options).find(o => o.value == id);
-                return option ? option.text : "";
-            }
-            return "";
+        function DisplayBankDiv() {
+          $("#modalHeading")
+            .text("Add Bank Details");
+          var bankContent = $('#BankDiv')
+            .html();
+          $("#modalInputs")
+            .html(bankContent);
+          $("#editModal")
+            .show();
+          $("#btnSaveUpdate")
+            .hide();
+          $("#btnModalAddBank")
+            .remove();
+          var addBtn = '<div class="col-lg-12 floatleft padding10 text-right">' +
+            '<button type="button" id="btnModalAddBank" class="btn-action btn-add" onclick="AddBankToGrid()">+ Add Bank to List</button>' +
+            '</div>';
+          $("#modalInputs")
+            .append(addBtn);
         }
 
-        function DisplayBankDiv()
-        {
-                  $("#modalHeading").text("Add Bank Details");
 
-  
-        var bankContent = $('#BankDiv').html();
-        $("#modalInputs").html(bankContent);
+        function ShowAdd() {
+          $("#modalHeading")
+            .text("Add Address Details");
+          var addressContent = $('#MAinAddDive')
+            .html();
+          $("#modalInputs")
+            .html(addressContent);
+          $("#editModal")
+            .show();
+          $("#btnSaveUpdate")
+            .hide();
+          $("#btnModalAddAddr")
+            .remove();
 
-        $("#editModal").show();
-        $("#btnSaveUpdate").hide();
-        $("#btnModalAddBank").remove();
-        var addBtn = '<div class="col-lg-12 floatleft padding10 text-right">' +
-                     '<button type="button" id="btnModalAddBank" class="btn-action btn-add" onclick="AddBankToGrid()">+ Add Bank to List</button>' +
-                     '</div>';
-        $("#modalInputs").append(addBtn);
-        }
-        function ShowAdd()
-        {
-                $("#modalHeading").text("Add Address Details");
-
-    
-        var addressContent = $('#MAinAddDive').html();
-        $("#modalInputs").html(addressContent);
-        $("#editModal").show();
-        $("#btnSaveUpdate").hide();
-        $("#btnModalAddAddr").remove();
-
-        var addBtn = '<div class="col-lg-12 floatleft padding10 text-right">' +
-                     '<button type="button" id="btnModalAddAddr" class="btn-action btn-add" onclick="AddAddressToGrid()">+ Add Address to List</button>' +
-                     '</div>';
-        $("#modalInputs").append(addBtn);
-
-        $('#MAinAddDive').hide();
+          var addBtn = '<div class="col-lg-12 floatleft padding10 text-right">' +
+            '<button type="button" id="btnModalAddAddr" class="btn-action btn-add" onclick="AddAddressToGrid()">+ Add Address to List</button>' +
+            '</div>';
+          $("#modalInputs")
+            .append(addBtn);
+          $('#MAinAddDive')
+            .hide();
         }
 
-        $(document).ready(function() {
+
+        $(document)
+          .ready(function() {
             InitializeStates();
 
-              var isEdit = '@ViewBag.IsEdit'.toLowerCase() === 'true';
-                if (isEdit) {
-                    PopulateGridsForEdit();
-                }
+            var isEdit = '@ViewBag.IsEdit'.toLowerCase() === 'true';
+            if (isEdit) {
+              PopulateGridsForEdit();
+            }
 
-      
-            $("#VendorForm").on("submit", function(e) {
+            $("#VendorForm")
+              .on("submit", function(e) {
                 e.preventDefault();
                 SaveAllData();
-            });
-        });
+              });
+          });
 
         function InitializeStates() {
-            const dropdowns = ["MainAddr_Country", "BankAddr_Country"];
-            dropdowns.forEach(id => {
-                let dropdown = document.getElementById(id);
-                if(dropdown) {
-                    countryList.forEach(c => {
-                        dropdown.add(new Option(c.Name, c.ID));
-                    });
-                }
-            });
-        }
-
-      
-                function PopulateGridsForEdit() {
-           
-                     $('#tblBank').show();
-                    $('#tblAddress').show();
-            var fullModel = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
-            console.log("Binding Full Vendor Model Data...", fullModel);
-
-            if (!fullModel) return;
-
-            $("#VendorName").val(fullModel.VendorName);
-            $("#GSTNo").val(fullModel.GSTNo);
-            $("#EmailID").val(fullModel.EmailID);
-            $("#PANNO").val(fullModel.PANNO);
-            $("input[name='Compare_Payment_Terms']").val(fullModel.Compare_Payment_Terms);
-            $("input[name='Payment_Terms']").val(fullModel.Payment_Terms);
-            $("input[name='Vremark']").val(fullModel.Remark);
-
-         
-            $("input[name='Email']").val(fullModel.Email);
-            $("input[name='AlternateEmail']").val(fullModel.AlternateEmail);
-            $("input[name='ContactPersonName']").val(fullModel.ContactPersonName);
-            $("input[name='OffMobileNO']").val(fullModel.OffMobileNO);
-            $("input[name='WhatsappNo']").val(fullModel.WhatsappNo);
-            $("input[name='Website']").val(fullModel.Website);
-            $("input[name='Tel1']").val(fullModel.Tel1);
-            $("input[name='MobileNo']").val(fullModel.MobileNo);
-
-            var existingAddresses = fullModel.AddressList || [];
-            $("#tblAddress tbody").empty();
-
-            existingAddresses.forEach(addr => {
-               
-                let typeName = "";
-                let typeOption = $("#ddlAddressType option[value='" + addr.AddressTypeID + "']");
-                typeName = typeOption.length > 0 ? typeOption.text() : addr.AddressTypeID;
-
-                let row = `<tr>
-                    <td>${typeName}</td>
-                    <td>${addr.AddressLine1 || ''}</td>
-                    <td>${addr.AddressLine2 || ''}</td>
-                    <td>${addr.Landmark || ''}</td>
-                    <td>${addr.Pincode || ''}</td>
-                    <td>${addr.CityName }</td>
-                    <td>${addr.StateName }</td>
-                    <td>${addr.CountryName}</td>
-                    <td>${addr.GSTNO}</td>
-                    <td>
-                        <button type="button" class="btn-action btn-edit" onclick="OpenEditModal(this, 'ADDR')">Edit</button>
-                        <button type="button" class="btn-action btn-remove" onclick="$(this).closest('tr').remove()">Remove</button>
-                    </td>
-                    <td style="display:none;">${addr.AddressTypeID}</td>
-                    <td style="display:none;">${addr.CountryID}</td>
-                    <td style="display:none;">${addr.StateID}</td>
-                    <td style="display:none;">${addr.CityID}</td>
-                </tr>`;
-                $("#tblAddress tbody").append(row);
-            });
-
-     
-            var existingBanks = fullModel.BankList || [];
-            $("#tblBank tbody").empty();
-
-            existingBanks.forEach(bank => {
-                let row = `<tr>
-                    <td>${bank.BankName || ''}</td>
-                    <td>${bank.AccountNo || ''}</td>
-                    <td>${bank.IFSCCode || ''}</td>
-                    <td>${bank.AccountType || ''}</td>
-                    <td>${bank.AccountHolderName || ''}</td>
-                    <td>
-                        <button type="button" class="btn-action btn-edit" onclick="OpenEditModal(this, 'BANK')">Edit</button>
-                        <button type="button" class="btn-action btn-remove" onclick="$(this).closest('tr').remove()">Remove</button>
-                    </td>
-                    <td style="display:none;">${bank.AddressLine1 || ''}</td>
-                    <td style="display:none;">${bank.AddressLine2 || ''}</td>
-                    <td style="display:none;">${bank.Pincode || ''}</td>
-                    <td style="display:none;">${bank.Landmark || ''}</td>
-                    <td style="display:none;">${bank.CountryID}</td>
-                    <td style="display:none;">${bank.StateID}</td>
-                    <td style="display:none;">${bank.CityID}</td>
-                </tr>`;
-                $("#tblBank tbody").append(row);
-            });
-
-            console.log("Binding Complete!");
-        }
-       
-                       function OnCountryChange(countryid, prefix) {
-                                    var modal = $("#modalInputs");
-                                    var stateDropdown = modal.find("#" + prefix + "_State");
-                                    var cityDropdown = modal.find("#" + prefix + "_City");
-                                    stateDropdown.html('<option value="">-- Select State --</option>');
-                                    cityDropdown.html('<option value="">-- Select City --</option>');
-
-                                    if (!countryid) return;
-
-                                    $.get('@Url.Action("GetState", "Users_Master")', { countryid: countryid }, function (data) {
-                                        if (data && data.length > 0) {
-                                            var options = '';
-                                            data.forEach(function (s) {
-                                                options += '<option value="' + s.id + '">' + s.name + '</option>';
-                                            });
-                                            stateDropdown.append(options);
-
-                                            console.log("States appended to #" + prefix + "_State");
-                                        }
-                                    }).fail(function() {
-                                        Swal.fire('Error', 'Could not load states', 'error');
-                                    });
-                        }
-
-               function OnStateChange(stateId, prefix) {
-            var modal = $("#modalInputs");
-            var cityDropdown = modal.find("#" + prefix + "_City");
-            cityDropdown.html('<option value="">-- Select City --</option>');
-
-            if (!stateId) return;
-
-            $.get('@Url.Action("GetCitiesByState", "Users_Master")', { stateId: stateId }, function (data) {
-                console.log("City Data Received:", JSON.stringify(data));
-
-                if (data && data.length > 0) {
-                    var options = '';
-                    data.forEach(function (c) {
-                        options += '<option value="' + c.id + '">' + c.name + '</option>';
-                    });
-                    cityDropdown.append(options);
-                }
-            }).fail(function() {
-                console.error("Error fetching cities for stateId: " + stateId);
-            });
-        }
-
-              function AddAddressToGrid() {
-            let p = "MainAddr";
-            let modal = $("#modalInputs"); 
-
-            let typeID = modal.find("#ddlAddressType").val();
-            let typeName = modal.find("#ddlAddressType option:selected").text();
-            let a1 = modal.find(`#${p}_AddressLine1`).val();
-            let a2 = modal.find(`#${p}_AddressLine2`).val();
-            let pin = modal.find(`#${p}_Pincode`).val();
-            let lnd = modal.find(`#${p}_Landmark`).val();
-            let cID = modal.find(`#${p}_Country`).val();
-            let cText = modal.find(`#${p}_Country option:selected`).text();
-            let sID = modal.find(`#${p}_State`).val();
-            let sText = modal.find(`#${p}_State option:selected`).text();
-            let ctID = modal.find(`#${p}_City`).val();
-            let ctText = modal.find(`#${p}_City option:selected`).text();
-            let gstNo = modal.find(`#${p}_GSTNo`).val().trim();
-
-              const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
-                          if (!gstRegex.test(gstNo)) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Validation Error',
-                text: 'Invalid Main GST format. Expected: 22AAAAA0000A1Z5',
-                target: document.getElementById('editModal')
-            });
-            return;
+          bindDropdownList(["MainAddr_Country", "BankAddr_Country"], countryList);
         }
 
 
-                    if (!typeID || !a1 || !pin || !cID || !sID || !ctID) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Please fill all mandatory address fields',
-                target: document.getElementById('editModal')
-            });
-            return;
+        function PopulateGridsForEdit() {
+
+          $('#tblBank')
+            .show();
+          $('#tblAddress')
+            .show();
+          var fullModel = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
+          console.log("Binding Full Vendor Model Data...", fullModel);
+          if (!fullModel) return;
+          $("#VendorName")
+            .val(fullModel.VendorName);
+          $("#GSTNo")
+            .val(fullModel.GSTNo);
+          $("#EmailID")
+            .val(fullModel.EmailID);
+          $("#Payment_Terms").val(fullModel.Payment_Terms);
+          $("#PANNO")
+            .val(fullModel.PANNO);
+          $("input[name='Compare_Payment_Terms']")
+            .val(fullModel.Compare_Payment_Terms);
+          $("input[name='Payment_Terms']")
+            .val(fullModel.Payment_Terms);
+          $("input[name='Vremark']")
+            .val(fullModel.Remark);
+                bindContactDetails(
+            fullModel.Email,            
+            fullModel.AlternateEmail,   
+            fullModel.ContactPersonName,
+            fullModel.OffMobileNO,      
+            fullModel.WhatsappNo,      
+            fullModel.Website,          
+            fullModel.Tel1,             
+            fullModel.MobileNo          
+        );
+          bindAddressTable(fullModel.AddressList);
+          bindBankTable(fullModel.BankList);
         }
-
-
-
-
-
-                 let isDuplicate = false;
-
-                  $("#tblAddress tbody tr").each(function() {
-                     let existingAccNo = $(this).find("td:eq(8)").text().trim();
-                      if (existingAccNo === gstNo) {
-                         isDuplicate = true;
-                         return false; // Break the .each() loop
-                     }
-                 });
-
-                 if (isDuplicate) {
-                     Swal.fire({
-                         icon: 'warning',
-                         title: 'Duplicate Entry',
-                         text: 'This GST Number is already added to the list.',
-                         target: document.getElementById('editModal')
-                     });
-                     return;
-                 }
-
-            let row = `<tr>
-                <td>${typeName}</td>
-                <td>${a1}</td>
-                <td>${a2}</td>
-                <td>${lnd}</td>
-                <td>${pin}</td>
-                <td>${ctText}</td>
-                <td>${sText}</td>
-                <td>${cText}</td>
-                <td>${gstNo}</td>
-                <td>
-                    <button type="button" class="btn-action btn-edit" onclick="OpenEditModal(this, 'ADDR')">Edit</button>
-                    <button type="button" class="btn-action btn-remove" onclick="$(this).closest('tr').remove()">Remove</button>
-                </td>
-                <td style="display:none;">${typeID}</td>
-                <td style="display:none;">${cID}</td>
-                <td style="display:none;">${sID}</td>
-                <td style="display:none;">${ctID}</td>
-            </tr>`;
-
-       
-            $("#tblAddress tbody").append(row);
-            $('#tblAddress').show();
-
-        
-            closeModal();
-
-
-            $(`#${p}_AddressLine1, #${p}_AddressLine2, #${p}_Pincode, #${p}_Landmark`).val('');
-            $(`#${p}_Country, #${p}_State, #${p}_City, #ddlAddressType`).val('').trigger('change');
-        }
-
-
-
-                       function AddBankToGrid() {
-            let modal = $("#modalInputs");
-
-            let bName = modal.find("input[name='BankName']").val().trim();
-            let holder = modal.find("input[name='AccountHolderName']").val().trim();
-            let accType = modal.find("select[name='AccountType']").val();
-            let accNo = modal.find("input[name='AccountNo']").val().trim();
-            let ifsc = modal.find("input[name='IFSCCode']").val().trim().toUpperCase();
-
-              if (!bName || !holder || !accType) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'All bank fields are mandatory',
-                target: document.getElementById('editModal') // Add this
-            });
-            return;
-        }
-
-
-
-            if (!accNo || isNaN(accNo) || parseInt(accNo) < 0 || !Number.isInteger(Number(accNo))) {
-                
-                 Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Account Number must be a valid positive integer',
-                target: document.getElementById('editModal') // Add this
-            });
-                return;
-            }
-
-
-            let ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
-            if (!ifsc) {
-              
-                  Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'IFSC Code is mandatory',
-                target: document.getElementById('editModal') // Add this
-            });
-
-                return;
-            } else if (!ifscRegex.test(ifsc)) {
-
-                   Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Invalid IFSC format. Example: SBIN0001234',
-                target: document.getElementById('editModal') // Add this
-            });
-
-               
-                return;
-            }
-
-
-
-                let isDuplicate = false;
-       
-                $("#tblBank tbody tr").each(function() {
-                    let existingAccNo = $(this).find("td:eq(1)").text().trim();
-                    if (existingAccNo === accNo) {
-                        isDuplicate = true;
-                        return false; // Break the .each() loop
-                    }
-                });
-
-                if (isDuplicate) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Duplicate Entry',
-                        text: 'This Account Number is already added to the list.',
-                        target: document.getElementById('editModal')
-                    });
-                    return;
-                }
-
-
-            $('#AddBankList').hide();
-            $('#BankDiv').hide();
-            $('#AddBank').show();
-            $('#tblBank').show();
-
-  
-            let row = `<tr>
-                <td>${bName}</td>
-                <td>${accNo}</td>
-                <td>${ifsc}</td>
-                <td>${accType}</td>
-                <td>${holder}</td>
-                <td>
-                    <button type="button" class="btn-action btn-edit" onclick="OpenEditModal(this, 'BANK')">Edit</button>
-                    <button type="button" class="btn-action btn-remove" onclick="$(this).closest('tr').remove()">Remove</button>
-                </td>
-            </tr>`;
-
-
-            $("#tblBank tbody").append(row);
-
-
-            closeModal();
-            $("input[name='BankName'], input[name='AccountNo'], input[name='IFSCCode'], input[name='AccountHolderName']").val('');
-            $("select[name='AccountType']").val('');
-        }
-
-
-                      function OpenEditModal(btn, type) {
-            currentRow = $(btn).closest('tr');
-            editType = type;
-            let cells = currentRow.find('td');
-
-   
-            $("#btnSaveUpdate").show().text("Update Details");
-       
-                $("#btnModalAddBank").remove();
-        $("#btnModalAddAddr").remove();
-
-            if (type === 'ADDR') {
-                      $("#modalHeading").text("Edit Address");
-
-                $("#modalInputs").html($('#MAinAddDive').html());
-                let modal = $("#modalInputs");
-
-  
-                modal.find("#ddlAddressType").val(cells.eq(9).text());
-                modal.find("#MainAddr_AddressLine1").val(cells.eq(1).text());
-                modal.find("#MainAddr_AddressLine2").val(cells.eq(2).text());
-                modal.find("#MainAddr_Landmark").val(cells.eq(3).text());
-                modal.find("#MainAddr_Pincode").val(cells.eq(4).text());
-
-
-                modal.find("#MainAddr_GSTNo").val(cells.eq(8).text());
-
-                populateModalDropdowns(
-                    cells.eq(10).text(),
-                    cells.eq(11).text(), 
-                    cells.eq(12).text(), 
-                    cells.eq(13).text()  
-                );
-            } else {
-                $("#modalHeading").text("Edit Bank & Branch");
-
-         
-                $("#modalInputs").html($('#BankDiv').html());
-
-            
-                let modal = $("#modalInputs");
-                modal.find("input[name='BankName']").val(cells.eq(0).text());
-                modal.find("input[name='AccountNo']").val(cells.eq(1).text());
-                modal.find("input[name='IFSCCode']").val(cells.eq(2).text());
-                modal.find("select[name='AccountType']").val(cells.eq(3).text());
-                modal.find("input[name='AccountHolderName']").val(cells.eq(4).text());
-            }
-
-            $("#editModal").show();
-        }
-
-        function generateAddressHTML(typeOpts, a1, a2, lnd, pin, countryOpts, isBank = false) {
-            let typeField = isBank ? "" : `<div class="col-lg-4 floatleft padding10"><label>Address Type<span style="color:red;margin-left:3px">*</span></label><select id="m_type" class="TextBox">${typeOpts}</select></div><div class="clear"></div>`;
-            return `${typeField}
-                <div class="col-lg-6 floatleft padding10"><label>Address Line 1<span style="color:red;margin-left:3px">*</span></label><input type="text" id="m_a1" class="TextBox" value="${a1}"></div>
-                <div class="col-lg-6 floatleft padding10"><label>Address Line 2</label><input type="text" id="m_a2" class="TextBox" value="${a2}"></div>
-                <div class="col-lg-4 floatleft padding10"><label>Landmark</label><input type="text" id="m_lnd" class="TextBox" value="${lnd}"></div>
-                <div class="col-lg-4 floatleft padding10"><label>Pincode<span style="color:red;margin-left:3px">*</span></label><input type="number" id="m_pin" class="TextBox" value="${pin}"></div>
-                <div class="col-lg-4 floatleft padding10"><label>Country<span style="color:red;margin-left:3px">*</span></label><select id="m_country" class="TextBox" onchange="OnCountryChange(this.value, 'm')">${countryOpts}</select></div>
-                <div class="col-lg-4 floatleft padding10"><label>State<span style="color:red;margin-left:3px">*</span></label><select id="m_State" class="TextBox" onchange="OnStateChange(this.value, 'm')"><option value="">--Select--</option></select></div>
-                <div class="col-lg-4 floatleft padding10"><label>City<span style="color:red;margin-left:3px">*</span></label><select id="m_City" class="TextBox"><option value="">--Select--</option></select></div>`;
-        }
-
-         function populateModalDropdowns(typeID, countryID, stateID, cityID) {
-
-             let modal = $("#modalInputs");
-            if (typeID) {
-             modal.find("#ddlAddressType").val(typeID);
-            }
-
-
-            if (countryID) {
-                 modal.find("#MainAddr_Country").val(countryID);
-
-                $.ajax({
-                    url: '@Url.Action("GetState", "Users_Master")',
-                    type: "GET",
-                    data: { countryid: countryID },
-                    async: false,
-                    success: function (list) {
-                        let stateDD = modal.find("#MainAddr_State").empty().append('<option value="">--Select State--</option>');
-                        if (list && list.length > 0) {
-                            list.forEach(i => {
-                                stateDD.append(new Option(i.name, i.id));
-                            });
-                        }
-                        modal.find("#MainAddr_State").val(stateID);
-                    }
-                });
-            }
-
-
-            if (stateID) {
-                $.ajax({
-                    url: '@Url.Action("GetCitiesByState", "Users_Master")',
-                    type: "GET",
-                    data: { stateId: stateID },
-                    async: false,
-                    success: function (list) {
-                        let cityDD = modal.find("#MainAddr_City").empty().append('<option value="">--Select City--</option>');
-                        if (list && list.length > 0) {
-                            list.forEach(i => {
-                                cityDD.append(new Option(i.name, i.id));
-                            });
-                        }
-                        modal.find("#MainAddr_City").val(cityID);
-                    }
-                });
-            }
-        }
-
-                              $("#btnSaveUpdate").click(function () {
-            if (!currentRow) return;
-               let cells = currentRow.find('td');
-        let modal = $("#modalInputs");
-
-        let p = "MainAddr"; 
-       
-            const showModalError = (msg) => {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Missing Information',
-                    text: msg,
-                    target: document.getElementById('editModal'),
-                    confirmButtonColor: '#000080'
-                });
-            };
-
-
-            let pinRegex = /^[1-9][0-9]{5}$/;
-
-            if (editType === 'ADDR') {
-               let typeID = modal.find("#ddlAddressType").val();
-        let typeName = modal.find("#ddlAddressType option:selected").text();
-        let a1 = modal.find(`#${p}_AddressLine1`).val().trim();
-        let a2 = modal.find(`#${p}_AddressLine2`).val().trim();
-        let pin = modal.find(`#${p}_Pincode`).val().trim();
-        let lnd = modal.find(`#${p}_Landmark`).val().trim();
-        let cID = modal.find(`#${p}_Country`).val();
-        let cText = modal.find(`#${p}_Country option:selected`).text();
-        let sID = modal.find(`#${p}_State`).val();
-        let sText = modal.find(`#${p}_State option:selected`).text();
-        let ctID = modal.find(`#${p}_City`).val();
-        let ctText = modal.find(`#${p}_City option:selected`).text();
-        let gstNo = modal.find(`#${p}_GSTNo`).val().trim();
-
-       
-
-        if (!typeID) { showModalError('Address Type is mandatory'); return; }
-        if (!a1) { showModalError('Address Line 1 is mandatory'); return; }
-        if (!pin || !pinRegex.test(pin)) { showModalError('Please enter a valid 6-digit Pincode'); return; }
-        if (!cID || !sID || !ctID) { showModalError('Country, State, and City are mandatory'); return; }
-
-
-        cells.eq(0).text(typeName);
-        cells.eq(1).text(a1);
-        cells.eq(2).text(a2);
-        cells.eq(3).text(lnd);
-        cells.eq(4).text(pin);
-        cells.eq(5).text(ctText);
-        cells.eq(6).text(sText);
-        cells.eq(7).text(cText);
-        cells.eq(8).text(gstNo);
-
-
-        let actionHtml = `
-            <button type="button" class="btn-action btn-edit" onclick="OpenEditModal(this, 'ADDR')">Edit</button>
-            <button type="button" class="btn-action btn-remove" onclick="$(this).closest('tr').remove()">Remove</button>
-        `;
-        cells.eq(9).html(actionHtml);
-
-   
-        cells.eq(10).text(typeID);
-        cells.eq(11).text(cID);
-        cells.eq(12).text(sID);
-        cells.eq(13).text(ctID);
-
-            } else {
-
-               let bName = modal.find("input[name='BankName']").val().trim();
-                let accNo = modal.find("input[name='AccountNo']").val().trim();
-                let ifsc = modal.find("input[name='IFSCCode']").val().trim().toUpperCase();
-                let accType = modal.find("select[name='AccountType']").val();
-                let holder = modal.find("input[name='AccountHolderName']").val().trim();
-
-        
-                if (!bName || !accNo || !ifsc || !holder) {
-                    Swal.fire('Error', 'All bank fields are mandatory', 'error');
-                    return;
-                }
-
-                cells.eq(0).text(bName);
-                cells.eq(1).text(accNo);
-                cells.eq(2).text(ifsc);
-                cells.eq(3).text(accType);
-                cells.eq(4).text(holder);
-
-                
-              
-            }
-
-            closeModal();
-           
-        });
-
-        function closeModal() { $("#editModal").hide(); currentRow = null; }
-
-
-
-                       function SaveAllData() {
-     
-            const vendorName = $("#VendorName").val().trim();
-            const gstNo = $("#GSTNo").val().trim();
-            const offMobile = $("input[name='MobileNo']").val().trim();
-            const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
-
-            if (!gstRegex.test(gstNo)) {
-               
-                    Swal.fire({
-                    icon: 'error',
-                    title: 'Validation Error',
-                    text: 'Invalid Main GST format. Expected: 22AAAAA0000A1Z5',
-                    target: document.getElementById('editModal') // Add this
-                });
-                return;
-            }
-        if (!vendorName || !gstNo || !offMobile) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Validation Error',
-                    text: 'Please fill all mandatory fields (Vendor Name, GST, and Mobile).',
-                    target: modalTarget
-                });
-                return;
-            }
-
-        if ($("#tblAddress tbody tr").length === 0) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Validation Error',
-                    text: 'Please add at least one Address to the list.',
-                    target: modalTarget
-                });
-                return;
-            }
-
-            // 4. Validate Bank Table
-            if ($("#tblBank tbody tr").length === 0) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Validation Error',
-                    text: 'Please add at least one Bank account.',
-                    target: modalTarget
-                });
-                return;
-            }
-        
-            const formData = {
-                VendorID: $("#VendorID").val(),
-                VendorName: vendorName,
-                GSTNO: gstNo,
-                PANNO: $("#PANNO").val().trim(),
-                EmailID: $("#EmailID").val(),
-                Compare_Payment_Terms: $("input[name='Compare_Payment_Terms']").val(),
-                 Payment_Terms:  $("#Payment_Terms").val(),
-                Remark: $("input[name='Vremark']").val(),
-
-                Email: $("input[name='Email']").val().trim(),
-                AlternateEmail: $("input[name='AlternateEmail']").val(),
-                ContactPersonName: $("input[name='ContactPersonName']").val().trim(),
-                OffMobileNO: offMobile,
-                WhatsappNo: $("input[name='WhatsappNo']").val(),
-                Website: $("input[name='Website']").val(),
-                Tel1: $("input[name='Tel1']").val(),
-                MobileNo: $("input[name='MobileNo']").val(),
-
-                AddressList: [],
-                BankList: []
-            };
-
-
-            $("#tblAddress tbody tr").each(function() {
-                const columns = $(this).find('td');
-                formData.AddressList.push({
-                    AddressLine1: columns.eq(1).text(),
-                    AddressLine2: columns.eq(2).text(),
-                    Landmark: columns.eq(3).text(),
-                    Pincode: columns.eq(4).text(),
-                    GSTNo: columns.eq(8).text(), 
-                    AddressTypeID: columns.eq(10).text(),
-                    CountryID: columns.eq(11).text(),
-                    StateID: columns.eq(12).text(),
-                    CityID: columns.eq(13).text()
-                });
-            });
-
-
-            $("#tblBank tbody tr").each(function() {
-                const columns = $(this).find('td');
-                formData.BankList.push({
-                    BankName: columns.eq(0).text(),
-                    AccountNo: columns.eq(1).text(),
-                    IFSCCode: columns.eq(2).text(),
-                    AccountType: columns.eq(3).text(),
-                    AccountHolderName: columns.eq(4).text()
-                });
-            });
 
           
-            $.ajax({
-                url: '@Url.Action("SaveVendor", "Users_Master")',
-                type: 'POST',
-                data: { jsonData: JSON.stringify(formData) },
-                success: function (response) {
-                    if (response.success) {
-                        Swal.fire('Success', 'Vendor Master saved successfully!', 'success').then(() => {
-                            window.location.href = '@Url.Action("Vender_Master", "Users_Master")';
-                        });
-                    } else {
-                        Swal.fire('Error', response.message || 'Saving failed.', 'error');
-                    }
-                },
-                error: function () {
-                    Swal.fire('Error', 'Could not reach the server.', 'error');
-                }
+             
+        function closeModal()
+        {
+          $("#editModal")
+            .hide();
+          currentRow = null;
+        }
+
+
+
+        function SaveAllData()
+        {
+
+          const vendorName = $("#VendorName")
+            .val()
+            .trim();
+          const gstNo = $("#GSTNo")
+            .val()
+            .trim();
+          const offMobile = $("input[name='MobileNo']")
+            .val()
+            .trim();
+          const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+
+          if (!gstRegex.test(gstNo)) {
+
+            Swal.fire({
+              icon: 'error'
+              , title: 'Validation Error'
+              , text: 'Invalid Main GST format. Expected: 22AAAAA0000A1Z5'
+              , target: document.getElementById('editModal')
             });
+            return;
+          }
+
+          if (!vendorName || !gstNo || !offMobile) {
+            Swal.fire({
+              icon: 'error'
+              , title: 'Validation Error'
+              , text: 'Please fill all mandatory fields (Vendor Name, GST, and Mobile).'
+              , target: modalTarget
+            });
+            return;
+          }
+
+          if ($("#tblAddress tbody tr")
+            .length === 0) {
+            Swal.fire({
+              icon: 'error'
+              , title: 'Validation Error'
+              , text: 'Please add at least one Address to the list.'
+              , target: modalTarget
+            });
+            return;
+          }
+
+
+          if ($("#tblBank tbody tr")
+            .length === 0) {
+            Swal.fire({
+              icon: 'error'
+              , title: 'Validation Error'
+              , text: 'Please add at least one Bank account.'
+              , target: modalTarget
+            });
+            return;
+          }
+
+          const formData = {
+            VendorID: $("#VendorID")
+              .val()
+            , VendorName: vendorName
+            , GSTNO: gstNo
+            , PANNO: $("#PANNO")
+              .val()
+              .trim()
+            , EmailID: $("#EmailID")
+              .val()
+            , Compare_Payment_Terms: $("input[name='Compare_Payment_Terms']")
+              .val()
+            , Payment_Terms: $("#Payment_Terms")
+              .val()
+            , Remark: $("input[name='Vremark']")
+              .val()
+            , ...getContactDetails()
+            , AddressList: getAddressTableData()
+            , BankList: getBankTableData()
+          };
+
+
+
+
+          $.ajax({
+            url: '@Url.Action("SaveVendor", "Users_Master")'
+            , type: 'POST'
+            , data: {
+              jsonData: JSON.stringify(formData)
+            }
+            , success: function(response) {
+              if (response.success) {
+                Swal.fire('Success', 'Vendor Master saved successfully!', 'success')
+                  .then(() => {
+                    window.location.href = '@Url.Action("Vender_Master", "Users_Master")';
+                  });
+              } else {
+                Swal.fire('Error', response.message || 'Saving failed.', 'error');
+              }
+            }
+            , error: function() {
+              Swal.fire('Error', 'Could not reach the server.', 'error');
+            }
+          });
         }
     </script>
 </body>

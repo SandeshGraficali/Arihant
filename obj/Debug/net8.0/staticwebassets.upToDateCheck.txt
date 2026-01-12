@@ -28,6 +28,9 @@ wwwroot\js\dataTables.js
 wwwroot\js\jquery-2.1.1.min.js
 wwwroot\js\jquery-3.7.1.js
 wwwroot\js\jquery.matchHeight.js
+wwwroot\js\Masters\address.js
+wwwroot\js\Masters\bankdetails.js
+wwwroot\js\Masters\contactdetails.js
 wwwroot\js\script.js
 wwwroot\js\site.js
 wwwroot\js\sumoselect.js

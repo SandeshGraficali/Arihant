@@ -11,5 +11,6 @@
         public string STNO { get; set; }
         public string ECCNO { get; set; }
         public string GSTNo { get; set; }
+
     }
 }

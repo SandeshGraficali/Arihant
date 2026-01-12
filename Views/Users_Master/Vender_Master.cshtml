@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Arihant.Models.Vender.VendorMasterVMView>
+﻿@model IEnumerable<Arihant.Models.Vender.VendorMasterVM>
 <head>
     <link href="~/css/datatables.css" rel="stylesheet" />
     <link href="~/css/allmin.css" rel="stylesheet" />
@@ -8,7 +8,7 @@
         #vendorTable {
             width: 100% !important;
         }
-        /* Optional: adjust padding for smaller screens */
+  
         @@media (max-width: 768px) {
             .padding20 {
                 padding: 10px;
@@ -52,37 +52,40 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model)
+                    @if (Model != null && Model.Any())
                     {
-                        <tr>
-                            <td>@item.VendorName</td>
-                            <td>@item.GSTNo</td>
-                            <td>@item.EmailID</td>
-                            <td>@item.PANNO</td>
-                            <td>@item.MobileNo</td>
-                            <td>
-                                <div class="status-toggle" style="cursor:pointer;" onclick="ToggleStatus(@item.VendorID, this)">
-                                    @if (item.IsActive == "True")
-                                    {
-                                        <img src="~/images/4-active.png" id="img_@item.VendorID" data-status="1" style="width:55px;" alt="Active" />
-                                    }
-                                    else
-                                    {
-                                        <img src="~/images/4-inactive.png" id="img_@item.VendorID" data-status="0" style="width:55px;" alt="Inactive" />
-                                    }
-                                </div>
-                            </td>
-                            <td>
-                                <div style="display: flex; gap: 10px; align-items: center;">
-                                    <a href="@Url.Action("Add_Vender", "Users_Master", new { id = item.VendorID })" title="Edit">
-                                        <img src="~/images/edit.png" alt="Edit" style="width:20px; height:20px; cursor:pointer;" />
-                                    </a>
-                                    <a href="javascript:void(0)" onclick="DeleteVendor(@item.VendorID)" title="Delete">
-                                        <img src="~/images/delete.png" alt="Delete" style="width:20px; height:20px; cursor:pointer;" />
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.VendorName</td>
+                                <td>@item.GSTNo</td>
+                                <td>@item.EmailID</td>
+                                <td>@item.PANNO</td>
+                                <td>@item.MobileNo</td>
+                                <td>
+                                    <div class="status-toggle" style="cursor:pointer;" onclick="ToggleStatus(@item.VendorID, this)">
+                                        @if (item.IsActive == "True")
+                                        {
+                                            <img src="~/images/4-active.png" id="img_@item.VendorID" data-status="1" style="width:55px;" alt="Active" />
+                                        }
+                                        else
+                                        {
+                                            <img src="~/images/4-inactive.png" id="img_@item.VendorID" data-status="0" style="width:55px;" alt="Inactive" />
+                                        }
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="display: flex; gap: 10px; align-items: center;">
+                                        <a href="@Url.Action("Add_Vender", "Users_Master", new { id = item.VendorID })" title="Edit">
+                                            <img src="~/images/edit.png" alt="Edit" style="width:20px; height:20px; cursor:pointer;" />
+                                        </a>
+                                        <a href="javascript:void(0)" onclick="DeleteVendor(@item.VendorID)" title="Delete">
+                                            <img src="~/images/delete.png" alt="Delete" style="width:20px; height:20px; cursor:pointer;" />
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>
@@ -110,11 +113,11 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '@Url.Action("UpdateVendorStatusNew", "Users_Master")', // Reusing the same controller method
+                    url: '@Url.Action("UpdateVendorStatusNew", "Users_Master")', 
                     type: 'POST',
                     data: {
                         vendorId: vendorId,
-                        status: 0, // Not relevant for delete, but keeps signature same
+                        status: 0, 
                         operation: "DELETE"
                     },
                     success: function (response) {
@@ -136,9 +139,9 @@
     }
 
         function ToggleStatus(vendorId, element) {
-        // Get current status from the image data attribute
+    
         var currentImg = $(element).find('img');
-        var currentStatus = currentImg.attr('data-status'); // 1 for Active, 0 for Inactive
+        var currentStatus = currentImg.attr('data-status'); 
         var newStatus = (currentStatus == "1") ? 0 : 1;
         var statusText = (newStatus == 1) ? "Active" : "Inactive";
 
@@ -163,7 +166,7 @@
                                 'Vendor status has been updated.',
                                 'success'
                             ).then(() => {
-                                location.reload(); // Reload page to reflect changes
+                                location.reload(); 
                             });
                         } else {
                             Swal.fire('Error', response.message, 'error');

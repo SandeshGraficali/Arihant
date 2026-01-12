@@ -1,4 +1,5 @@
-﻿@model Arihant.Models.Client.ClientSubmissionViewModel
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@model Arihant.Models.Client.ClientSubmissionViewModel
 @{
     bool isEdit = Model != null && Model.ClientID > 0;
     ViewData["Title"] = isEdit ? "Edit Client" : "Add Client";
@@ -7,35 +8,155 @@
 <head>
     <link href="~/css/datatables.css" rel="stylesheet" />
     <link href="~/css/allmin.css" rel="stylesheet" />
-    <link href="~/css/toggle.min.css" rel="stylesheet" />
-
-    <link href="~/css/sumoselect.css" rel="stylesheet" />
-
 </head>
 
 <style>
-
-
-    input[type="radio"] {
-        width: auto !important;
-        height: auto !important;
-        margin-right: 5px;
-        vertical-align: middle;
-        cursor: pointer;
+    /* --- General Layout --- */
+    .floatleft {
+        float: left;
     }
 
+    .padding10 {
+        padding: 10px;
+    }
 
-        input[type="radio"] + label {
-            margin-right: 15px;
-            font-weight: normal;
-            display: inline-block;
+    .padding20 {
+        padding: 20px;
+    }
+
+    .marginB20 {
+        margin-bottom: 20px;
+    }
+
+    .BorderRounded5 {
+        border-radius: 5px;
+    }
+
+    .BorderRounded10 {
+        border-radius: 10px;
+    }
+
+    .Shadow {
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .clear {
+        clear: both;
+    }
+
+    .bg {
+        background-color: #f4f7f6;
+    }
+
+    .BgColor1 {
+        background-color: #ffffff;
+    }
+
+    .Border1 {
+        border: 1px solid #dee2e6;
+    }
+
+    /* --- Responsive Header --- */
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 10px;
+    }
+
+    /* --- Buttons --- */
+    .btn-action {
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        border: none;
+        font-weight: bold;
+    }
+
+    .btn-add {
+        background-color: #000080;
+        color: white;
+    }
+
+    .btn-edit {
+        background-color: #ffc107;
+        color: black;
+        margin-right: 5px;
+    }
+
+    .btn-remove {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .btn-save {
+        background-color: #28a745;
+        color: white;
+        width: 200px;
+        font-size: 16px;
+    }
+
+    .text-right {
+        text-align: right;
+    }
+
+    .grid-container {
+        overflow-x: auto;
+        width: 100%;
+        margin-top: 15px;
+    }
+
+    .custom-grid {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+        font-size: 13px;
+        border: 1px solid #eee;
+    }
+
+        .custom-grid th, .custom-grid td {
+            padding: 10px;
+            text-align: center;
             vertical-align: middle;
-            cursor: pointer;
+            border-bottom: 1px solid #eee;
         }
 
-    .radio-group {
-        padding: 8px 0;
-        display: block;
+        .custom-grid th {
+            background-color: #f1f3f9;
+            font-weight: bold;
+        }
+
+    /* --- Modal --- */
+    .custom-modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.6);
+        overflow-y: auto;
+        padding: 20px 10px;
+    }
+
+    .modal-content {
+        background-color: #fff;
+        margin: 2% auto;
+        padding: 20px;
+        border-radius: 10px;
+        width: 70%;
+        position: relative;
+    }
+
+    .TextBox {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
     }
 
     @@media (max-width: 768px) {
@@ -53,6 +174,20 @@
             width: 100% !important;
         }
     }
+
+
+        input[type="radio"] + label {
+            margin-right: 15px;
+            font-weight: normal;
+            display: inline-block;
+            vertical-align: middle;
+            cursor: pointer;
+        }
+
+    .radio-group {
+        padding: 8px 0;
+        display: block;
+    }
 </style>
 <body class="bg">
     <div class="wrapper paddingLR10">
@@ -63,13 +198,28 @@
         <form>
             @Html.Partial("_ClientDetails")
             @Html.Partial("_ContactCommunication")
+            <div class="col-lg-12 floatleft BgColor1 Border1 padding20 BorderRounded10 Shadow marginB20">
+                <div class="section-header">
+                    <div class="NormalTextBig"><strong>Address Details</strong></div>
+                    <button type="button" id="Add" class="btn-action btn-add" onclick="ShowAdd()">+ Add Address </button>
 
-            <div class="col-lg-12 floatleft BgColor1 Border1 BorderColor1 padding20 BorderRounded10 Shadow marginB20" style="margin:10px;">
-                <div class="NormalTextBig FontColor1"><strong>Address Details</strong></div>
-                <button type="button" id="Add" class="btn-action btn-add" onclick="ShowAdd()">+ Add Address </button>
+
+                </div>
                 <hr />
                 <div id="MAinAddDive" style="display:none">
-                   
+                    <div class="col-lg-4 floatleft padding10">
+                        <label>Address Type<span style="color:red;margin-left:3px">*</span></label>
+                        <select id="ddlAddressType" class="TextBox">
+                            <option value="">-- Select Type --</option>
+                            @if (ViewBag.Addresslist != null)
+                            {
+                                foreach (var item in (IEnumerable<Arihant.Models.Company_Master.C_Master>)ViewBag.Addresslist)
+                                {
+                                    <option value="@item.ID">@item.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
                     <div class="clear"></div>
 
                     @Html.Partial("_AddressDetails", "MainAddr")
@@ -187,31 +337,36 @@
 
             </div>
         </form>
-    </div>
-    <div id="editModal" class="custom-modal">
-        <div class="modal-content Shadow">
-            <div class="section-header">
-                <div class="NormalTextBig FontColor1"><strong id="modalHeading">Edit Details</strong></div>
-                <button type="button" onclick="closeModal()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
-            </div>
-            <hr />
-            <div id="modalInputs" class="clear"></div>
-            <div class="clear"></div>
-            <hr />
-            <div class="text-right">
-                <button type="button" class="btn-action" style="background:#6c757d; color:white;" onclick="closeModal()">Cancel</button>
-                <button type="button" class="btn-action btn-add" id="btnSaveUpdate">Update Details</button>
+        <div id="editModal" class="custom-modal">
+            <div class="modal-content Shadow">
+                <div class="section-header">
+                    <div class="NormalTextBig FontColor1"><strong id="modalHeading">Edit Details</strong></div>
+                    <button type="button" onclick="closeModal()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+                </div>
+                <hr />
+                <div id="modalInputs" class="clear"></div>
+                <div class="clear"></div>
+                <hr />
+                <div class="text-right">
+                    <button type="button" class="btn-action" style="background:#6c757d; color:white;" onclick="closeModal()">Cancel</button>
+                    <button type="button" class="btn-action btn-add" id="btnSaveUpdate">Update Details</button>
+                </div>
             </div>
         </div>
+
     </div>
+    <script>
+
+        window.AppConfig = {
+            UserMasterBaseUrl: '@Url.Content(Configuration["ApiSettings:UserMasterBaseUrl"])'
+        };
+        console.log("AppConfig Initialized:", window.AppConfig);
+    </script>
     <script src="~/js/jquery-3.7.1.js"></script>
-    <script src="~/js/sumoselect.js"></script>
-    <script src="~/js/datatables.js"></script>
     <script src="~/js/sweetalert2.js"></script>
-    <script src="~/js/validation.js"></script>
-
-    <script src="~/js/common/partial.js"></script>
-
+    <script src="~/js/masters/address.js"></script>
+    <script src="~/js/masters/contactdetails.js"></script>
+    <script src="~/js/masters/bankdetails.js"></script>
 
     <script>
                  var countryList = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.countrylist));
@@ -227,148 +382,114 @@
 
         });
 
+     
+       function closeModal() { $("#editModal").hide(); currentRow = null; }
 
-         function DisplayBankDiv()
+          function ShowAdd()
         {
-                  $("#modalHeading").text("Add Bank Details");
+          $("#modalHeading")
+            .text("Add Address Details");
+          var addressContent = $('#MAinAddDive')
+            .html();
+          $("#modalInputs")
+            .html(addressContent);
+          $("#editModal")
+            .show();
+          $("#btnSaveUpdate")
+            .hide();
+          $("#btnModalAddAddr")
+            .remove();
 
-  
-        var bankContent = $('#BankDiv').html();
-        $("#modalInputs").html(bankContent);
+          var addBtn = '<div class="col-lg-12 floatleft padding10 text-right">' +
+            '<button type="button" id="btnModalAddAddr" class="btn-action btn-add" onclick="AddAddressToGrid()">+ Add Address to List</button>' +
+            '</div>';
+          $("#modalInputs")
+            .append(addBtn);
 
-        $("#editModal").show();
-        $("#btnSaveUpdate").hide();
-        $("#btnModalAddBank").remove();
-        var addBtn = '<div class="col-lg-12 floatleft padding10 text-right">' +
-                     '<button type="button" id="btnModalAddBank" class="btn-action btn-add" onclick="AddBankToGrid()">+ Add Bank to List</button>' +
-                     '</div>';
-        $("#modalInputs").append(addBtn);
+          $('#MAinAddDive')
+            .hide();
         }
 
-        function ShowAdd()
-        {
-                $("#modalHeading").text("Add Address Details");
 
+                 function PopulateEditForm(d) {
 
-        var addressContent = $('#MAinAddDive').html();
-        $("#modalInputs").html(addressContent);
-        $("#editModal").show();
-        $("#btnSaveUpdate").hide();
-        $("#btnModalAddAddr").remove();
-
-        var addBtn = '<div class="col-lg-12 floatleft padding10 text-right">' +
-                     '<button type="button" id="btnModalAddAddr" class="btn-action btn-add" onclick="AddAddressToGrid()">+ Add Address to List</button>' +
-                     '</div>';
-        $("#modalInputs").append(addBtn);
-
-        $('#MAinAddDive').hide();
-        }
-        function PopulateEditForm(d) {
-            console.log(JSON.stringify(d));
+            console.log("Populating data: ", d);
             if (!d) return;
 
-            $('#CompanyID').val(d.companyID);
-            $('input[name="ClientName"]').val(d.clientDetails.clientName);
-            $('input[name="PANNo"]').val(d.clientDetails.panNo);
-            $('input[name="TINNO"]').val(d.clientDetails.tinno);
-            $('input[name="VATNO"]').val(d.clientDetails.vatno);
-            $('input[name="CSTNO"]').val(d.clientDetails.cstno);
-            $('input[name="STNO"]').val(d.clientDetails.stno);
-            $('input[name="ECCNO"]').val(d.clientDetails.eccno);
-            $('input[name="GSTNo"]').val(d.clientDetails.gstNo);
+             $('#tblAddress')
+                 .show();
 
-            if (d.clientDetails.clientType) {
-                $(`input[name="ClientType"][value="${d.clientDetails.clientType}"]`).prop('checked', true);
-            }
+            $('#ClientID').val(d.ClientID || d.clientID || 0);
+             if (d.clientDetails) {
+                  $('input[name="ClientName"]').val(d.clientDetails.clientName);
+                  $('input[name="PANNo"]').val(d.clientDetails.panNo);
+                  $('input[name="TINNO"]').val(d.clientDetails.tinno);
+                  $('input[name="VATNO"]').val(d.clientDetails.vatno);
+                   $('input[name="CSTNO"]').val(d.clientDetails.cstno);
+                  $('input[name="STNO"]').val(d.clientDetails.stno);
+                  $('input[name="ECCNO"]').val(d.clientDetails.eccno);
+                  $('input[name="GSTNo"]').val(d.clientDetails.gstNo);
 
-            $('input[name="TransporterName"]').val(d.logistics.transporterName);
-            $('input[name="BookingType"]').val(d.logistics.bookingType);
-            $('input[name="ClientTypePermanent"]').val(d.logistics.originalInvoiceCopy);
-            $('input[name="FreightType"]').val(d.logistics.freightType);
-            $('input[name="BookedTo"]').val(d.logistics.bookedTo);
-            $('input[name="PaymentTerms"]').val(d.logistics.paymentTerms);
-            $('input[name="CreditPeriod"]').val(d.logistics.creditPeriod);
-
-            $('#IndicateViaMail').prop('checked', d.logistics.indicateViaMail);
-
-            if (d.logistics.exportType) {
-                $(`input[name="ExportType"][value="${d.logistics.exportType}"]`).prop('checked', true);
-            }
-
-            if (d.logistics.originalInvoiceCopy) {
-                $(`input[name="OriginalInvoiceCopy"][value="${d.logistics.originalInvoiceCopy}"]`).prop('checked', true);
-            }
-
-            $("#Owner").val(d.logistics.ownerID);
-            $('input[name="Email"]').val(d.contactDetails.email);
-            $('input[name="AlternateEmail"]').val(d.contactDetails.alternateEmail);
-            $('input[name="ContactPersonName"]').val(d.contactDetails.contactPersonName);
-            $('input[name="OffMobileNO"]').val(d.contactDetails.offMobileNO);
-            $('input[name="WhatsappNo"]').val(d.contactDetails.whatsappNo);
-            $('input[name="Website"]').val(d.contactDetails.website);
-            $('input[name="Tel1"]').val(d.contactDetails.telephone);
-            $('#MobileContainer').find('.mobile-row:not(:first)').remove();
-
-            if (d.contactDetails.mobileNumbers && d.contactDetails.mobileNumbers.length > 0) {
-                d.contactDetails.mobileNumbers.forEach((num, index) => {
-                    if (index === 0) {
-                        $('input[name="MobileNo"]').first().val(num);
-                    } else {
-
-                        AddMobileRow();
-                        $('input[name="MobileNo"]').last().val(num);
-                    }
-                });
-            }
-
-            bindAddressData("Address", d.companyAddress);
-            bindAddressData("Delivery", d.deliveryAddress);
-        }
-
-
-
-        function InitializeStates() {
-            const dropdowns = ["Address_Country", "Delivery_Country"];
-            dropdowns.forEach(id => {
-                let dropdown = document.getElementById(id);
-                countryList.forEach(state => {
-                    let option = new Option(state.Name, state.ID);
-                    dropdown.add(option);
-                });
-            });
-
-            const dropdowns_Owner = ["Owner"];
-
-            dropdowns_Owner.forEach(id => {
-                let dropdown_Owner = document.getElementById(id);
-                ownerlist.forEach(owner => {
-                    let option = new Option(owner.Name, owner.ID);
-                    dropdown_Owner.add(option);
-                });
-            });
-
-        }
-
-
-        function OnCountryChange(countryid, prefix) {
-
-            var cityDropdown = document.getElementById(prefix + "_State");
-            cityDropdown.innerHTML = '<option value="">-- Select _State --</option>';
-
-            if (!countryid) return;
-
-            $.ajax({
-               url: '@Url.Action("GetState", "Users_Master")',
-                type: "GET",
-                data: {
-                    countryid: countryid
-                },
-                success: function(cityList) {
-                    cityList.forEach(function(city) {
-                        cityDropdown.add(new Option(city.name, city.id));
-                    });
+                 if (d.clientDetails.clientType) {
+                      $(`input[name="ClientType"][value="${d.clientDetails.clientType}"]`).prop('checked', true);
                 }
-            });
+            }
+
+
+             if (d.logistics) {
+                  $('input[name="TransporterName"]').val(d.logistics.transporterName);
+                 $('input[name="BookingType"]').val(d.logistics.bookingType);
+                 $('input[name="FreightType"]').val(d.logistics.freightType);
+                  $('input[name="BookedTo"]').val(d.logistics.bookedTo);
+                 $('input[name="PaymentTerms"]').val(d.logistics.paymentTerms);
+                 $('input[name="CreditPeriod"]').val(d.logistics.creditPeriod);
+                 $('#Owner').val(d.logistics.ownerID);
+                 $('#IndicateViaMail').prop('checked', d.logistics.indicateViaMail);
+
+                 if (d.logistics.exportType) {
+                     $(`input[name="ExportType"][value="${d.logistics.exportType}"]`).prop('checked', true);
+                }
+
+                 if (d.logistics.originalInvoiceCopy) {
+                     $(`input[name="OriginalInvoiceCopy"][value="${d.logistics.originalInvoiceCopy}"]`).prop('checked', true);
+                }
+            }
+
+       
+            bindContactDetails(
+                 d.email,
+                 d.alternateEmail,
+                 d.contactPersonName,
+                 d.offMobileNO,
+                 d.whatsappNo,
+                 d.website,
+                 d.tel1,
+                 d.mobileNo
+            );
+
+                    if (d.addressList) {
+            var mappedList = d.addressList.map(item => ({
+                AddressTypeID: item.addressTypeID,
+                AddressLine1: item.addressLine1,
+                AddressLine2: item.addressLine2,
+                Landmark: item.landmark,
+                Pincode: item.pincode,
+                CityName: item.cityName,
+                StateName: item.stateName,
+                CountryName: item.countryName,
+                GSTNO: item.gstno,
+                CountryID: item.countryID,
+                StateID: item.stateID,
+                CityID: item.cityID
+            }));
+
+            bindAddressTable(mappedList);
+        }
+        }
+
+              function InitializeStates() {
+            bindDropdownList(["MainAddr_Country"], countryList);
+            bindDropdownList(["Owner"], ownerlist); 
         }
 
         function SaveClient() {
@@ -377,14 +498,13 @@
                 return;
             }
 
-            var finalData = {
 
+            var finalData = {
                 ClientID: parseInt($('#ClientID').val()) || 0,
                 ClientDetails: getClientDetails(),
-                ContactDetails: getContactDetails(),
                 Logistics: getLogisticsDetails(),
-                CompanyAddress: getAddressData("Address"),
-                DeliveryAddress: getAddressData("Delivery")
+                AddressList: getAddressTableData(),
+                  ...getContactDetails()
             };
 
             console.log("Data to Save:", finalData);
@@ -459,21 +579,7 @@
                 }
             });
 
-            var prefixes = ["Address", "Delivery"];
-            prefixes.forEach(function(p) {
-                var addr = getAddressData(p);
-                var label = (p === "Address") ? "Company Address" : "Delivery Address";
-
-                if (!addr.AddressLine1) errors.push(label + ": Address Line 1 is required.");
-                if (!addr.Pincode) errors.push(label + ": Pincode is required.");
-                else if (addr.Pincode.length !== 6) errors.push(label + ": Pincode must be 6 digits.");
-
-                if (!addr.CountryID) errors.push(label + ": Country is required.");
-                if (!addr.StateID) errors.push(label + ": State is required.");
-                if (!addr.CityID) errors.push(label + ": City is required.");
-            });
-
-
+    
             var log = getLogisticsDetails();
             if (!log.TransporterName) errors.push("Transport Name is required.");
             if (!log.BookingType) errors.push("Booking Type is required.");
@@ -514,8 +620,6 @@
         }
 
 
-
-
         function getClientDetails() {
             return {
                 ClientName: $('#ClientName').val().trim(),
@@ -546,55 +650,7 @@
             };
         }
 
-        function getAddressData(prefix) {
-            return {
-                AddressLine1: $('#' + prefix + '_AddressLine1').val(),
-                AddressLine2: $('#' + prefix + '_AddressLine2').val(),
-                Pincode: $('#' + prefix + '_Pincode').val(),
-                CountryID: $('#' + prefix + '_Country').val(),
-                Landmark: $('#' + prefix + '_Landmark').val(),
-                StateID: $('#' + prefix + '_State').val(),
-                CityID: $('#' + prefix + '_City').val()
-            };
-        }
-
-        function getContactDetails() {
-
-            var mobileList = [];
-            $('input[name="MobileNo"]').each(function() {
-                var val = $(this).val().trim();
-                if (val !== "") {
-                    mobileList.push(val);
-                }
-            });
-
-            return {
-                Email: $('input[name="Email"]').val(),
-                AlternateEmail: $('input[name="AlternateEmail"]').val(),
-                ContactPersonName: $('input[name="ContactPersonName"]').val(),
-                OffMobileNO: $('input[name="OffMobileNO"]').val(),
-                WhatsappNo: $('input[name="WhatsappNo"]').val(),
-                Website: $('input[name="Website"]').val(),
-                Telephone: $('input[name="Tel1"]').val(),
-                MobileNumbers: mobileList
-            };
-        }
-
-
-        function bindAddressData(prefix, data) {
-            if (!data) return;
-            $(`#${prefix}_AddressLine1`).val(data.addressLine1);
-            $(`#${prefix}_AddressLine2`).val(data.addressLine2);
-            $(`#${prefix}_Pincode`).val(data.pincode);
-            $(`#${prefix}_Landmark`).val(data.landmark);
-            $(`#${prefix}_Country`).val(data.countryID).trigger('change');
-            setTimeout(function() {
-                $(`#${prefix}_State`).val(data.stateID).trigger('change');
-                setTimeout(function() {
-                    $(`#${prefix}_City`).val(data.cityID);
-                }, 800);
-            }, 800);
-        }
+      
     </script>
 </body>
 

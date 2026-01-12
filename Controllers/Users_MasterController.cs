@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Data;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Arihant.Controllers
 {
@@ -78,8 +79,16 @@ namespace Arihant.Controllers
 
         public IActionResult Vender_Master()
         {
-            var list = _user.GetVendorList();
-            return View(list);
+            try
+            {
+                var list = _user.GetVendorList();
+                return View(list);
+            }
+            catch(Exception ex)
+            {
+                return View();
+            }
+            
            
         }
 
@@ -179,7 +188,7 @@ namespace Arihant.Controllers
         public IActionResult ClientMaster(int? id)
         {
            ViewBag.countrylist = _user.GetC_MasterList();
-           
+            ViewBag.Addresslist = _user.GetC_MasterAddresList();
             ViewBag.ownerlist = _user.GetOwnerList();
             if (id.HasValue && id.Value > 0)
             {               
@@ -257,13 +266,11 @@ namespace Arihant.Controllers
         [HttpGet]
         public IActionResult EditCompany(int id)
         {
+            ViewBag.Addresslist = _user.GetC_MasterAddresList();
             ViewBag.countrylist = _user.GetC_MasterList();
-            var list = _user.GetAllCompanyMasters();
-            var companyDetail = list.FirstOrDefault(x => x.CompanyID == id);
-
-            if (companyDetail == null) return NotFound();
-
-            return View("CompanyForm", companyDetail); 
+                var data = _user.getCompanyByID(id.ToString());
+                var model = data.FirstOrDefault();
+            return View("CompanyForm", model); 
         }
 
         [HttpGet]
@@ -329,6 +336,7 @@ namespace Arihant.Controllers
 
         public IActionResult CompanyMaster()
         {
+            ViewBag.Addresslist = _user.GetC_MasterAddresList();
             ViewBag.countrylist = _user.GetC_MasterList();
             return View("CompanyForm", new CompanyProfileModel()); 
         }

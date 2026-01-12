@@ -1,4 +1,7 @@
-﻿namespace Arihant.Models.Company_Master
+﻿using Arihant.Models.Common;
+using Arihant.Models.Vender;
+
+namespace Arihant.Models.Company_Master
 {
     public class CompanyViewModel
     {
@@ -21,26 +24,10 @@
         public string WhatsappNo { get; set; }
 
         public string Website { get; set; }
-        public string Telephone { get; set; }
-        public List<string> MobileNumbers { get; set; }
+        public string Tel1 { get; set; }
+        public string MobileNo { get; set; }
 
-        public AddressInfo CompanyAddr { get; set; }
-        public AddressInfo Central_ExciseAddr { get; set; }
-        public AddressInfo DivisionAddr { get; set; }
-        public AddressInfo CommissionerateAddr { get; set; }
-
-        public string BankName { get; set; }
-        public string AccountNo { get; set; }
-        public string AccountHolderName { get; set; }
-        public string AccountType { get; set; }
-        public string IFSCCode { get; set; }
-        public string BankAddressLine1 { get; set; }
-        public string BankAddressLine2 { get; set; }
-        public string BankLandmark { get; set; }
-      
-        public string BankPincode { get; set; }
-        public string BankCity { get; set; }
-        public string BankState { get; set; }
-        public string BankCountry { get; set; }
+        public List<AddressDTO> AddressList { get; set; } = new();
+        public List<BankDTO> BankList { get; set; } = new();
     }
 }
