@@ -23,6 +23,7 @@ E:\Work\Arihant\Code\Arihant\Arihant\obj\Release\net8.0\PubTmp\Out\Microsoft.Ide
 E:\Work\Arihant\Code\Arihant\Arihant\obj\Release\net8.0\PubTmp\Out\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 E:\Work\Arihant\Code\Arihant\Arihant\obj\Release\net8.0\PubTmp\Out\Microsoft.IdentityModel.Tokens.dll
 E:\Work\Arihant\Code\Arihant\Arihant\obj\Release\net8.0\PubTmp\Out\Microsoft.SqlServer.Server.dll
+E:\Work\Arihant\Code\Arihant\Arihant\obj\Release\net8.0\PubTmp\Out\Newtonsoft.Json.dll
 E:\Work\Arihant\Code\Arihant\Arihant\obj\Release\net8.0\PubTmp\Out\System.ClientModel.dll
 E:\Work\Arihant\Code\Arihant\Arihant\obj\Release\net8.0\PubTmp\Out\System.Configuration.ConfigurationManager.dll
 E:\Work\Arihant\Code\Arihant\Arihant\obj\Release\net8.0\PubTmp\Out\System.Data.SqlClient.dll

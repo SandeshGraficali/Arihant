@@ -22,8 +22,8 @@ wwwroot\images\loginbg.jpg
 wwwroot\images\logo.png
 wwwroot\images\search.png
 wwwroot\images\Thumbs.db
-wwwroot\js\Common\Client.js
 wwwroot\js\Common\Partial.js
+wwwroot\js\Common\Client.js
 wwwroot\js\dataTables.js
 wwwroot\js\jquery-2.1.1.min.js
 wwwroot\js\jquery-3.7.1.js
@@ -90,3 +90,6 @@ wwwroot\lib\jquery\dist\jquery.js
 wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map
 wwwroot\lib\jquery\LICENSE.txt
+wwwroot\js\Masters\address.js
+wwwroot\js\Masters\bankdetails.js
+wwwroot\js\Masters\contactdetails.js
