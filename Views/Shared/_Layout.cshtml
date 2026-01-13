@@ -1,8 +1,17 @@
 ﻿@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+@using Arihant.Models.Menu  
+
 @inject IHttpContextAccessor HttpContextAccessor
 
 @{
-	var userName = HttpContextAccessor.HttpContext.Session.GetString("UserName");
+	var session = HttpContextAccessor.HttpContext.Session;
+	var userName = session.GetString("UserName");
+	var menuData = Context.Session.GetString("UserMenu");
+	List<MenuViewModel> menus = !string.IsNullOrEmpty(menuData)
+		? JsonConvert.DeserializeObject<List<MenuViewModel>>(menuData)
+		: new List<MenuViewModel>();
+	var groupedModules = menus.GroupBy(m => m.Module).ToList();
 }
 <!DOCTYPE html>
 <html>
@@ -65,121 +74,41 @@
 
 					</div>
 					<div class="menu-header-container">
+						
+
 						<ul id="cd-primary-nav" class="menu">
-							<li class="menu-item menu-item-has-children">
-								<a href="#">Master</a>
-								<ul class="sub-menu">
-									
+							@foreach (var module in groupedModules)
+							{
+								<li class="menu-item menu-item-has-children">
+									<a href="#">@module.Key</a>
+									<ul class="sub-menu">
+										@foreach (var item in module)
+										{
+											var subItems = module.Where(x => x.ParentMenuID == item.MenuID && x.MenuID != item.MenuID).ToList();
 
-									<li class="menu-item">
-										<a href="@Url.Action("User_Master_Dashboard", "Users_Master")">User Master</a>
-									</li>
-									<li class="menu-item">
-										<a href="@Url.Action("IP_Master", "Users_Master")">IP Master</a>
-									</li>
-
-									
-									<li class="menu-item">
-										<a href="@Url.Action("Manage_Role_Master", "Users_Master")">Role Master</a>
-									</li>
-									<li class="menu-item">
-										<a href="@Url.Action("GetCompanyList", "Users_Master")">Company Master</a>
-									</li>
-									<li class="menu-item">
-										<a href="@Url.Action("AllClientMasterList", "Users_Master")">Client Master</a>
-									</li>
-									<li class="menu-item">
-										<a href="@Url.Action("Vender_Master", "Users_Master")">Vender Master</a>
-									</li>
-
-									<li class="menu-item">
-										<a href="https://graficali.co.in/Arihant">BOM Master</a>
-									</li>
-								</ul>
-							</li>
-							@* <li class="menu-item menu-item-has-children">
-								<a href="#">Lorem Ipsum</a>
-								<ul class="sub-menu">
-									<li class="menu-item">
-										<a href="#">Lorem Ipsum</a>
-									</li>
-
-									
-								
-								</ul>
-							</li>
-							<li class="menu-item menu-item-has-children">
-								<a href="#">Lorem Ipsum1</a>
-								<ul class="sub-menu">
-									<li class="menu-item menu-item-has-children">
-										<a href="#">Lorem Ipsum2</a>
-										<ul class="sub-menu">
-											<li class="menu-item menu-item-has-children">
-												<a href="#">Lorem Ipsum3</a>
-												<ul class="sub-menu">
-													<li class="menu-item">
-														<a href="#">Level 4</a>
-													</li>
-												</ul>
-
-											</li>
-											<li class="menu-item">
-												<a href="#">Lorem Ipsum</a>
-											</li>
-											<li class="menu-item">
-												<a href="#">Lorem Ipsum</a>
-											</li>
-											<li class="menu-item">
-												<a href="#">Lorem Ipsum</a>
-											</li>
-											<li class="menu-item">
-												<a href="#">Lorem Ipsum</a>
-											</li>
-										</ul>
-									</li>
-									<li class="menu-item menu-item-has-children">
-										<a href="#">Lorem Ipsum</a>
-										<ul class="sub-menu">
-											<li class="menu-item">
-												<a href="#">Lorem Ipsum</a>
-											</li>
-										</ul>
-									</li>
-									<li class="menu-item menu-item-has-children">
-										<a href="#">Lorem Ipsum</a>
-									</li>
-									<li class="menu-item menu-item-has-children">
-										<a href="#">Lorem Ipsum</a>
-									</li>
-									<li class="menu-item menu-item-has-children">
-										<a href="#">Lorem Ipsum</a>
-									</li>
-									<li class="menu-item menu-item-has-children">
-										<a href="#">Lorem Ipsum</a>
-									</li>
-									<li class="menu-item menu-item-has-children">
-										<a href="#">Lorem Ipsum</a>
-									</li>
-									<li class="menu-item menu-item-has-children">
-										<a href="#">Lorem Ipsum</a>
-									</li>
-								</ul>
-							</li>
-							<li class="menu-item menu-item-has-children">
-								<a href="#">Lorem Ipsum</a>
-								<ul class="sub-menu">
-									<li class="menu-item">
-										<a href="#">Lorem Ipsum</a>
-									</li>
-									<li class="menu-item">
-										<a href="#">Lorem Ipsum</a>
-									</li>
-								</ul>
-							</li>
-							<li class="contact menu-item ">
-								<a href="#">Lorem Ipsum</a>
-							</li>
-							<li class="line"></li> *@
+											if (subItems.Any())
+											{
+												<li class="menu-item menu-item-has-children">
+													<a href="#">@item.RightName</a>
+													<ul class="sub-menu">
+														@foreach (var sub in subItems)
+														{
+															<li><a href="@sub.UrlPage">@sub.RightName</a></li>
+														}
+													</ul>
+												</li>
+											}
+											else if (item.ParentMenuID == item.MenuID)
+											{
+												
+												<li class="menu-item">
+													<a href="@item.UrlPage">@item.RightName</a>
+												</li>
+											}
+										}
+									</ul>
+								</li>
+							}
 						</ul>
 					</div>
 

@@ -552,6 +552,10 @@
             if (!client.ClientName) errors.push("Client Name is required.");
             if (!client.GSTNo) errors.push("GST No. is required.");
 
+                  var mainMobile = $("input[name='MobileNo']").val();
+        if (!mainMobile || mainMobile.trim() === "") {
+            errors.push("Mobile Number is required.");
+        }
 
             var taxFields = {
                 "TIN NO": client.TINNO
@@ -580,7 +584,7 @@
                     name: "WhatsApp No."
                 },
                 {
-                    id: "#MobileNo",
+                     id: "#MobileNo",
                     name: "Mobile Number"
                 }
             ];

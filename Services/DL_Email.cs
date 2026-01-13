@@ -114,18 +114,23 @@ namespace Arihant.Services
         }
 
 
-        public string SetSession(string email)
+        public DataSet SetSession(string email)
         {
             var parameters = new Dictionary<string, SqlParameter>
             {
                 { "Operation", new SqlParameter("@Operation", "GetUserName") },
                 { "EmailID", new SqlParameter("@EmailID", email) }
-              
+
             };
 
             DataSet ds = gc.ExecuteStoredProcedureGetDataSet("SP_Email_Integration", parameters.Values.ToArray());
-            return ds.Tables[0].Rows[0]["UserName"].ToString();
+            return ds;
+
         }
+
+
+
+   
 
         public string VerifyOTP(string email, string otp)
         {

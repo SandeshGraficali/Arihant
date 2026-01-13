@@ -1,6 +1,10 @@
-﻿using Arihant.Services;
+﻿using Arihant.Models.Menu;
+using Arihant.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
+using System.Data;
 
 namespace Arihant.Controllers
 {
@@ -72,12 +76,29 @@ namespace Arihant.Controllers
         {
             try
             {
-                string status = _email.VerifyOTP(email, otp);
+               
+                    string status = _email.VerifyOTP(email, otp);
 
                 if (status == "Success")
                 {
-                    string Sesssion = _email.SetSession(email);
-                    HttpContext.Session.SetString("UserName", Sesssion);
+                    DataSet ds = _email.SetSession(email);
+                    if (ds.Tables[0].Rows.Count>0 )
+                    {
+                        string Username =ds.Tables[0].Rows[0]["UserName"].ToString();
+                        string ID = ds.Tables[0].Rows[0]["ID"].ToString();
+                        HttpContext.Session.SetString("UserName", Username);
+                        HttpContext.Session.SetString("EmailID", email);
+                        HttpContext.Session.SetString("UserID", email);
+                        List<MenuViewModel> menus = _user.GetUserAccess(email);
+                        string menuJson = JsonConvert.SerializeObject(menus);
+                        HttpContext.Session.SetString("UserMenu", menuJson);
+                    }
+                    else
+                    {
+
+                    }
+
+                        
                     return Json(new { success = true, message = "OTP Verified successfully." });
                 }
                 else if (status == "Expired")
@@ -100,8 +121,22 @@ namespace Arihant.Controllers
         {
            
             string result= _user.CheckUserIsValid(Username, Password);
+           
+
             if (result == "1")
             {
+                string userIP = HttpContext.Connection.RemoteIpAddress?.ToString();
+                string IPSAcces = _user.CheckIP(Username, userIP);
+                if (IPSAcces == "1")
+                {
+
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Your IP address is not authorized." });
+
+                }
+
                 string otp = new Random().Next(100000, 999999).ToString();
                 string bodyContent = $"Your OTP for Login: <b>{otp}</b>";
                 bool isSent = _email.SendEmail(Username, bodyContent, "OTP for Login");
@@ -119,6 +154,11 @@ namespace Arihant.Controllers
                 return Json(new { success = false, message = "Invalid username or password." });
             }
 
+        }
+
+        public IActionResult UnAuthorized()
+        {
+            return View(); 
         }
 
     }

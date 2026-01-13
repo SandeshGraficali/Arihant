@@ -1,4 +1,6 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Arihant.Models.Menu;
+using Azure.Core;
+using Microsoft.Data.SqlClient;
 using System.Data;
 
 namespace Arihant.Services
@@ -11,6 +13,25 @@ namespace Arihant.Services
         {
             gc = _gc;
             _configuration = configuration;
+        }
+        public string CheckIP(string email , string IP)
+        {
+
+           
+            var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
+            var parameters = new Dictionary<string, SqlParameter>
+                    {
+                         { "Operation", new SqlParameter("@Operation", "ValidateIP") },
+                         { "IPAddress", new SqlParameter("@IPAddress", IP) },
+                         { "UserID", new SqlParameter("@UserID", email) },
+                         { "result", outParam }
+                    };
+
+            var response = gc.ExecuteStoredProcedure("SP_Login", parameters);
+            string finalResult = response.OutputParameters["@result"]?.ToString();
+
+            return finalResult;
+
         }
 
         public string CheckUserIsValid(string UserID, string Password)
@@ -33,22 +54,39 @@ namespace Arihant.Services
             return finalResult;
         }
 
-        public string GetUserAccess(string UserID)
+        public List<MenuViewModel> GetUserAccess(string UserID)
         {
-
-            var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250) { Direction = ParameterDirection.Output };
+      
             var parameters = new Dictionary<string, SqlParameter>
+            {
+               
+                { "UserID", new SqlParameter("@UserID", UserID) }
+     
+            };
+
+            DataSet ds = gc.ExecuteStoredProcedureGetDataSet("Sp_GetUserMenus", parameters.Values.ToArray());
+
+            List<MenuViewModel> menuList = new List<MenuViewModel>();
+
+            if (ds.Tables.Count > 0)
+            {
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    
+                    if (dr["RightAllowed"].ToString() == "Y")
                     {
-                         { "Operation", new SqlParameter("@Operation", "CheckLogIN") },
-                         { "ID", new SqlParameter("@UserID", UserID) },
-                        
-                         { "result", outParam }
-                    };
-
-            var response = gc.ExecuteStoredProcedure("SP_GetLogInAccess", parameters);
-            string finalResult = response.OutputParameters["@result"]?.ToString();
-
-            return finalResult;
+                        menuList.Add(new MenuViewModel
+                        {
+                            Module = dr["Module"].ToString(),
+                            RightName = dr["RightName"].ToString(),
+                            UrlPage = dr["UrlPage"].ToString(),
+                            ParentMenuID = Convert.ToInt32(dr["ParentMenuID"]),
+                            MenuID = Convert.ToInt32(dr["MenuID"])
+                        });
+                    }
+                }
+            }
+            return menuList;
         }
 
     }

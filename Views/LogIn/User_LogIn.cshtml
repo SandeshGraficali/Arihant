@@ -6,460 +6,519 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-	<meta name="viewport" content="width=device-width,initial-scale=1">
-	<title>Arihant</title>
-	<meta name="keywords" content="">
-	<meta name="Description" content="">
-	<meta http-equiv='cache-control' content='no-cache'>
-	<meta http-equiv='expires' content='0'>
-	<meta http-equiv='pragma' content='no-cache'>
-	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Arihant</title>
+    <meta name="keywords" content="">
+    <meta name="Description" content="">
+    <meta http-equiv='cache-control' content='no-cache'>
+    <meta http-equiv='expires' content='0'>
+    <meta http-equiv='pragma' content='no-cache'>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 
     <link href="~/css/programstyle.css" rel="stylesheet" />
     <link href="~/css/responsive.css" rel="stylesheet" />
     <script src="~/js/jquery-2.1.1.min.js"></script>
     <script src="~/js/jquery.matchheight.js"></script>
-	<script type="text/javascript">
-		jQuery(function ($) {
-			$('.matchheight').matchHeight();
-		});
-	</script>
+    <script type="text/javascript">
+        jQuery(function ($) {
+            $('.matchheight').matchHeight();
+        });
+    </script>
 
 </head>
 <body class="loginbg">
-	<div class="wrapper padding10">
-		<div class="col-lg-textcenter padding20">
-			<div class="clear padding20">&nbsp;</div>
-            <img  />
-			<img src="images/logo.png" class="logo" alt="" />
-			<div class="clear"></div>
-			<span class="Heading FontColor1 Bi"><strong>Arihant Gold Plast Pvt. Ltd.</strong></span>
-		</div>
-		<div class="clear"></div>
+    <div class="wrapper padding10">
+        <div class="col-lg-textcenter padding20">
+            <div class="clear padding20">&nbsp;</div>
 
-		<div style="max-width:500px; width:95%; margin:auto;">
-		
-			<div style="max-width:500px; width:95%; margin:auto;">
-				<div id="loginSection" class="Login">
-					<div class="col-lg-10 col-xs-11 col-lg-center padding5">
-						<div class="col-lg-textcenter padding10 Heading AllCaps FontColor3"><strong>Login</strong></div>
-						<div class="clear padding5"></div>
-						<input type="text" id="txtUsername" class="logintextbox col-lg-12 BorderRounded5" placeholder="Email ID">
-						<div class="clear padding10"></div>
-						<input type="password" id="txtPassword" class="logintextbox col-lg-12 BorderRounded5" placeholder="Password">
-						<div class="clear paddingTB20 floatright">
-							<a href="javascript:void(0)" onclick="UpdatePass()" class="JustLinks FontColor3 MediumText">Change Password?</a> &nbsp;
-							<a href="javascript:void(0)" onclick="showForgot()" class="JustLinks FontColor3 MediumText">Forgot Password?</a> &nbsp;
-							<button onclick="Login()" class="Button ButtonColor2 BorderRounded5">Login</button>
-						</div>
-					</div>
-					<div class="clear padding5"></div>
-				</div>
+            <img src="~/images/logo.png" class="logo" alt="" />
+            <div class="clear"></div>
+            <span class="Heading FontColor1 Bi"><strong>Arihant Gold Plast Pvt. Ltd.</strong></span>
+        </div>
+        <div class="clear"></div>
 
-				<div id="UpadtePasswordSection" class="Login" style="display:none">
-					<div class="col-lg-10 col-xs-11 col-lg-center padding5">
-						<div class="col-lg-textcenter padding10 Heading AllCaps FontColor3"><strong>Update Password</strong></div>
-						<div class="clear padding5"></div>
+        <div style="max-width:500px; width:95%; margin:auto;">
 
-						<input type="text" id="txtUpdateUsername" class="logintextbox col-lg-12 BorderRounded5" placeholder="Email ID">
-						<div class="clear padding10"></div>
+            <div style="max-width:500px; width:95%; margin:auto;">
+                <div id="loginSection" class="Login">
+                    <div class="col-lg-10 col-xs-11 col-lg-center padding5">
+                        <div class="col-lg-textcenter padding10 Heading AllCaps FontColor3"><strong>Login</strong></div>
+                        <div class="clear padding5"></div>
+                        <input type="text" id="txtUsername" class="logintextbox col-lg-12 BorderRounded5" placeholder="Email ID">
+                        <div class="clear padding10"></div>
+                        <input type="password" id="txtPassword" class="logintextbox col-lg-12 BorderRounded5" placeholder="Password">
+                        <div class="clear paddingTB20 floatright">
+                            <a href="javascript:void(0)" onclick="UpdatePass()" class="JustLinks FontColor3 MediumText">Change Password</a> &nbsp;
+                            <a href="javascript:void(0)" onclick="showForgot()" class="JustLinks FontColor3 MediumText">Forgot Password</a> &nbsp;
+                            <button onclick="Login()" class="Button ButtonColor2 BorderRounded5">Login</button>
+                        </div>
+                    </div>
+                    <div class="clear padding5"></div>
+                </div>
 
-						<input type="password" id="txtUpdateOLDPassword" class="logintextbox col-lg-12 BorderRounded5" placeholder="Old Password">
-						<div class="clear padding10"></div>
+                <div id="UpadtePasswordSection" class="Login" style="display:none">
+                    <div class="col-lg-10 col-xs-11 col-lg-center padding5">
+                        <div class="col-lg-textcenter padding10 Heading AllCaps FontColor3"><strong>Update Password</strong></div>
+                        <div class="clear padding5"></div>
 
-						<input type="password" id="txtUpdatePassword" class="logintextbox col-lg-12 BorderRounded5" placeholder="New Password">
-						<div class="clear padding10"></div>
+                        <input type="text" id="txtUpdateUsername" class="logintextbox col-lg-12 BorderRounded5" placeholder="Email ID">
+                        <div class="clear padding10"></div>
 
-						<input type="password" id="txtupdateconfirmPassword" class="logintextbox col-lg-12 BorderRounded5" placeholder="Confirm New Password">
+                        <input type="password" id="txtUpdateOLDPassword" class="logintextbox col-lg-12 BorderRounded5" placeholder="Old Password">
+                        <div class="clear padding10"></div>
 
-						<div class="clear paddingTB20 floatright">
-							<a href="javascript:void(0)" onclick="showLogin()" class="JustLinks FontColor3 MediumText">Back to Login</a> &nbsp;
-							<button onclick="UpdateOLD()" class="Button ButtonColor2 BorderRounded5">Update Password</button>
-						</div>
-						<div class="clear"></div>
-					</div>
-				</div>
+                        <input type="password" id="txtUpdatePassword" class="logintextbox col-lg-12 BorderRounded5" placeholder="New Password">
+                        <div class="clear padding10"></div>
 
+                        <input type="password" id="txtupdateconfirmPassword" class="logintextbox col-lg-12 BorderRounded5" placeholder="Confirm New Password">
 
-				<div id="loginSectionVarify" class="Login" style="display:none">
-					<div class="col-lg-10 col-xs-11 col-lg-center padding5">
-						<div class="col-lg-textcenter padding10 Heading AllCaps FontColor3"><strong> </strong></div>
-						<div id="otpTimerDisplay" style="color: red; font-weight: bold; text-align: center; margin-bottom: 10px;"></div>
-						<div class="clear padding5"></div>
-						<input type="text" id="ValidateEmail" class="logintextbox col-lg-12 BorderRounded5" placeholder="Enter Email ID">
-						<div >
-							<div class="clear padding10"></div>
-							<input type="text" id="txtOTPNew" class="logintextbox col-lg-12 BorderRounded5" placeholder="Enter OTP">
-						</div>
-
-						<div class="clear paddingTB20 floatright">
-							
-							<a href="javascript:void(0)" onclick="showLogin()" class="JustLinks FontColor3 MediumText">Back to Login</a> &nbsp;
-							<button id="btnVerifyOTPNew" onclick="VerifyOTPAfterLogin()" class="Button ButtonColor2 BorderRounded5">Verify OTP</button>
-
-						</div>
-					</div>
-					<div class="clear padding5"></div>
-				</div>
-
-				<div id="forgotSection" class="Login" style="display:none;">
-					<div class="col-lg-10 col-xs-11 col-lg-center padding5">
-
-						<div id="emailEntrySection">
-							<div class="col-lg-textcenter padding10 Heading AllCaps FontColor3"><strong>Reset Password</strong></div>
-							<div class="clear padding5"></div>
-							<input type="text" id="txtForgotEmail" class="logintextbox col-lg-12 BorderRounded5" placeholder="Enter Email ID">
-
-							<div id="otpContainer" style="display:none;">
-								<div class="clear padding10"></div>
-								<input type="text" id="txtOTP" class="logintextbox col-lg-12 BorderRounded5" placeholder="Enter OTP">
-							</div>
-
-							<div class="clear paddingTB20 floatright">
-								<a href="javascript:void(0)" onclick="showLogin()" class="JustLinks FontColor3 MediumText">Back to Login</a> &nbsp;
-								<button id="btnSendOTP" onclick="SendOTP()" class="Button ButtonColor2 BorderRounded5">Send OTP</button>
-								<button id="btnVerifyOTP" onclick="VerifyOTP()" class="Button ButtonColor2 BorderRounded5" style="display:none;">Verify OTP</button>
-								
-							</div>
-						</div>
-
-						<div id="resetPasswordContainer" style="display:none;">
-							<div class="col-lg-textcenter padding10 Heading AllCaps FontColor3"><strong>Create New Password</strong></div>
-							<div class="clear padding5"></div>
-
-							<input type="password" id="txtNewPassword" class="logintextbox col-lg-12 BorderRounded5" placeholder="New Password">
-							<div class="clear padding10"></div>
-
-							<input type="password" id="txtConfirmPassword" class="logintextbox col-lg-12 BorderRounded5" placeholder="Confirm Password">
-
-							<div class="clear paddingTB20 floatright">
-								<button onclick="UpdatePassword()" class="Button ButtonColor2 BorderRounded5">Update Password</button>
-							</div>
-						</div>
-
-						<div class="clear padding5"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-		</div>
-		</div>
-
-	</div>
+                        <div class="clear paddingTB20 floatright">
+                            <a href="javascript:void(0)" onclick="showLogin()" class="JustLinks FontColor3 MediumText">Back to Login</a> &nbsp;
+                            <button onclick="UpdateOLD()" class="Button ButtonColor2 BorderRounded5">Update Password</button>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
 
 
-	<div class="clear"></div>
+                <div id="loginSectionVarify" class="Login" style="display:none">
+                    <div class="col-lg-10 col-xs-11 col-lg-center padding5">
+                        <div class="col-lg-textcenter padding10 Heading AllCaps FontColor3"><strong> </strong></div>
+                        <div id="otpTimerDisplay" style="color: red; font-weight: bold; text-align: center; margin-bottom: 10px;"></div>
+                        <div class="clear padding5"></div>
+                        <input type="text" id="ValidateEmail" class="logintextbox col-lg-12 BorderRounded5" placeholder="Enter Email ID">
+                        <div>
+                            <div class="clear padding10"></div>
+                            <input type="text" id="txtOTPNew" class="logintextbox col-lg-12 BorderRounded5" placeholder="Enter OTP">
+                        </div>
+
+                        <div class="clear paddingTB20 floatright">
+
+                            <a href="javascript:void(0)" onclick="showLogin()" class="JustLinks FontColor3 MediumText">Back to Login</a> &nbsp;
+                            <button id="btnOTPResend" style="display:none" onclick="ResendOTP()" class="Button ButtonColor2 BorderRounded5">Resend OTP</button>
+                            <button id="btnVerifyOTPNew" onclick="VerifyOTPAfterLogin()" class="Button ButtonColor2 BorderRounded5">Verify OTP</button>
+
+                        </div>
+                    </div>
+                    <div class="clear padding5"></div>
+                </div>
+
+                <div id="forgotSection" class="Login" style="display:none;">
+                    <div class="col-lg-10 col-xs-11 col-lg-center padding5">
+
+                        <div id="emailEntrySection">
+                            <div class="col-lg-textcenter padding10 Heading AllCaps FontColor3"><strong>Reset Password</strong></div>
+                            <div class="clear padding5"></div>
+                            <input type="text" id="txtForgotEmail" class="logintextbox col-lg-12 BorderRounded5" placeholder="Enter Email ID">
+
+                            <div id="otpContainer" style="display:none;">
+                                <div class="clear padding10"></div>
+                                <input type="text" id="txtOTP" class="logintextbox col-lg-12 BorderRounded5" placeholder="Enter OTP">
+                            </div>
+
+                            <div class="clear paddingTB20 floatright">
+                                <a href="javascript:void(0)" onclick="showLogin()" class="JustLinks FontColor3 MediumText">Back to Login</a> &nbsp;
+                                <button id="btnSendOTP" onclick="SendOTP()" class="Button ButtonColor2 BorderRounded5">Send OTP</button>
+                                <button id="btnVerifyOTP" onclick="VerifyOTP()" class="Button ButtonColor2 BorderRounded5" style="display:none;">Verify OTP</button>
+
+                            </div>
+                        </div>
+
+                        <div id="resetPasswordContainer" style="display:none;">
+                            <div class="col-lg-textcenter padding10 Heading AllCaps FontColor3"><strong>Create New Password</strong></div>
+                            <div class="clear padding5"></div>
+
+                            <input type="password" id="txtNewPassword" class="logintextbox col-lg-12 BorderRounded5" placeholder="New Password">
+                            <div class="clear padding10"></div>
+
+                            <input type="password" id="txtConfirmPassword" class="logintextbox col-lg-12 BorderRounded5" placeholder="Confirm Password">
+
+                            <div class="clear paddingTB20 floatright">
+                                <button onclick="UpdatePassword()" class="Button ButtonColor2 BorderRounded5">Update Password</button>
+                            </div>
+                        </div>
+
+                        <div class="clear padding5"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="clear"></div>
 
 
     <script src="~/js/jquery-3.7.1.js"></script>
     <script src="~/js/sweetalert2.js"></script>
-	<script>
+    <script>
 
-				let otpInterval; 
+                let otpInterval;
 
-		function startOTPTimer() {
-			let timeLeft = 300;
-			const timerDisplay = $('#otpTimerDisplay');
-			const otpInput = $('#txtOTPNew');
-			const verifyBtn = $('#btnVerifyOTPNew');
-			otpInput.prop('disabled', false);
-			verifyBtn.prop('disabled', false);
-			clearInterval(otpInterval);
+        function startOTPTimer() {
+            let timeLeft = 30;
+            const timerDisplay = $('#otpTimerDisplay');
+            const otpInput = $('#txtOTPNew');
+            const verifyBtn = $('#btnVerifyOTPNew');
+            otpInput.prop('disabled', false);
+            verifyBtn.prop('disabled', false);
+            clearInterval(otpInterval);
 
-			otpInterval = setInterval(function () {
-				let minutes = Math.floor(timeLeft / 60);
-				let seconds = timeLeft % 60;
-				seconds = seconds < 10 ? '0' + seconds : seconds;
-				timerDisplay.text(`Time Remaining: ${minutes}:${seconds}`);
+            otpInterval = setInterval(function () {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                seconds = seconds < 10 ? '0' + seconds : seconds;
+                timerDisplay.text(`Time Remaining: ${minutes}:${seconds}`);
 
-				if (timeLeft <= 0) {
-					clearInterval(otpInterval);
-					timerDisplay.text("OTP Expired!");
-					otpInput.prop('disabled', true);
-					verifyBtn.prop('disabled', true);
+                if (timeLeft <= 0) {
+                    clearInterval(otpInterval);
+                    $('#btnOTPResend').show();
 
-	
-					Swal.fire({
-						icon: 'error',
-						title: 'Expired',
-						text: 'Your OTP has expired. Please try logging in again.',
-						confirmButtonColor: '#d33'
-					});
-				}
-				timeLeft--;
-			}, 1000);
-		}
+                        $("#btnVerifyOTPNew").prop("disabled", true);
+                       
+                    timerDisplay.text("OTP Expired!");
+                    otpInput.prop('disabled', true);
+                    verifyBtn.prop('disabled', true);
 
 
-		function UpdatePass()
-		{
-			    $('#loginSection').hide();
-				$('#UpadtePasswordSection').show();
-		}
-			function Login() {
-			var username = $('#txtUsername').val();
-			var password = $('#txtPassword').val();
-
-		
-			if (username === "" || password === "") {
-				Swal.fire({
-					icon: 'warning',
-					title: 'Required',
-					text: 'Please enter username and password'
-				});
-				return;
-			}
-
-			$.ajax({
-				url: '@Url.Action("Login", "LogIn")',
-				type: 'POST',
-				data: {
-					Username: username,
-					Password: password
-				},
-				success: function (response) {
-					if (response.success) {
-						$('#loginSectionVarify').show();
-						$('#loginSection').hide();
-					    $('#ValidateEmail').attr('readonly', true);
-						$('#ValidateEmail').val(username);
-						startOTPTimer();
-					
-					} else {
-						Swal.fire({
-							icon: 'error',
-							title: 'Login Failed',
-							text: response.message
-						});
-					}
-				},
-				error: function () {
-					Swal.fire({
-						icon: 'error',
-						title: 'Error',
-						text: 'Something went wrong. Please try again.'
-					});
-				}
-			});
-		}
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Expired',
+                        text: 'Your OTP has expired. Please try logging in again.',
+                        confirmButtonColor: '#d33'
+                    });
+                }
+                timeLeft--;
+            }, 1000);
+        }
 
 
-		function showForgot() {
-			$('#loginSection').hide();
-			$('#forgotSection').show();
-		}
-
-		function showLogin() {
-			location.reload();
-		}
-
-	
-		function SendOTP() {
-			var email = $('#txtForgotEmail').val();
-
-			if (email === "") {
-				Swal.fire({ icon: 'warning', title: 'Required', text: 'Please enter your Email ID' });
-				return;
-			}
-
-			$.ajax({
-				url: '@Url.Action("SendOTP", "LogIn")', 
-				type: 'POST',
-				data: { email: email },
-				success: function (response) {
-					if (response.success) {
-						Swal.fire({ icon: 'success', title: 'Sent!', text: 'OTP has been sent to your email.' });
-
-					
-						$('#txtForgotEmail').attr('readonly', true);
-						$('#otpContainer').show();
-						$('#btnSendOTP').hide();
-						$('#btnVerifyOTP').show();
-					} else {
-						Swal.fire({ icon: 'error', title: 'Failed', text: response.message });
-					}
-				}
-			});
-		}
+        function UpdatePass()
+        {
+                $('#loginSection').hide();
+                $('#UpadtePasswordSection').show();
+        }
 
 
-		function VerifyOTPAfterLogin() {
-			var email = $('#ValidateEmail').val();
-			var otp = $('#txtOTPNew').val();
-
-			if (otp === "") {
-				Swal.fire({ icon: 'warning', title: 'Required', text: 'Please enter the OTP' });
-				return;
-			}
-
-			if (email === "") {
-				Swal.fire({ icon: 'warning', title: 'Required', text: 'Please enter the email' });
-				return;
-			}
-
-			$.ajax({
-				url: '@Url.Action("VerifyOTP", "LogIn")',
-				type: 'POST',
-				data: { email: email, otp: otp },
-				success: function (response) {
-					if (response.success) {
-							window.location.href = '@Url.Action("Index", "Home")';
-					} else {
-
-						Swal.fire({ icon: 'error', title: 'Failed', text: response.message });
-					}
-				}
-			});
-		}
+            function Login() {
+            var username = $('#txtUsername').val();
+            var password = $('#txtPassword').val();
 
 
-
-				function VerifyOTP() {
-			var email = $('#txtForgotEmail').val();
-			var otp = $('#txtOTP').val();
-
-			if (otp === "") {
-				Swal.fire({ icon: 'warning', title: 'Required', text: 'Please enter the OTP' });
-				return;
-			}
-
-			$.ajax({
-				url: '@Url.Action("VerifyOTP", "LogIn")',
-				type: 'POST',
-				data: { email: email, otp: otp },
-				success: function (response) {
-					if (response.success) {
-						Swal.fire({
-							icon: 'success',
-							title: 'Verified',
-							text: response.message,
-							timer: 2000,
-							showConfirmButton: false
-						});
-
-					
-						$('#emailEntrySection').hide();
-						$('#resetPasswordContainer').show();
-					} else {
-						
-						Swal.fire({ icon: 'error', title: 'Failed', text: response.message });
-					}
-				}
-			});
-		}
+            if (username === "" || password === "") {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Required',
+                    text: 'Please enter username and password'
+                });
+                return;
+            }
 
 
-				function UpdatePassword() {
-			var email = $('#txtForgotEmail').val();
-			var newPass = $('#txtNewPassword').val();
-			var confirmPass = $('#txtConfirmPassword').val();
+            $.ajax({
+                url: '@Url.Action("Login", "LogIn")',
+                type: 'POST',
+                data: {
+                    Username: username,
+                    Password: password
+                },
+                success: function (response) {
+                    if (response.success) {
+                        $('#loginSectionVarify').show();
+                        $('#loginSection').hide();
+                        $('#ValidateEmail').attr('readonly', true);
+                        $('#ValidateEmail').val(username);
+                        startOTPTimer();
 
-			if (newPass === "" || confirmPass === "") {
-				Swal.fire({ icon: 'warning', title: 'Required', text: 'Please fill all fields' });
-				return;
-			}
-			if (newPass !== confirmPass) {
-				Swal.fire({ icon: 'error', title: 'Mismatch', text: 'Passwords do not match' });
-				return;
-			}
-
-
-				var alphaNumericRegex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
-
-		if (!alphaNumericRegex.test(newPass)) {
-			Swal.fire({
-				icon: 'info',
-				title: 'Weak Password',
-				text: 'Password must be alphanumeric (contain at least one letter and one number).'
-			});
-			return;
-		}
-
-			$.ajax({
-				url: '@Url.Action("UpdatePassword", "LogIn")',
-				type: 'POST',
-				data: { email: email, password: newPass },
-				success: function (response) {
-					if (response.success) {
-						Swal.fire({ icon: 'success', title: 'Success', text: 'Password updated! Please login.' })
-						.then(() => { window.location.reload(); });
-					}
-				}
-			});
-		}
-				function UpdateOLD() {
-		
-			var email = $('#txtUpdateUsername').val();
-			var oldPass = $('#txtUpdateOLDPassword').val();
-			var newPass = $('#txtUpdatePassword').val();
-			var confirmPass = $('#txtupdateconfirmPassword').val();
-
-		
-			if (email === "" || oldPass === "" || newPass === "" || confirmPass === "") {
-				Swal.fire({ icon: 'warning', title: 'Required', text: 'Please fill all fields.' });
-				return;
-			}
-
-		
-			if (newPass !== confirmPass) {
-				Swal.fire({ icon: 'error', title: 'Mismatch', text: 'New passwords do not match.' });
-				return;
-			}
-
-		
-			var alphaNumericRegex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
-			if (!alphaNumericRegex.test(newPass)) {
-				Swal.fire({
-					icon: 'info',
-					title: 'Weak Password',
-					text: 'New password must be alphanumeric (contain letters and numbers).'
-				});
-				return;
-			}
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Login Failed',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Something went wrong. Please try again.'
+                    });
+                }
+            });
+        }
 
 
-				$.ajax({
-				url: '@Url.Action("Login", "LogIn")',
-				type: 'POST',
-				data: {
-					Username: email,
-					Password: oldPass
-				},
-				success: function (response) {
-					if (response.success) {
-						$.ajax({
-							url: '@Url.Action("UpdatePassword", "LogIn")',
-							type: 'POST',
-							data: { email: email, password: newPass },
-							success: function (response) {
-								if (response.success) {
-									Swal.fire({ icon: 'success', title: 'Success', text: 'Password updated! Please login.' })
-									.then(() => { window.location.reload(); });
-								}
-							}
-						});
+        function showForgot() {
+            $('#loginSection').hide();
+            $('#forgotSection').show();
+        }
 
-					} else {
-						Swal.fire({
-							icon: 'error',
-							title: 'Login Failed',
-							text: 'OLD Password Not Match !'
-						});
-					}
-				},
-				error: function () {
-					Swal.fire({
-						icon: 'error',
-						title: 'Error',
-						text: 'Something went wrong. Please try again.'
-					});
-				}
-			});
-			}
+        function showLogin() {
+            location.reload();
+        }
 
-	</script>
+                function ResendOTP() {
+            var email = $('#ValidateEmail').val();
+
+            if (email === "") {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Required',
+                    text: 'Please enter your Email ID'
+                });
+                return;
+            }
+
+      
+            $('#btnOTPResend').prop('disabled', true).text('Sending...');
+
+            $.ajax({
+                url: '@Url.Action("SendOTP", "LogIn")',
+                type: 'POST',
+                data: { email: email },
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Sent!',
+                            text: 'A new OTP has been sent to your email.'
+                        });
+
+     
+                        $('#btnOTPResend').hide();          
+                        $('#btnOTPResend').text('Resend OTP'); 
+                        $('#txtOTPNew').val('');            
+                        startOTPTimer();
+
+                    } else {
+                        $('#btnOTPResend').prop('disabled', false).text('Resend OTP');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Failed',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function () {
+                    $('#btnOTPResend').prop('disabled', false).text('Resend OTP');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Could not connect to the server.'
+                    });
+                }
+            });
+        }
+
+        function SendOTP() {
+            var email = $('#txtForgotEmail').val();
+
+            if (email === "") {
+                Swal.fire({ icon: 'warning', title: 'Required', text: 'Please enter your Email ID' });
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("SendOTP", "LogIn")',
+                type: 'POST',
+                data: { email: email },
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({ icon: 'success', title: 'Sent!', text: 'OTP has been sent to your email.' });
+                                $("#btnVerifyOTPNew").prop("disabled", false);
+                               $("#btnVerifyOTPNew").text("Resend OTP");
+
+                        $('#txtForgotEmail').attr('readonly', true);
+                        $('#otpContainer').show();
+                        $('#btnSendOTP').hide();
+                        $('#btnVerifyOTP').show();
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Failed', text: response.message });
+                    }
+                }
+            });
+        }
+
+
+        function VerifyOTPAfterLogin() {
+            var email = $('#ValidateEmail').val();
+            var otp = $('#txtOTPNew').val();
+
+            if (otp === "") {
+                Swal.fire({ icon: 'warning', title: 'Required', text: 'Please enter the OTP' });
+                return;
+            }
+
+            if (email === "") {
+                Swal.fire({ icon: 'warning', title: 'Required', text: 'Please enter the email' });
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("VerifyOTP", "LogIn")',
+                type: 'POST',
+                data: { email: email, otp: otp },
+                success: function (response) {
+                    if (response.success) {
+                            window.location.href = '@Url.Action("Dashboard", "Users_Master")';
+                    } else {
+
+                        Swal.fire({ icon: 'error', title: 'Failed', text: response.message });
+                    }
+                }
+            });
+        }
+
+
+
+                function VerifyOTP() {
+            var email = $('#txtForgotEmail').val();
+            var otp = $('#txtOTP').val();
+
+            if (otp === "") {
+                Swal.fire({ icon: 'warning', title: 'Required', text: 'Please enter the OTP' });
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("VerifyOTP", "LogIn")',
+                type: 'POST',
+                data: { email: email, otp: otp },
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Verified',
+                            text: response.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+
+
+                        $('#emailEntrySection').hide();
+                        $('#resetPasswordContainer').show();
+                    } else {
+
+                        Swal.fire({ icon: 'error', title: 'Failed', text: response.message });
+                    }
+                }
+            });
+        }
+
+
+                function UpdatePassword() {
+            var email = $('#txtForgotEmail').val();
+            var newPass = $('#txtNewPassword').val();
+            var confirmPass = $('#txtConfirmPassword').val();
+
+            if (newPass === "" || confirmPass === "") {
+                Swal.fire({ icon: 'warning', title: 'Required', text: 'Please fill all fields' });
+                return;
+            }
+            if (newPass !== confirmPass) {
+                Swal.fire({ icon: 'error', title: 'Mismatch', text: 'Passwords do not match' });
+                return;
+            }
+
+
+                var alphaNumericRegex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
+
+        if (!alphaNumericRegex.test(newPass)) {
+            Swal.fire({
+                icon: 'info',
+                title: 'Weak Password',
+                text: 'Password must be alphanumeric (contain at least one letter and one number).'
+            });
+            return;
+        }
+
+            $.ajax({
+                url: '@Url.Action("UpdatePassword", "LogIn")',
+                type: 'POST',
+                data: { email: email, password: newPass },
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({ icon: 'success', title: 'Success', text: 'Password updated! Please login.' })
+                        .then(() => { window.location.reload(); });
+                    }
+                }
+            });
+        }
+                function UpdateOLD() {
+
+            var email = $('#txtUpdateUsername').val();
+            var oldPass = $('#txtUpdateOLDPassword').val();
+            var newPass = $('#txtUpdatePassword').val();
+            var confirmPass = $('#txtupdateconfirmPassword').val();
+
+
+            if (email === "" || oldPass === "" || newPass === "" || confirmPass === "") {
+                Swal.fire({ icon: 'warning', title: 'Required', text: 'Please fill all fields.' });
+                return;
+            }
+
+
+            if (newPass !== confirmPass) {
+                Swal.fire({ icon: 'error', title: 'Mismatch', text: 'New passwords do not match.' });
+                return;
+            }
+
+
+            var alphaNumericRegex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
+            if (!alphaNumericRegex.test(newPass)) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Weak Password',
+                    text: 'New password must be alphanumeric (contain letters and numbers).'
+                });
+                return;
+            }
+
+
+                $.ajax({
+                url: '@Url.Action("Login", "LogIn")',
+                type: 'POST',
+                data: {
+                    Username: email,
+                    Password: oldPass
+                },
+                success: function (response) {
+                    if (response.success) {
+                        $.ajax({
+                            url: '@Url.Action("UpdatePassword", "LogIn")',
+                            type: 'POST',
+                            data: { email: email, password: newPass },
+                            success: function (response) {
+                                if (response.success) {
+                                    Swal.fire({ icon: 'success', title: 'Success', text: 'Password updated! Please login.' })
+                                    .then(() => { window.location.reload(); });
+                                }
+                            }
+                        });
+
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Login Failed',
+                            text: 'OLD Password Not Match !'
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Something went wrong. Please try again.'
+                    });
+                }
+            });
+            }
+
+    </script>
 
 
 </body>
