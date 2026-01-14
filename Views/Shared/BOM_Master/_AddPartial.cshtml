@@ -1,0 +1,78 @@
+﻿<style>
+    #totalQuantityLabel {
+        font-weight: bold;
+        text-align: right;
+        display: block;
+        margin-right: 10px;
+    }
+</style>
+<div class="form-section">
+    <h3>BOM Information</h3>
+    <div class="form-grid">
+        <div class="form-group">
+            <label>BOM Name *</label>
+            <input type="text" placeholder="Enter BOM name" required>
+        </div>
+        <div class="form-group">
+            <label>Product Type *</label>
+            <select id="productTypeFilterBOM" onchange="sendSelectedProductTypeBOM()" required>
+                <option value="">Select Product Type</option>
+                @foreach (var type in ViewBag.ProductTypes as List<string>)
+                {
+                    <option value="@type"> @type</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Product Name *</label>
+            <select id="productNameFilterBOM" required>
+                <option value="">Select Product Name</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Product Grade *</label>
+            <select id="productGradeFilterBOM" required>
+                <option value="">Select Product Grade</option>
+            </select>
+        </div>
+
+
+    </div>
+</div>
+
+<label id="ViewAllInfo"></label>
+<div class="materials-section">
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="margin: 0;">Raw Materials</h3>
+
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <label style="font-weight: bold;">
+                Total Material Quantity :
+                <span id="totalQuantity" style="font-weight: bold;">0</span>
+            </label>
+
+            <button class="btn btn-primary btn-small" onclick="addMaterial()">➕ Add Material</button>
+        </div>
+    </div>
+
+
+    <div style="overflow-x: auto;">
+        <table class="bom-table" style="margin-top: 0;">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">#</th>
+                    <th>Material Type *</th>
+                    <th>Material Name *</th>
+                    <th>Material Grade *</th>
+                    <th style="width: 120px;">Quantity *</th>
+                    <th style="width: 100px;">Unit</th>
+                    <th style="width: 80px;">Action</th>
+                </tr>
+            </thead>
+            <tbody id="materialsTableBody">
+            </tbody>
+        </table>
+
+    </div>
+</div>

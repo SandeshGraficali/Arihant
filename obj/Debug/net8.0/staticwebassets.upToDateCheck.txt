@@ -8,6 +8,10 @@ wwwroot\css\style - Copy.css
 wwwroot\css\style.css
 wwwroot\css\sumoselect.css
 wwwroot\css\toggle.min.css
+wwwroot\Datatablecss\buttons.dataTables.min.css
+wwwroot\Datatablecss\fixedHeader.dataTables.min.css
+wwwroot\Datatablecss\jquery.dataTables.min.css
+wwwroot\Datatablecss\responsive.dataTables.min.css
 wwwroot\favicon.ico
 wwwroot\fonts\ionicons.eot
 wwwroot\fonts\ionicons.svg
@@ -27,6 +31,15 @@ wwwroot\images\loginbg.jpg
 wwwroot\images\logo.png
 wwwroot\images\search.png
 wwwroot\images\Thumbs.db
+wwwroot\JQueryDataTable\buttons.html5.min.js
+wwwroot\JQueryDataTable\dataTables.buttons.min.js
+wwwroot\JQueryDataTable\dataTables.fixedHeader.min.js
+wwwroot\JQueryDataTable\dataTables.responsive.min.js
+wwwroot\JQueryDataTable\jquery.dataTables.min.js
+wwwroot\JQueryDataTable\jszip.min.js
+wwwroot\JQueryDataTable\pdfmake.min.js
+wwwroot\JQueryDataTable\vfs_fonts.js
+wwwroot\JQueryDataTable\xlsx.full.min.js
 wwwroot\js\Common\Client.js
 wwwroot\js\Common\Partial.js
 wwwroot\js\dataTables.js

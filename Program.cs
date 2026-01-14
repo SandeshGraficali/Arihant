@@ -8,6 +8,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<DL_Users_Master>();
 builder.Services.AddTransient<DL_Login>();
 builder.Services.AddTransient<DL_Email>();
+builder.Services.AddTransient<DL_BOM>();
 builder.Services.AddScoped<GraficaliClasses.GraficaliClasses>(provider =>
 {
 
@@ -42,6 +43,6 @@ app.UseAuthorization();
 //app.UseMiddleware<MenuAuthorizationMiddleware>();
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=LogIn}/{action=User_LogIn}/{id?}");
+    pattern: "{controller=BOM_Master}/{action=Index}/{id?}");
 
 app.Run();

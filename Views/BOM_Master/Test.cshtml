@@ -1,0 +1,206 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BOM Table</title>
+
+    <!-- Optional styling for badges -->
+    <style>
+        .badge-active {
+            color: white;
+            background-color: green;
+            padding: 3px 6px;
+            border-radius: 3px;
+        }
+
+        .badge-inactive {
+            color: white;
+            background-color: red;
+            padding: 3px 6px;
+            border-radius: 3px;
+        }
+
+        .btn-small {
+            font-size: 12px;
+            margin-left: 2px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 36px;
+            height: 18px;
+        }
+
+            .toggle-switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 18px;
+        }
+
+            .toggle-slider:before {
+                position: absolute;
+                content: "";
+                height: 14px;
+                width: 14px;
+                left: 2px;
+                bottom: 2px;
+                background-color: white;
+                transition: .4s;
+                border-radius: 50%;
+            }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background-color: #2196F3;
+        }
+
+            .toggle-switch input:checked + .toggle-slider:before {
+                transform: translateX(18px);
+            }
+    </style>
+</head>
+<body>
+
+    <table class="bom-table" style="width:100%">
+        <thead>
+            <tr>
+                <th>BOM Name</th>
+                <th>Product Type</th>
+                <th>Product Name</th>
+                <th>Product Grade</th>
+                <th>Quantity</th>
+                <th>Materials</th>
+                <th>Status</th>
+                <th>Created Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="bomTableBody"></tbody>
+    </table>
+
+
+
+</body>
+</html>
+<!-- Scripts -->
+@section scripts {
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <!-- Buttons for export -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css" />
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+
+    <!-- JSZip for Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <!-- SweetAlert (optional) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function () {
+            loadBOMs();
+        });
+
+        function loadBOMs() {
+            $.ajax({
+                url: '@Url.Action("GetAllBOMWithProductIndex", "Home")', // MVC route
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (!response.success) {
+                        Swal.fire({ title: response.message || 'Failed to load BOMs', icon: 'error' });
+                        return;
+                    }
+
+                    var tbody = $('#bomTableBody');
+                    tbody.empty();
+
+                    $.each(response.data, function (index, bom) {
+                        let rawStatus = (bom.IsActive || "").toString().trim().toUpperCase();
+                        let isActive = ["Y","YES","1","TRUE","T"].includes(rawStatus);
+                        let statusBadge = isActive
+                            ? `<span class="badge badge-active">Active</span>`
+                            : `<span class="badge badge-inactive">Inactive</span>`;
+                        let quantityWithUOM = `${bom.Quantity}`;
+                        let createdDate = bom.CreatedDate ? new Date(bom.CreatedDate).toLocaleDateString() : "";
+
+                        let row = `
+                            <tr>
+                                <td>${bom.BOM_Name || ""}</td>
+                                <td>${bom.FG_Type || ""}</td>
+                                <td>${bom.FG_Name || ""}</td>
+                                <td>${bom.FG_Application || ""}</td>
+                                <td>${quantityWithUOM}</td>
+                                <td>${bom.Total_Materials || 0} Items</td>
+                                <td>${statusBadge}</td>
+                                <td>${createdDate}</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" ${isActive ? "checked" : ""}
+                                                onchange="toggleStatus(this, ${bom.BOM_id})">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                        <button class="btn btn-success btn-small"
+                                                onclick="openEditModal(${bom.BOM_id})">✏️ Edit</button>
+                                        <button class="btn btn-danger btn-small"
+                                                onclick="deleteBOM(${bom.BOM_id})">🗑️ Delete</button>
+                                    </div>
+                                </td>
+                            </tr>`;
+                        tbody.append(row);
+                    });
+
+                    initializeDataTable();
+                },
+                error: function () {
+                    Swal.fire({ title: 'Server error. Could not fetch BOMs!', icon: 'error' });
+                }
+            });
+        }
+
+        function initializeDataTable() {
+            if ($.fn.dataTable.isDataTable('#bomTable')) {
+                $('#bomTable').DataTable().clear().destroy();
+            }
+
+            $('#bomTable').DataTable({
+                paging: true,
+                searching: true,
+                ordering: true,
+                pageLength: 10,
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'BOM_List_Export',
+                        exportOptions: { columns: ':not(:last-child)' }
+                    }
+                ]
+            });
+        }
+
+        // Dummy placeholders
+        function toggleStatus(el, id) { console.log('Toggle', id); }
+        function openEditModal(id) { console.log('Edit', id); }
+        function deleteBOM(id) { console.log('Delete', id); }
+    </script>
+}

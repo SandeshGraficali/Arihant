@@ -1,0 +1,2223 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+   
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="~/js/sweetalert2.js"></script>
+    <script src="~/js/jquery-3.7.1.js"></script>
+    <link href="~/Datatablecss/buttons.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Datatablecss/fixedHeader.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Datatablecss/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Datatablecss/responsive.dataTables.min.css" rel="stylesheet" />
+    <script src="~/JQueryDataTable/jquery.dataTables.min.js"></script>
+    <script src="~/JQueryDataTable/dataTables.buttons.min.js"></script>
+    <script src="~/JQueryDataTable/buttons.html5.min.js"></script>
+    <script src="~/JQueryDataTable/jszip.min.js"></script>
+    <script src="~/JQueryDataTable/dataTables.fixedHeader.min.js"></script>
+    <script src="~/JQueryDataTable/dataTables.responsive.min.js"></script>
+    <script src="~/JQueryDataTable/xlsx.full.min.js"></script>
+    <title>BOM Master Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+
+        .header {
+           
+          
+            
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+                margin-top: 17px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #144379;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-box input {
+            padding: 10px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            width: 300px;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .bom-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 3px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .bom-table thead {
+                background: #144379;
+            color: white;
+        }
+
+        .bom-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .bom-table td {
+            padding: 5px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .bom-table tr.temp-hidden {
+            display: none !important;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ef4444;
+            transition: 0.4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background-color: #10b981;
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            background: #144379;
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 24px;
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 18px;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 10px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .materials-section {
+            margin-top: 30px;
+            border-top: 2px solid #e5e7eb;
+            padding-top: 5px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            background: #f9fafb;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+
+        .empty-state svg {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 10px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .pagination-info {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .page-btn {
+            padding: 8px 12px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            min-width: 40px;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .page-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-size-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-size-selector select {
+            padding: 8px 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .page-size-selector select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-error {
+            border: 1px solid red !important;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 15px;
+            margin-top: 3px;
+        }
+        .input-valid {
+            border: 1px solid #28a745 !important; /* green */
+        }
+        .row-error {
+            background-color: #ffe6e6; /* light red */
+        }
+
+        #firstDetailsModal {
+            z-index: 1050; 
+        }
+
+        #bomModal {
+            z-index: 1100; 
+        }
+
+        .swal2-container {
+            z-index: 99999 !important; 
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 BOM Master Management</h1>
+            <p>Bills of Material - Production & Manufacturing</p>
+        </div>
+
+        <div class="main-content" style="margin-top: 46px;">
+            <div class="action-bar">
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" onclick="openCreateModal()">
+                        ➕ Create New BOM
+                    </button>
+                </div>
+                <div class="search-box">
+                    <select id="productTypeFilter" onchange="sendSelectedProductType()" style="padding: 10px 15px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
+                        <option value="">Product Type</option>
+                        @foreach (var type in ViewBag.ProductTypes as List<string>)
+                        {
+                            <option value="@type">@type</option>
+                        }
+                    </select>
+                    <select id="productNameFilter" style="padding: 10px 15px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
+                        <option value="">Product Name</option>
+                    </select>
+                    <select id="productGradeFilter" style="padding: 10px 15px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
+                        <option value="">Product Grade</option>
+                    </select>
+                   
+                    <button class="btn btn-secondary" onclick="clearFilters()">✖️ Clear</button>
+                </div>
+            </div>
+            <table class="bom-table">
+                <thead>
+                    <tr>
+                        <th>Product Type</th>
+                        <th>Product Name</th>
+                        <th>Product Grade</th>
+                        <th>No. of BOMs</th>
+                    </tr>
+                </thead>
+                <tbody id="bomTableBody">
+                </tbody>
+            </table>
+
+
+            <div class="pagination-container">
+                <div class="page-size-selector">
+
+                </div>
+
+                <div class="pagination-info">
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <div class="modal" id="bomModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Create New BOM</h2>
+                <button class="close-btn" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+               
+                
+                <partial name="~/Views/Shared/bom_master/_AddPartial.cshtml" />
+            </div>
+            <div class="modal-footer">
+                <button id="btnExportExcel"
+                        class="btn btn-success"
+                        style="display:none;"
+                        onclick="ExportBOM()">
+                    📥 Export BOM
+                </button>
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <input type="hidden" id="hiddenBOMId" value="" />
+                <button class="btn btn-success" onclick="saveBOM()">💾 Save BOM</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="firstDetailsModal">
+        <div class="modal-content2">
+            <div class="modal-header">
+                <h2 id="modalTitle">
+                    BOM Details
+                  
+                </h2>
+                <button class="close-btn" onclick="closeDetailsModal()">×</button>
+            </div>
+            <div class="modal-body">
+                    @Html.Partial("_firstDetailsLayer")
+                    <button class="btn btn-primary" id="exportExcel2">
+                        Export BOM
+                    </button>
+            </div>
+        </div>
+        <div class="modal-body">
+        </div>
+    </div>
+
+
+
+
+    <script>
+        let currentPage = 1;
+        let pageSize = 25;
+        let allRows = [];
+        let selectedFGID = null;
+        let materialCount = 0;
+        let materialsData = {};
+        let initialBOMValues = {};
+        let selectedUOMBOM = "";
+
+        window.onload = function () {
+            initialBOMValues = {
+                productType: $('#productTypeFilterBOM').val(),
+                productName: $('#productNameFilterBOM').val(),
+                productGrade: $('#productGradeFilterBOM').val()
+            };
+            allRows = Array.from(document.querySelectorAll('#bomTableBody tr'));
+
+
+        };
+
+
+
+    function renderPageNumbers(totalPages) {
+        const pageNumbersContainer = document.getElementById('pageNumbers');
+        pageNumbersContainer.innerHTML = '';
+        for (let i = 1; i <= totalPages; i++) {
+            const pageNumber = document.createElement('button');
+            pageNumber.textContent = i;
+            pageNumber.onclick = () => {
+                currentPage = i;
+            };
+            pageNumbersContainer.appendChild(pageNumber);
+        }
+    }
+
+
+
+        function createPageButton(pageNum) {
+            const btn = document.createElement('button');
+            btn.className = 'page-btn' + (pageNum === currentPage ? ' active' : '');
+            btn.textContent = pageNum;
+            btn.onclick = () => goToPage(pageNum);
+            return btn;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+        }
+
+        function nextPage() {
+            const filteredRows = allRows.filter(row => row.style.display !== 'none');
+            const totalPages = Math.ceil(filteredRows.length / pageSize);
+            if (currentPage < totalPages) {
+                currentPage++;
+            }
+        }
+
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+            }
+        }
+
+        function goToFirstPage() {
+            currentPage = 1;
+        }
+
+        function goToLastPage() {
+            const filteredRows = allRows.filter(row => row.style.display !== 'none');
+            const totalPages = Math.ceil(filteredRows.length / pageSize);
+            currentPage = totalPages;
+        }
+
+        sendSelectedProductType()
+
+        function disableDropdowns() {
+            $('#bomModal select').prop('disabled', true);
+        }
+
+        function enableDropdowns() {
+            $('#bomModal select').prop('disabled', false);
+        }
+
+        let currentFG_Type = null;
+        let currentFG_Name = null;
+        let currentFG_Application = null;
+
+
+        let isEditMode = false;
+
+        function ExportBOM() {
+
+                    window.location.href = `/ArihantERP/BOM_Master/ExportBOM?bomId=${selectedBOMID}`;
+        }
+
+        function openEditModal(bomId, FG_Type, FG_Name, FG_Application) {
+            isEditMode = true;
+                currentFG_Type = FG_Type;
+                currentFG_Name = FG_Name;
+                currentFG_Application = FG_Application;
+                $('#bomModal').find('.error-message').remove();
+
+
+                document.getElementById('modalTitle').textContent = 'Edit BOM';
+                document.getElementById('bomModal').classList.add('active');
+
+                materialsData = {};
+                materialCount = 0;
+            materialQtyIds = [];
+
+                $.ajax({
+
+                            url :'@Url.Action("EditBOMDetailsGet", "BOM_Master", new { area = "" })',
+                    type: 'GET',
+                    data: { bomId: bomId },
+                    success: function (res) {
+                        if (!res.success) {
+                            Swal.fire('Error!', res.message, 'error');
+                            return;
+                        }
+
+                                console.log(JSON.stringify(res));
+
+                                const bom = res.bomMaster[0];
+                        selectedBOMID = bom.BOM_id;
+                        var allText = `To produce <b> 100</b> <b> ${bom.UOM}</b> of ${bom.fg_type} / ${bom.FG_Name} / ${bom.fg_application},  Add Materials below.`
+
+                        $('#ViewAllInfo').html(allText);
+                        disableDropdowns();
+                        $('input[placeholder="Enter BOM name"]').val(bom.BOM_Name);
+                        var uomValue = bom.UOM;
+                        selectedUOMBOM = bom.UOM
+                        $('#productUOM').text(uomValue);
+                        var quantityValue = bom.Quantity;
+                        $('#productQuantity').text(quantityValue);
+                        $('#productTypeFilterBOM')
+                            .find("option")
+                            .filter((_, opt) => $(opt).text().trim() === bom.fg_type.trim())
+                            .prop("selected", true)
+                            .trigger("change");
+                        waitForTypeAndSelectName(bom.FG_Name);
+                        setTimeout(() => {
+                            $('#productGradeFilterBOM option')
+                                .filter((_, opt) => $(opt).text().trim() === bom.fg_application.trim())
+                                .prop('selected', true)
+                                .trigger('change');
+                        }, 500);
+
+
+                function waitForTypeAndSelectName(FG_Name, maxWait = 5000) {
+                    const start = Date.now();
+
+                    const timer = setInterval(() => {
+                        if (Date.now() - start > maxWait) {
+                            clearInterval(timer);
+                            return;
+                        }
+
+                        const options = $("#productNameFilterBOM option");
+                        if (options.length < 1) return;
+
+                        const match = options.filter((_, opt) => $(opt).text().trim() === FG_Name.trim());
+
+                        if (match.length) {
+                            clearInterval(timer);
+                            match.prop("selected", true);
+                            document
+                                .getElementById("productNameFilterBOM")
+                                .dispatchEvent(new Event("change", { bubbles: true }));
+
+                        }
+                    }, 100);
+                }
+
+
+                        $('#hiddenBOMId').val(bomId);
+                        selectedFGID = bom.fg_id;
+                        const tbody = $('#materialsTableBody');
+                        tbody.empty();
+
+                                res.bomDetails.forEach((mat, index) => {
+                            materialCount++;
+                            const rowId = `row_${materialCount}`;
+                            materialsData[rowId] = {
+                                materialId: mat.material_id,
+                                quantity: mat.QuantityPerUnit
+                            };
+                            materialsData[rowId] = {
+                                materialId: mat.material_id,
+                                quantity: mat.QuantityPerUnit
+                            };
+
+                            const qtyInputId = `materialQty_${materialCount}`;
+                            materialQtyIds.push(qtyInputId);
+
+
+                            const tbody = document.getElementById('materialsTableBody');
+                            const newRow = document.createElement('tr');
+                            newRow.setAttribute('data-rowid', rowId);
+
+                                 newRow.innerHTML = `
+                                    <td style="text-align: center; font-weight: 600; color: #667eea;">${materialCount}</td>
+                                    <td>
+                                        <select required id="materialType_${materialCount}" style="width:100%; padding:8px; border: 2px solid #e5e7eb; border-radius:6px;"
+                                            onchange="sendSelectedMaterialTypeDyn(this, '${rowId}')">
+                                            <option value="">Select Type</option>
+                                            ${generateOptions(ViewBagMaterialType, mat.material_type)}
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select required id="materialName_${materialCount}" style="width:100%; padding:8px; border: 2px solid #e5e7eb; border-radius:6px;">
+                                            <option value="${mat.material_name}" selected>${mat.material_name}</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select required id="materialSpecification_${materialCount}" style="width:100%; padding:8px; border: 2px solid #e5e7eb; border-radius:6px;">
+                                            <option value="${mat.material_specification}" selected>${mat.material_specification}</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="number" id="materialQty_${materialCount}" value="${mat.QuantityPerUnit}" min="1"
+                                               style="width:100%; padding:8px; border: 2px solid #e5e7eb; border-radius:6px;"
+                                               oninput="updateMaterialQuantity('${rowId}', this.value)">
+                                    </td>
+                                    <td>
+                                        <label id="materialUOM_${materialCount}" style="width:100%; padding:8px; border: 2px solid #e5e7eb; border-radius:6px;">
+                                            ${mat.UOM}
+                                        </label>
+                                    </td>
+                                    <td style="text-align:center;">
+                                        <button class="btn btn-danger btn-small" onclick="removeMaterial(this, '${rowId}')">🗑️</button>
+                                    </td>
+                                      
+                            `;
+
+                            tbody.appendChild(newRow);
+                            showButtons();
+                            document.getElementById(`materialName_${materialCount}`).addEventListener("change", function () {
+                                handleMaterialNameChange(this, rowId);
+                            });
+
+                            document.getElementById(`materialSpecification_${materialCount}`).addEventListener("change", function () {
+                                handleMaterialGradeChange(this, rowId);
+                            });
+                            uomLabelMaterial = mat.UOM;
+
+                            updateTotalQuantity();
+
+
+                        });
+
+
+                    },
+                    error: function (err) {
+                        console.error(err);
+                        Swal.fire('Error!', 'Failed to load BOM details', 'error');
+                    }
+                });
+
+            }
+
+
+
+
+        function generateOptions(optionsArray, selectedValue) {
+            return optionsArray.map(opt =>
+                `<option value="${opt}" ${opt === selectedValue ? 'selected' : ''}>${opt}</option>`
+            ).join('');
+        }
+              var ViewBagMaterialType = @Html.Raw(Json.Serialize(ViewBag.MaterialType) ?? "[]");
+
+
+        function closeModal() {
+
+            document.getElementById('bomModal').classList.remove('active');
+            enableDropdowns();
+            resetBOMModal();
+            materialQtyIds = [];
+        }
+
+        function resetBOMModal() {
+            $('input[placeholder="Enter BOM name"]').val('');
+            $('input[placeholder="Enter quantity"]').val('');
+            $('#productTypeFilterBOM').empty().append(`
+                <option value="">Select Product Type</option>
+                @foreach (var type in ViewBag.ProductTypes as List<string>)
+                {
+                    <option value="@type">@type</option>
+                }
+            `);
+            $('#productNameFilterBOM').empty().append('<option value="">Select Product Name</option>');
+            $('#productGradeFilterBOM').empty().append('<option value="">Select Product Grade</option>');
+
+            $('#hiddenBOMId').val('');
+            selectedBOMID = null;
+            selectedFGID = null;
+
+            $('#materialsTableBody').empty();
+
+            materialsData = {};
+            materialCount = 0;
+
+            $('#bomModal').find('.error-message').remove();
+            $('#bomModal').find('input[required], select[required]').css('border', '');
+            addMaterial();
+
+            $('#bomModal').removeClass('active');
+        }
+
+        function onBOMUOMChange(uom) {
+            selectedUOMBOM = uom;
+            updateTotalQuantity();
+        }
+        function updateTotalQuantity() {
+            let total = 0;
+            console.log("here")
+            materialQtyIds.forEach(id => {
+                const input = document.getElementById(id);
+                if (!input) return;
+
+                const row = input.closest("tr");
+                const uomLabel = row.querySelector("label[id^='materialUOM_']");
+                const rowUOM = uomLabel ? uomLabel.textContent.trim() : "";
+                console.log('rowUOM', rowUOM,'selectedUOMBOM', selectedUOMBOM)
+                if (rowUOM === selectedUOMBOM) {
+                    total += parseFloat(input.value) || 0;
+                }
+            });
+
+            const totalLabel = document.getElementById("totalQuantity");
+            if (totalLabel) {
+                totalLabel.textContent = `${total} ${selectedUOMBOM}`;
+            }
+        }
+
+
+        function displayMaterialsSummary() {
+
+        }
+
+
+        let materialQtyIds = [];
+        async function removeMaterial(btn) {
+            const confirmResult = await Swal.fire({
+                title: "Are you sure you want to remove this material?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, remove it",
+                cancelButtonText: "No",
+                reverseButtons: true
+            });
+
+            if (!confirmResult.isConfirmed) return;
+            const row = btn.closest("tr");
+            const rowId = row.getAttribute("data-rowid");
+
+            delete materialsData[rowId];
+            const qtyInput = row.querySelector("input[type='number']");
+            if (qtyInput) {
+                const index = materialQtyIds.indexOf(qtyInput.id);
+                if (index > -1) materialQtyIds.splice(index, 1);
+            }
+
+            row.remove();
+            const rows = document.querySelectorAll("#materialsTableBody tr");
+            rows.forEach((r, index) => {
+                r.querySelector("td:first-child").textContent = index + 1;
+            });
+
+            updateTotalQuantity(); 
+            displayMaterialsSummary();
+            materialCount--;
+        }
+
+        function addMaterial() {
+            try {
+                materialCount++;
+                const tbody = document.getElementById('materialsTableBody');
+                if (!tbody) throw new Error("Table body not found");
+
+                const rowId = `row_${materialCount}`;
+                const newRow = document.createElement('tr');
+                newRow.setAttribute('data-rowid', rowId);
+
+                newRow.innerHTML = `
+                    <td style="text-align: center; font-weight: 600; color: #667eea;">${materialCount}</td>
+                    <td>
+                        <select required id="materialType_${materialCount}" style="width: 100%; padding: 8px; border: 2px solid #e5e7eb; border-radius: 6px;"
+                            onchange="sendSelectedMaterialTypeDyn(this, '${rowId}')">
+                            <option value="">Select Type</option>
+                            @foreach (var type in ViewBag.MaterialType as List<string>)
+                            {
+                                <option value="@type">@type</option>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <select required id="materialName_${materialCount}" style="width: 100%; padding: 8px; border: 2px solid #e5e7eb; border-radius: 6px;">
+                            <option value="">Select Material</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select required id="materialSpecification_${materialCount}" style="width: 100%; padding: 8px; border: 2px solid #e5e7eb; border-radius: 6px;">
+                            <option value="">Select Grade</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" id="materialQty_${materialCount}" placeholder="Qty" min="1" required
+                               style="width: 100%; padding: 8px; border: 2px solid #e5e7eb; border-radius: 6px;"
+                               oninput="updateMaterialQuantity('${rowId}', this.value)" required>
+                    </td>
+                    <td>
+                        <label required id="materialUOM_${materialCount}" style="width: 100%; padding: 8px; border: 2px solid #e5e7eb; border-radius: 6px;">
+
+                        </label>
+                    </td>
+                    <td style="text-align: center;">
+                        <button class="btn btn-danger btn-small" onclick="removeMaterial(this)" style="padding: 6px 10px;">🗑️</button>
+                    </td>
+                `;
+
+                tbody.appendChild(newRow);
+                document.getElementById(`materialName_${materialCount}`).addEventListener("change", function () {
+                    handleMaterialNameChange(this, rowId);
+                });
+
+                document.getElementById(`materialSpecification_${materialCount}`).addEventListener("change", function () {
+                    handleMaterialGradeChange(this, rowId);
+                });
+
+                materialsData[rowId] = { materialId: null, quantity: 0 };
+                        materialQtyIds.push(`materialQty_${materialCount}`);
+
+                        materialsData[rowId] = { materialId: null, quantity: 0 };
+
+            } catch (err) {
+                console.error("Error in addMaterial:", err);
+            }
+        }
+
+        function showButtons() {
+            if (isEditMode) {
+                document.getElementById("btnExportExcel").style.display = "inline-block";
+            } else {
+                document.getElementById("btnExportExcel").style.display = "none";
+            }
+        }
+
+
+        function openCreateModal() {
+            isEditMode = false;
+            showButtons();
+            materialsData = {};
+            materialCount = 0;
+            materialQtyIds = [];
+            updateTotalQuantity();
+            enableDropdowns();
+            const tbody = document.getElementById('materialsTableBody');
+            tbody.innerHTML = '';
+            addMaterial();
+            $('#productUOM').text("");
+            document.getElementById('modalTitle').textContent = 'Create New BOM';
+            document.getElementById('bomModal').classList.add('active');
+            $("#ViewAllInfo").text("");
+
+            const match = $('#productTypeFilterBOM')
+                .find("option")
+                .filter((_, opt) => $(opt).text().trim() === (currentFG_TypeFilter ?? '').trim());
+
+            if (match.length > 0) {
+                match.prop("selected", true).trigger("change");
+            } else {
+                console.warn("No matching product type found:", currentFG_TypeFilter);
+            }
+
+            if (currentFG_NameFilter && currentFG_NameFilter.trim() !== "") {
+                waitForTypeAndSelectNameOpen(currentFG_NameFilter);
+            } else {
+                console.log("No name value provided.");
+            }
+
+            setTimeout(() => {
+                const filterValue = currentFG_ApplicationFilter?.trim() ?? "";
+
+                if (!filterValue) {
+                    console.warn("No value for currentFG_ApplicationFilter");
+                    return;
+                }
+
+                const select = document.getElementById("productGradeFilterBOM");
+                const options = Array.from(select.options);
+                const match = options.find(opt => opt.text.trim() === filterValue);
+
+                if (match) {
+                    select.value = match.value; 
+                    select.dispatchEvent(new Event('change', { bubbles: true }));
+                } else {
+                    console.warn("No matching option found:", filterValue);
+                }
+            }, 500);
+
+
+            function waitForTypeAndSelectNameOpen(currentFG_NameFilter, maxWait = 5000) {
+                const start = Date.now();
+
+                const timer = setInterval(() => {
+                    if (Date.now() - start > maxWait) {
+                        clearInterval(timer);
+                        return;
+                    }
+
+                    const options = $("#productNameFilterBOM option");
+                    if (options.length < 1) return;
+
+                    const match = options.filter((_, opt) => $(opt).text().trim() === currentFG_NameFilter.trim());
+
+                    if (match.length) {
+                        clearInterval(timer);
+                        match.prop("selected", true);
+                        document
+                            .getElementById("productNameFilterBOM")
+                            .dispatchEvent(new Event("change", { bubbles: true }));
+
+                    }
+                }, 100);
+            }
+
+        }
+
+        function updateMaterialNumbers() {
+            const rows = document.querySelectorAll('#materialsTableBody tr');
+            rows.forEach((row, index) => {
+                row.querySelector('td:first-child').textContent = index + 1;
+            });
+            materialCount = rows.length;
+        }
+
+        function toggleStatus(checkbox, bomId) {
+            const isChecked = checkbox.checked;
+            const row = checkbox.closest('tr');
+            const statusBadge = row.querySelector('.badge');
+
+            statusBadge.className = isChecked ? 'badge badge-active' : 'badge badge-inactive';
+            statusBadge.textContent = isChecked ? 'Active' : 'Inactive';
+
+            $.ajax({
+                type: "POST",
+                        url: '@Url.Action("SetIsActive", "BOM_Master", new { area = "" })',
+                data: { BOMID: bomId, IsActive: isChecked },
+                success: function (response) {
+                    if (!response.success) {
+                        revertToggle();
+                        Swal.fire({
+                            title: response.message || 'Failed to update status!',
+                            icon: 'error'
+                        });
+                    }
+                },
+                error: function () {
+                    revertToggle();
+                    Swal.fire({
+                        title: 'Server error. Please try again!',
+                        icon: 'error'
+                    });
+                }
+            });
+
+            function revertToggle() {
+                checkbox.checked = !isChecked;
+                statusBadge.className = isChecked ? 'badge badge-inactive' : 'badge badge-active';
+                statusBadge.textContent = isChecked ? 'Inactive' : 'Active';
+            }
+        }
+        function reloadPartial() {
+                    $("#bomPartialContainer").load("/ArihantERP/BOM_Master/YourActionThatReturnsPartialView");
+        }
+
+        function deleteBOM(bomId, FG_Type, FG_Name, FG_Application) {
+            Swal.fire({
+                title: 'Are you sure you want to delete this BOM? This action cannot be undone!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No',
+                customClass: {
+                    popup: 'swal2-popup-top',
+                    container: 'swal2-container-top'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                                url: '@Url.Action("DeleteBOMDetails", "BOM_Master", new { are = "" })',
+                        data: { BOMID: bomId },
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    title: response.message,
+                                    icon: 'success',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                                loadBOMs2(FG_Type, FG_Name, FG_Application);
+
+                            } else {
+                                Swal.fire({
+                                    title: response.message,
+                                    icon: 'error'
+                                });
+                            }
+                        },
+                        error: function (err) {
+                            Swal.fire({
+                                title: 'Server error. Please try again!',
+                                icon: 'error'
+                            });
+                        }
+                    });
+                } else if (result.isDismissed) {
+                    Swal.fire({
+                        title: 'Deletion canceled',
+                        icon: 'info',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+
+
+
+
+        function openDetailsModal(FG_Type,FG_Name, FG_Application) {
+
+            document.getElementById('firstDetailsModal').classList.add('active');
+
+            loadBOMs2(FG_Type,FG_Name, FG_Application );
+        }
+
+        function openDetailsModal2(FG_Type, FG_Name, FG_Application) {
+            document.getElementById('firstDetailsModal2').classList.add('active');
+            loadBOMs2(FG_Type, FG_Name, FG_Application);
+        }
+
+        function closeDetailsModal() {
+            document.getElementById('firstDetailsModal').classList.remove('active');
+            applyFilters();
+        }
+
+
+        let currFG_type;
+        let currFG_name;
+        let currFG_application;
+        function renderBOMRows(boms) {
+            const tbody = document.getElementById('bomTableBody');
+            tbody.innerHTML = '';
+
+            const activeValues = ["Y", "YES", "1", "TRUE"];
+
+            boms.forEach(bom => {
+                const isActive = activeValues.includes((bom.IsActive || '').toString().toUpperCase());
+                const statusBadge = isActive ?
+                    '<span class="badge badge-active">Active</span>' :
+                    '<span class="badge badge-inactive">Inactive</span>';
+
+                const quantityWithUOM = `${bom.Quantity}`;
+
+                const row = `<tr>
+                            <td>${bom.fG_Type}</td>
+                            <td>${bom.fG_Name}</td>
+                            <td>${bom.fG_Application}</td>
+            <td>
+                 <button
+                    class="btn btn-success btn-sm"
+                                            onclick="openDetailsModal('${bom.fG_Type}', '${bom.fG_Name}', '${bom.fG_Application}')">
+                            ${bom.total}
+                </button>
+            </td>
+          </tr>`;
+
+                        currFG_type = bom.fG_Type;
+                        currFG_name = bom.fG_Name;
+                        currFG_application = bom.fG_Application;
+                tbody.insertAdjacentHTML('beforeend', row);
+            });
+        }
+
+
+
+        currentFG_TypeFilter = null;
+        currentFG_NameFilter = null;
+        currentFG_ApplicationFilter = null;
+        let filteredBOMs;
+        function applyFilters() {
+            const productType = (document.getElementById('productTypeFilter')?.value || '').trim();
+            const productName = (document.getElementById('productNameFilter')?.value || '').trim();
+            const productGrade = (document.getElementById('productGradeFilter')?.value || '').trim();
+            currentFG_TypeFilter = productType;
+            currentFG_NameFilter = productName;
+            currentFG_ApplicationFilter = productGrade;
+
+            document.getElementById('productGradeFilter').addEventListener('change', (e) => {
+                const productGradeConsole = e.target.value.trim();
+                currentFG_ApplicationFilter = productGradeConsole;
+            });
+            document.getElementById('productNameFilter').addEventListener('change', (e) => {
+                const productNameConsole = e.target.value.trim();
+                currentFG_NameFilter = productNameConsole;
+            });
+            document.getElementById('productTypeFilter').addEventListener('change', (e) => {
+                const productApplicationConsole = e.target.value.trim();
+                currentFG_ApplicationFilter = productApplicationConsole;
+            })
+
+            if (!productType) {
+                document.getElementById('bomTableBody').innerHTML = "";
+
+                document.getElementById('productNameFilter').innerHTML = '<option value="">Product Name</option>';
+                document.getElementById('productGradeFilter').innerHTML = '<option value="">Product Grade</option>';
+
+                document.getElementById('productNameFilter').dataset.productMap = "";
+                document.getElementById('productGradeFilter').dataset.productMap = "";
+
+                currentPage = 1;
+                return;
+            }
+
+
+            $.ajax({
+                type: "POST",
+
+                        url: "@Url.Action("GetAllTheDeatilsBasedOnFilterSelected", "BOM_Master", new { area = "" })",
+                data: {
+                    productType: productType,
+                    productName: productName || null,  
+                    productGrade: productGrade || null
+                },
+
+                success: function (response) {
+                    if (!response.success || !response.data || response.data.length === 0) {
+                        document.getElementById('bomTableBody').innerHTML = "";
+                        const table = document.querySelector('.bom-table');
+                        const pagination = document.querySelector('.pagination-container');
+                        table.style.display = 'none';
+                        pagination.style.display = 'none';
+                        return;
+                    }
+
+                    filteredBOMs = response.data;
+                            console.log(JSON.stringify(response.data));
+                    renderBOMRows(filteredBOMs, response.totalBoms);
+                    const table = document.querySelector('.bom-table');
+                    const pagination = document.querySelector('.pagination-container');
+                    if (filteredBOMs.length === 0) {
+                        table.style.display = 'none';
+                        pagination.style.display = 'none';
+                    } else {
+                        table.style.display = '';
+                        pagination.style.display = '';
+                    }
+
+                    currentPage = 1;
+
+
+                },
+                error: function (err) {
+                    console.error("Error fetching BOM data:", err);
+                    document.getElementById('bomTableBody').innerHTML = "";
+                }
+            });
+        }
+
+
+
+        function applyFiltersName() {
+            const tableBody = document.getElementById('bomTableBodyAll2');
+            tableBody.innerHTML = "";
+
+            $.ajax({
+                type: "POST",
+                        url: "@Url.Action("GetAllTheDeatilsBasedOnFilterName", "BOM_Master", new { area = "" })",
+                data: {
+                    productType: currFG_type,
+                    productName: currFG_name, 
+                    productGrade: currFG_application
+                },
+                success: function (response) {
+                    if (!response?.data) {
+                        console.warn("No data received from server");
+                        return;
+                    }
+
+
+                    let filtered = response.data;
+                    if (searchValue) {
+                        filtered = filtered.filter(bom =>
+                            (bom.BOM_Name || '').toLowerCase().startsWith(searchValue)
+                        );
+                    }
+
+                    renderBOMRowsName(filtered);
+                },
+                error: function (err) {
+                    console.error("Error fetching data:", err);
+                }
+            });
+        }
+
+
+
+        function clearFiltersName() {
+
+            $('#bomTableBodyAll2').empty();
+            applyFiltersName();
+            currentPage = 1;
+
+        }
+
+
+
+        // function renderBOMRowsName(boms) {
+        //     const tbody = document.getElementById('bomTableBodyAll2');
+        //     tbody.innerHTML = '';
+
+        //     boms.forEach(function (bom) {
+        //         const activeValues = ["Y", "YES", "1", true]; 
+        //         const isActive = activeValues.includes((bom.IsActive || '').toString().toUpperCase());
+
+        //         const statusBadge = isActive
+        //             ? '<span class="badge badge-active">Active</span>'
+        //             : '<span class="badge badge-inactive">Inactive</span>';
+
+        //         const quantityWithUOM = bom.UOM ? `${bom.Quantity} ${bom.UOM}` : `${bom.Quantity}`;
+        //         const escapeQuotes = str => str ? str.replace(/'/g, "\\'") : '';
+
+        //         const row = `<tr>
+        //     <td>${bom.BOM_Name}</td>
+        //     <td>${bom.FG_Type}</td>
+        //     <td>${bom.FG_Name}</td>
+        //     <td>${bom.FG_Application}</td>
+        //     <td>${quantityWithUOM}</td>
+        //     <td>${bom.Total_Materials} Items</td>
+        //     <td>${statusBadge}</td>
+        //     <td>${bom.CreatedDate}</td>
+        //     <td>
+        //         <div class="action-buttons">
+        //             <label class="toggle-switch" title="Toggle Active/Inactive">
+        //                 <input type="checkbox" ${isActive ? 'checked' : ''} onchange="toggleStatus(this, ${bom.BOM_id})">
+        //                 <span class="toggle-slider"></span>
+        //             </label>
+        //             <button class="btn btn-success btn-small" onclick="openEditModal(${bom.BOM_id}, '${escapeQuotes(bom.FG_Type)}', '${escapeQuotes(bom.FG_Name)}', '${escapeQuotes(bom.FG_Application)}')">✏️ Edit</button>
+        //             <button class="btn btn-danger btn-small" onclick="deleteBOM(${bom.BOM_id}, '${escapeQuotes(bom.FG_Type)}', '${escapeQuotes(bom.FG_Name)}', '${escapeQuotes(bom.FG_Application)}')">🗑️ Delete</button>
+        //         </div>
+        //     </td>
+        // </tr>`;
+
+        //         tbody.insertAdjacentHTML('beforeend', row);
+        //     });
+        // }
+
+
+                function renderBOMRowsName(boms) {
+            const tbody = document.getElementById('bomTableBodyAll2');
+            tbody.innerHTML = '';
+
+            if (!boms || boms.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;">No data found</td></tr>';
+                return;
+            }
+
+            boms.forEach(function (bom) {
+                // .NET Core 8 uses camelCase by default: BOM_Name -> boM_Name
+                // We use || to handle cases where the property might be missing
+                const bomName = bom.boM_Name || bom.BOM_Name || '';
+                const fgType = bom.fG_Type || bom.FG_Type || '';
+                const fgName = bom.fG_Name || bom.FG_Name || '';
+                const fgApp = bom.fG_Application || bom.FG_Application || '';
+                const bomId = bom.boM_id || bom.BOM_id || 0;
+                const isActiveVal = bom.isActive || bom.IsActive || '';
+
+                const activeValues = ["Y", "YES", "1", "TRUE", true];
+                const isActive = activeValues.includes(isActiveVal.toString().toUpperCase());
+
+                const statusBadge = isActive
+                    ? '<span class="badge badge-active">Active</span>'
+                    : '<span class="badge badge-inactive">Inactive</span>';
+
+                const quantityWithUOM = bom.uom
+                    ? `${bom.quantity} ${bom.uom}`
+                    : `${bom.quantity}`;
+
+                const escapeQuotes = str => typeof str === 'string' ? str.replace(/'/g, "\\'") : '';
+
+                const row = `<tr>
+                    <td>${bomName}</td>
+                    <td>${fgType}</td>
+                    <td>${fgName}</td>
+                    <td>${fgApp}</td>
+                    <td>${quantityWithUOM}</td>
+                    <td>${bom.total_Materials || 0} Items</td>
+                    <td>${statusBadge}</td>
+                    <td>${bom.createdDate || ''}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <label class="toggle-switch" title="Toggle Status">
+                                <input type="checkbox" ${isActive ? 'checked' : ''} onchange="toggleStatus(this, ${bomId})">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <button class="btn btn-success btn-small" onclick="openEditModal(${bomId}, '${escapeQuotes(fgType)}', '${escapeQuotes(fgName)}', '${escapeQuotes(fgApp)}')">✏️ Edit</button>
+                            <button class="btn btn-danger btn-small" onclick="deleteBOM(${bomId}, '${escapeQuotes(fgType)}', '${escapeQuotes(fgName)}', '${escapeQuotes(fgApp)}')">🗑️ Delete</button>
+                        </div>
+                    </td>
+                </tr>`;
+
+                tbody.insertAdjacentHTML('beforeend', row);
+            });
+        }
+
+        function clearFilters() {
+
+            document.getElementById('productTypeFilter').value = '';
+            document.getElementById('productNameFilter').value = '';
+            document.getElementById('productGradeFilter').value = '';
+            const nameSelect = document.getElementById('productNameFilter');
+            const gradeSelect = document.getElementById('productGradeFilter');
+
+            nameSelect.innerHTML = '<option value="">Product Name</option>';
+            gradeSelect.innerHTML = '<option value="">Product Grade</option>';
+
+            nameSelect.dataset.productMap = "";
+            gradeSelect.dataset.productMap = "";
+            $('#bomTableBody').empty();
+
+            currentPage = 1;
+        }
+
+
+        document.getElementById('productTypeFilter').addEventListener('change', applyFilters);
+        document.getElementById('productNameFilter').addEventListener('change', applyFilters);
+        document.getElementById('productGradeFilter').addEventListener('change', applyFilters);
+
+        document.getElementById('bomModal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        async function sendSelectedProductType() {
+            const selectedType = document.getElementById("productTypeFilter").value;
+            if (!selectedType) return;
+
+            const nameSelect = document.getElementById("productNameFilter");
+            const gradeSelect = document.getElementById("productGradeFilter");
+
+            nameSelect.innerHTML = '<option value="">Product Name</option>';
+            gradeSelect.innerHTML = '<option value="">Product Grade</option>';
+            if (!selectedType) return; 
+
+            try {
+
+                        const baseUrl = '@Url.Action("GetProductDetails", "BOM_Master")';
+
+                const res = await fetch(
+                    baseUrl + '?productType=' + encodeURIComponent(selectedType),
+                    {
+                        method: 'GET',
+                        headers: { 'Accept': 'application/json' }
+                    }
+                );
+
+
+                if (!res.ok) return;
+
+                const result = await res.json();
+                if (!result.success) return;
+
+                         console.log(" GetProductDetails Data" + JSON.stringify(result.data));
+                       
+                nameSelect.dataset.productMap = JSON.stringify(result.data);
+
+                Object.keys(result.data).forEach(name => {
+                    const opt = document.createElement("option");
+                    opt.value = name;
+                    opt.textContent = name;
+                    nameSelect.appendChild(opt);
+                });
+
+            } catch (error) {
+                console.error("Error fetching product data:", error);
+            }
+        }
+
+
+                document.getElementById("productNameFilter").addEventListener("change", function () {
+            const selectedName = this.value;
+            const gradeSelect = document.getElementById("productGradeFilter");
+            gradeSelect.innerHTML = '<option value="">Product Grade</option>';
+
+            if (!selectedName) return;
+
+            const productMap = JSON.parse(this.dataset.productMap || "{}");
+            const productData = productMap[selectedName];
+            const grades = (productData && productData.grades) ? productData.grades : [];
+            grades.forEach(grade => {
+                const opt = document.createElement("option");
+                opt.value = grade;
+                opt.textContent = grade;
+                gradeSelect.appendChild(opt);
+            });
+        });
+
+
+        async function sendSelectedProductTypeBOM() {
+            const selectedType = document.getElementById("productTypeFilterBOM").value;
+
+            const nameSelect = document.getElementById("productNameFilterBOM");
+            const gradeSelect = document.getElementById("productGradeFilterBOM");
+
+            nameSelect.innerHTML = '<option value="">Select Product Name</option>';
+            gradeSelect.innerHTML = '<option value="">Select Product Grade</option>';
+            if (!selectedType) return;
+
+            try {
+
+                        const url = '@Url.Action("GetProductDetails", "BOM_Master")'
+                          + '?productType=' + encodeURIComponent(selectedType);
+
+                const res = await fetch(url, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+
+
+                if (!res.ok) return;
+
+                const result = await res.json();
+                if (!result.success) return;
+
+                nameSelect.dataset.productMap = JSON.stringify(result.data);
+
+                Object.keys(result.data).forEach(name => {
+                    const opt = document.createElement("option");
+                    opt.value = name;
+                    opt.textContent = name;
+                    nameSelect.appendChild(opt);
+                });
+
+            } catch (error) {
+                console.error("Error fetching product data:", error);
+            }
+        }
+
+       
+                document.getElementById("productNameFilterBOM").addEventListener("change", function () {
+            const selectedName = this.value;
+            const gradeSelect = document.getElementById("productGradeFilterBOM");
+            gradeSelect.innerHTML = '<option value="">Select Product Grade</option>';
+
+            if (!selectedName) return;
+
+            const rawData = this.dataset.productMap;
+            if (!rawData) {
+                console.error("No productMap found on element");
+                return;
+            }
+
+            const productMap = JSON.parse(rawData);
+            const productData = productMap[selectedName];
+            const grades = (productData && productData.grades) ? productData.grades : [];
+            grades.forEach(grade => {
+                const opt = document.createElement("option");
+                opt.value = grade;
+                opt.textContent = grade;
+                gradeSelect.appendChild(opt);
+            });
+        });
+
+
+        document.getElementById("productGradeFilterBOM").addEventListener("change", async function () {
+            const selectedType = document.getElementById("productTypeFilterBOM").value;
+            const selectedName = document.getElementById("productNameFilterBOM").value;
+            const selectedGrade = this.value;
+            currentFG_Type = selectedType;
+            currentFG_Name = selectedName;
+            currentFG_Application = selectedGrade;
+          
+
+            if (!selectedType || !selectedName || !selectedGrade) return;
+            try {
+
+                        const baseUrl = '@Url.Action("GetMaterialProductByAllParams", "BOM_Master")';
+
+                const url =
+                    baseUrl +
+                    '?productType=' + encodeURIComponent(selectedType) +
+                    '&productName=' + encodeURIComponent(selectedName) +
+                    '&productGrade=' + encodeURIComponent(selectedGrade);
+
+                const res = await fetch(url, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+
+
+                if (!res.ok) {
+                    console.error("Failed to fetch details for all selections");
+                    return;
+                }
+
+                const result = await res.json();
+
+                if (result.success) {
+                    selectedFGID = result.fgid;
+                            selectedUOMBOM = result.uom;
+                var allText = `To produce <b>100</b> <b>${selectedUOMBOM}</b> of ${currentFG_Type} / ${currentFG_Name} / ${currentFG_Application}, Add Materials below.`;
+                    var uomValue = selectedUOMBOM;
+                    $('#ViewAllInfo').html(allText);
+                    $('#productQuantity').text(1);
+                } else {
+                    selectedFGID = null;
+                }
+
+            } catch (error) {
+                console.error("Error fetching product data with all selections:", error);
+                selectedFGID = null;
+            }
+        });
+
+
+
+        async function sendSelectedMaterialTypeDyn(select, rowId) {
+            const selectedType = select.value;
+
+            const row = document.querySelector(`[data-rowid="${rowId}"]`);
+            const nameSelect = row.querySelector(`[id^="materialName_"]`);
+            const gradeSelect = row.querySelector(`[id^="materialSpecification_"]`);
+
+            nameSelect.innerHTML = '<option value="">Select Material</option>';
+            gradeSelect.innerHTML = '<option value="">Select Grade</option>';
+            if (!selectedType) return;
+
+
+            try {
+
+                        const baseUrl = '@Url.Action("GetMaterialDetails", "BOM_Master")';
+
+                const url =
+                    baseUrl +
+                    '?productType=' + encodeURIComponent(selectedType);
+
+                const res = await fetch(url, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+
+
+                if (!res.ok) throw new Error(`Server returned ${res.status}`);
+                const result = await res.json();
+                if (!result.success) {
+                    console.warn(result.message);
+                    return;
+                }
+
+                nameSelect.dataset.nameGradeMap = JSON.stringify(result.data);
+
+                Object.keys(result.data).forEach(name => {
+                    const opt = document.createElement("option");
+                    opt.value = name;
+                    opt.textContent = name;
+                    nameSelect.appendChild(opt);
+                });
+
+            } catch (error) {
+                console.error("Error fetching material data:", error);
+            }
+        }
+
+
+        function handleMaterialNameChange(select, rowId) {
+            const selectedName = select.value;
+            const row = document.querySelector(`[data-rowid="${rowId}"]`);
+            const gradeSelect = row.querySelector(`[id^="materialSpecification_"]`);
+
+            gradeSelect.innerHTML = '<option value="">Select Grade</option>';
+            if (!selectedName) return;
+
+            const nameGradeMap = JSON.parse(select.dataset.nameGradeMap || "{}");
+            const grades = nameGradeMap[selectedName] || [];
+
+            grades.forEach(grade => {
+                const opt = document.createElement("option");
+                opt.value = grade;
+                opt.textContent = grade;
+                gradeSelect.appendChild(opt);
+            });
+        }
+
+        var uomLabelMaterial = "";
+        async function handleMaterialGradeChange(select, rowId) {
+            const row = document.querySelector(`[data-rowid="${rowId}"]`);
+            if (!row) {
+                console.error("Row not found for rowId:", rowId);
+                return;
+            }
+
+            const selectedType = row.querySelector(`[id^="materialType_"]`)?.value;
+            const selectedName = row.querySelector(`[id^="materialName_"]`)?.value;
+            const selectedGrade = select.value;
+            const uomLabel = row.querySelector(`[id^="materialUOM_"]`);
+
+            if (!uomLabel) {
+                console.error("UOM label not found in row:", rowId);
+            }
+
+            if (!selectedType || !selectedName || !selectedGrade) {
+   
+                if (uomLabel) {
+                    uomLabel.textContent = ''; 
+                }
+                return; 
+            }
+
+            try {
+
+                        const baseUrl = '@Url.Action("GetMaterialDetailsByAllParams", "BOM_Master")';
+
+            const url =
+                baseUrl +
+                '?materialType=' + encodeURIComponent(selectedType) +
+                '&materialName=' + encodeURIComponent(selectedName) +
+                '&materialGrade=' + encodeURIComponent(selectedGrade);
+
+            const res = await fetch(url, {
+                method: 'GET',
+                headers: { 'Accept': 'application/json' }
+            });
+
+
+                if (!res.ok) throw new Error("Failed to fetch material details");
+
+                const result = await res.json();
+
+                if (result.success) {
+                             console.log(JSON.stringify(result));
+                    materialsData[rowId].materialId = result.materialId;
+
+                                   
+                
+                    if (uomLabel) {
+                                uomLabel.textContent = result.uom || '';
+                    }
+                    uomLabelMaterial = uomLabel.textContent;
+
+                } else {
+                    materialsData[rowId].materialId = null;
+
+                    if (uomLabel) {
+                        uomLabel.textContent = '';
+                    }
+                }
+                console.log(uomLabelMaterial);
+
+                displayMaterialsSummary();
+
+            } catch (error) {
+                console.error("Error fetching material data:", error);
+
+                if (uomLabel) {
+                    uomLabel.textContent = '';
+                }
+            }
+        }
+
+
+        function updateMaterialQuantity(rowId, qtyValue) {
+            const qty = parseFloat(qtyValue) || 0;
+            if (materialsData[rowId]) {
+                materialsData[rowId].quantity = qty;
+            }
+            displayMaterialsSummary();
+            updateTotalQuantity();
+        }
+
+        function displayMaterialsSummary() {
+            const summary = Object.values(materialsData).filter(m => m.materialId !== null && m.quantity > 0);
+        }
+
+  
+
+        async function saveBOM() {
+            if (!validateBOMForm()) {
+                Swal.fire('Error!', 'Please fill all required fields.', 'error');
+                return;
+            }
+
+         const bomId = $('#hiddenBOMId').val();
+            if (!selectedFGID) {
+                Swal.fire({
+                    title: "Please select Product Type, Name, and Grade first to get FGID.",
+                    icon: "warning",
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+                return;
+            }
+
+            const bomData = {
+                BOM_id: bomId || 0,
+                BOM_Name: $('input[placeholder="Enter BOM name"]').val(),
+                fg_id: selectedFGID,
+              
+                Quantity: 1,
+                is_active: 'Y',
+                created_by: 'admin',
+                BOMDetails: Object.values(materialsData)
+                    .filter(m => m.materialId && m.quantity > 0)
+                    .map(m => ({
+                        material_id: m.materialId,
+                        QuantityPerUnit: m.quantity
+                    }))
+            };
+
+
+                    console.log(JSON.stringify(bomData));
+ 
+            if (bomData.BOMDetails.length === 0) {
+                Swal.fire({
+                    title: "Please add at least one material with quantity",
+                    icon: "warning",
+                    timer: 2500,
+                    showConfirmButton: false
+                });
+                return;
+            }
+    
+            const actionText = bomId ? "update" : "save";
+            const confirmResult = await Swal.fire({
+                title: `Are you sure you want to ${actionText} this BOM?`,
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No"
+            });
+
+            if (!confirmResult.isConfirmed) {
+           
+                return;
+            }
+
+            try {
+                const res = await $.ajax({
+                    type: "POST",
+                            url: '@Url.Action("SaveOrUpdateBOM", "BOM_Master", new { area = "" })',
+                    data: JSON.stringify(bomData),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json"
+                });
+
+                if (res.success) {
+                    Swal.fire({
+                        title: bomId ? "BOM updated successfully!" : "BOM saved successfully!",
+                        icon: "success",
+                        timer: 2000,
+                        showConfirmButton: false,
+                        didClose: () => {
+                            
+                            if (currentFG_Type && currentFG_Name && currentFG_Application) {
+                                
+                                loadBOMs2(currentFG_Type, currentFG_Name, currentFG_Application);
+                            }
+                            if (!bomId) {
+                                
+                                applyFilters();
+                            }
+                        }
+                    });
+                  
+                    materialsData = {};
+                    materialCount = 0;
+                    materialQtyIds = [];
+                    updateTotalQuantity();
+                    console.log('materialQtyIds',materialQtyIds);
+                    closeModal();
+                } else {
+                    Swal.fire({ title: "Error: " + res.message, icon: "error" });
+                }
+            } catch (error) {
+                console.error("Error in saveBOM:", error);
+                Swal.fire({ title: "AJAX error: " + error, icon: "error" });
+            }
+        }
+
+
+        let selectedBOMs = [];
+
+   
+        $(document).on('change', '.row-check', function () {
+            const bomId = $(this).data('id');
+
+            if (this.checked) {
+                if (!selectedBOMs.includes(bomId)) {
+                    selectedBOMs.push(bomId);
+                }
+            } else {
+                selectedBOMs = selectedBOMs.filter(id => id !== bomId);
+            }
+
+            console.log("Selected BOM IDs:", selectedBOMs);
+        });
+
+     
+        $(document).on('change', '#selectAllBOM', function () {
+            const checked = this.checked;
+
+            $('.row-check').prop('checked', checked).trigger('change');
+        });
+
+        $("#exportExcel2").on("click", function () {
+
+            if (selectedBOMs.length === 0) {
+                Swal.fire("Please select at least 1 BOM!", "", "warning");
+                return;
+            }
+                    
+            console.log(JSON.stringify(selectedBOMs));
+
+
+            $.ajax({
+                 url: '@Url.Action("ExportMultipleBOM", "BOM_Master", new { area = "" })',
+                type: 'POST',
+                        data: JSON.stringify(selectedBOMs),
+                contentType: 'application/json',
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                
+                success: function (data) {
+
+                   
+                    const blob = new Blob([data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+                    const link = document.createElement("a");
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "Multiple_BOM_Export.xlsx";
+                    link.click();
+
+                  
+                    selectedBOMs = [];                
+                    $(".row-check").prop("checked", false);  
+                    $("#selectAllBOM").prop("checked", false); 
+
+                    console.log("Selected BOM IDs cleared:", selectedBOMs);
+                },
+
+                error: function () {
+                    Swal.fire("Error exporting BOMs", "", "error");
+                }
+            });
+
+        });
+
+                function loadBOMs2(FG_Type, FG_Name, FG_Application) {
+            var baseUrl = '@Url.Action("GetAllBOMWithProductIndexWithParameters", "BOM_Master")';
+            var url = `${baseUrl}?productType=${encodeURIComponent(FG_Type)}&productName=${encodeURIComponent(FG_Name)}&productGrade=${encodeURIComponent(FG_Application)}`;
+
+            $.getJSON(url, function (response) {
+                if (response.success) {
+                    var table;
+
+                    // Re-initialize or get existing table
+                    if (!$.fn.DataTable.isDataTable('#bomtable2')) {
+                        table = $('#bomtable2').DataTable({
+                            paging: true,
+                            searching: true,
+                            ordering: true,
+                            info: true,
+                            autoWidth: false,
+                            // Define columns explicitly to prevent "Unknown Parameter" errors
+                            columnDefs: [
+                                { targets: [0, 10], orderable: false }, // Disable sorting for checkbox and actions
+                                { targets: "_all", defaultContent: "" }  // Fallback for null values
+                            ],
+                            dom: '<"row"<"col-md-6"lB><"col-md-6"f>>rt<"row"<"col-md-6"i><"col-md-6"p>>',
+                            buttons: [{
+                                extend: 'excelHtml5',
+                                text: 'Export to Excel',
+                                exportOptions: { columns: ':not(:last-child)' }
+                            }]
+                        });
+                    } else {
+                        table = $('#bomtable2').DataTable();
+                    }
+
+                    var dataSet = response.data.map(function (bom) {
+                        // Handle Boolean or String "Y"/"N" logic
+                        var activeStr = (bom.isActive || '').toString().toUpperCase();
+                        var isActive = ["Y", "YES", "1", "TRUE"].includes(activeStr);
+
+                        var statusBadge = isActive ?
+                            '<span class="badge bg-success">Active</span>' :
+                            '<span class="badge bg-danger">Inactive</span>';
+
+                        var TotalQuantityMaterial = `${bom.totalQuantityMaterial || 0} (${bom.uom || ''})`;
+
+                        // Returning 11 columns to match the 11 <th> tags
+                        return [
+                            `<input type="checkbox" class="row-check" data-id="${bom.boM_id}">`,
+                            bom.boM_Name,
+                            bom.fG_Type,
+                            bom.fG_Name,
+                            bom.fG_Application,
+                            bom.uom,
+                            (bom.total_Materials || 0) + ' Items',
+                            TotalQuantityMaterial,
+                            statusBadge,
+                            bom.modifiedDate,
+                            `<div class="action-buttons">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" ${isActive ? 'checked' : ''} onchange="toggleStatus(this, ${bom.boM_id})">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                                                <button class="btn btn-success btn-small" onclick="openEditModal(${bom.boM_id}, '${bom.fG_Type}', '${bom.fG_Name}', '${bom.fG_Application}')">✏️ Edit</button>
+                                                                 <button class="btn btn-danger btn-small" onclick="deleteBOM(${bom.boM_id}, '${bom.fG_Type}', '${bom.fG_Name}', '${bom.fG_Application}')">🗑️ Delete</button>
+       
+                                    </div>`
+                        ];
+                    });
+
+                    table.clear().rows.add(dataSet).draw();
+
+                } else {
+                           Swal.fire('Warning', response.message, 'warning');
+                                          var tablenew = $('#bomtable2').DataTable();
+                tablenew.clear().draw();
+                }
+            }).fail(function () {
+                Swal.fire('Error', 'Server connection failed', 'error');
+            });
+        }
+
+
+        let allBOMData = [];
+
+        function loadBOMs() {
+                    var url = '@Url.Action("GetAllBOMWithProductIndex", "BOM_Master")';
+    
+            $.getJSON(url, function (response) {
+                if (response.success) {
+           
+                    allBOMData = response.data;
+      
+                    $('#bomTableBody').empty();
+
+                } else {
+                    Swal.fire({
+                        title: response.message || 'Failed to load BOMs',
+                        icon: 'error'
+                    });
+                }
+            }).fail(function () {
+                Swal.fire({
+                    title: 'Server error. Could not fetch BOMs!',
+                    icon: 'error'
+                });
+            });
+        }
+
+
+        function validateBOMForm() {
+            let isValid = true;
+
+            $('#bomModal').find('input[required], select[required]').each(function () {
+                const $this = $(this);
+                const value = $this.val() ? $this.val().trim() : '';
+
+                let $errorMsg = $this.siblings('.error-message');
+                if ($errorMsg.length === 0) {
+                    $errorMsg = $('<span class="error-message" style="color:red; font-size:10px;">This field is required</span>');
+                    $this.after($errorMsg);
+                }
+
+                if (!value) {
+
+                    $errorMsg.show();
+                    $this.css('border', '1px solid red');
+                    isValid = false;
+                } else {
+
+                    $errorMsg.hide();
+                    $this.css('border', '1px solid green');
+                }
+            });
+
+            return isValid;
+        }
+
+
+
+        $('#bomModal').on('input change', 'input[required], select[required]', function () {
+            const $this = $(this);
+            const value = $this.val() ? $this.val().trim() : '';
+
+            let $errorMsg = $this.siblings('.error-message');
+            if ($errorMsg.length === 0) {
+                $errorMsg = $('<span class="error-message" style="color:red; font-size:10px;">This field is required</span>');
+                $this.after($errorMsg);
+            }
+
+            if (!value) {
+                $errorMsg.show();
+                $this.css('border', '1px solid red');
+            } else {
+                $errorMsg.hide();
+                $this.css('border', '1px solid green');
+            }
+        });
+
+    </script>
+
+</body>
+</html>
+
+
+
