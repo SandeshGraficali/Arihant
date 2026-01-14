@@ -1,6 +1,7 @@
 ﻿using Arihant.Models.Bom_Master;
 using Arihant.Services;
 using ClosedXML.Excel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Data.Common;
@@ -15,6 +16,7 @@ namespace Arihant.Controllers
             _bom = _master;
         }
 
+        [Authorize(Policy = "Bom Master")]
         public IActionResult Index()
         {
             DataSet dataSet = _bom.GetProductTNG();

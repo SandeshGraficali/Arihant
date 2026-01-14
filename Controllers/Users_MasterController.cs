@@ -5,6 +5,7 @@ using Arihant.Models.Rights_Master;
 using Arihant.Models.User_Master;
 using Arihant.Models.Vender;
 using Arihant.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
@@ -26,10 +27,12 @@ namespace Arihant.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "Vendors Master")]
         public JsonResult UpdateVendorStatusNew(int vendorId, int status, string operation = "TOGGLE_STATUS")
         {
+            string ModifiedBy = HttpContext.Session.GetString("UserName") ?? "";
             bool isActive = (status == 1);
-            string result = _user.UpdateVendorStatusService(vendorId, isActive, "Admin", operation);
+            string result = _user.UpdateVendorStatusService(vendorId, isActive, ModifiedBy, operation);
 
             if (result.StartsWith("Success"))
             {
@@ -38,6 +41,7 @@ namespace Arihant.Controllers
             return Json(new { success = false, message = result });
         }
 
+        [Authorize(Policy = "Vendors Master")]
         public IActionResult EditVendor(int id)
         {
             var model = _user.GetVendorByID(id);
@@ -49,6 +53,7 @@ namespace Arihant.Controllers
 
 
         [HttpPost]
+        [Authorize(Policy = "Vendors Master")]
         public JsonResult SaveVendor(string jsonData)
         {
             try
@@ -59,8 +64,8 @@ namespace Arihant.Controllers
                 };
                 var model = System.Text.Json.JsonSerializer.Deserialize<VendorMasterVM>(jsonData, options);
 
-      
-                string result = _user.AddVendorDetails(model, "Admin");
+                string ModifiedBy = HttpContext.Session.GetString("UserName") ?? "";
+                string result = _user.AddVendorDetails(model, ModifiedBy);
 
                     if (result.StartsWith("Success", StringComparison.OrdinalIgnoreCase))
                 {
@@ -77,6 +82,8 @@ namespace Arihant.Controllers
             }
         }
 
+
+        [Authorize(Policy = "Vendors Master")]
         public IActionResult Vender_Master()
         {
             try
@@ -93,12 +100,13 @@ namespace Arihant.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "Vendors Master")]
         public JsonResult UpdateVendorStatus(int vendorId, int status)
         {
             
             bool isActive = (status == 1);
-
-            string result = _user.UpdateVendorStatusService(vendorId, isActive, "Admin");
+            string ModifiedBy = HttpContext.Session.GetString("UserName") ?? "";
+            string result = _user.UpdateVendorStatusService(vendorId, isActive, ModifiedBy);
 
             if (result.StartsWith("Success"))
             {
@@ -107,6 +115,7 @@ namespace Arihant.Controllers
             return Json(new { success = false, message = result });
         }
 
+        [Authorize(Policy = "Vendors Master")]
         public IActionResult Add_Vender(int id = 0)
         {
             ViewBag.countrylist = _user.GetC_MasterList();
@@ -130,6 +139,7 @@ namespace Arihant.Controllers
 
 
         [HttpPost]
+        [Authorize(Policy = "Customer Master")]
         public JsonResult SaveClient(string jsonData)
         {
             string ModifiedBy = HttpContext.Session.GetString("UserName") ?? "";
@@ -142,6 +152,7 @@ namespace Arihant.Controllers
            
         }
 
+        [Authorize(Policy = "Customer Master")]
         public IActionResult AllClientMasterList()
         {
             List<ClientProfileModel> list = _user.GetAllClientMasters();
@@ -151,6 +162,7 @@ namespace Arihant.Controllers
 
 
         [HttpPost]
+        [Authorize(Policy = "Customer Master")]
         public JsonResult UpdateClientStatus(int id)
         {
             try
@@ -169,6 +181,7 @@ namespace Arihant.Controllers
 
 
         [HttpPost]
+        [Authorize(Policy = "Customer Master")]
         public JsonResult DeleteClient(int id)
         {
             try
@@ -185,6 +198,8 @@ namespace Arihant.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
+        [Authorize(Policy = "Customer Master")]
         public IActionResult ClientMaster(int? id)
         {
            ViewBag.countrylist = _user.GetC_MasterList();
@@ -219,6 +234,7 @@ namespace Arihant.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "Company")]
         public JsonResult DeleteCompany(int CompanyID)
         {
             try
@@ -237,6 +253,7 @@ namespace Arihant.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "Company")]
         public IActionResult UpdateCompanyProfile(string data)
         {
             try
@@ -255,7 +272,7 @@ namespace Arihant.Controllers
             }
         }
 
-
+        [Authorize(Policy = "Company")]
         public IActionResult GetCompanyList()
         {
             List<CompanyProfileModel>  list = _user.GetAllCompanyMasters();    
@@ -264,6 +281,7 @@ namespace Arihant.Controllers
 
  
         [HttpGet]
+        [Authorize(Policy = "Company")]
         public IActionResult EditCompany(int id)
         {
             ViewBag.Addresslist = _user.GetC_MasterAddresList();
@@ -316,6 +334,7 @@ namespace Arihant.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "Company")]
         public IActionResult SaveCompanyProfile(string data)
         {
             try
@@ -334,6 +353,8 @@ namespace Arihant.Controllers
             }
         }
 
+
+        [Authorize(Policy = "Company")]
         public IActionResult CompanyMaster()
         {
             ViewBag.Addresslist = _user.GetC_MasterAddresList();
@@ -341,6 +362,7 @@ namespace Arihant.Controllers
             return View("CompanyForm", new CompanyProfileModel()); 
         }
 
+        [Authorize(Policy = "Company")]
         public IActionResult CompanyForm()
         {
           
@@ -351,6 +373,7 @@ namespace Arihant.Controllers
 
 
         [HttpPost]
+        [Authorize(Policy = "RoleMaster")]
         public JsonResult DeleteRole(int id)
         {
             try
@@ -368,6 +391,7 @@ namespace Arihant.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "RoleMaster")]
         public JsonResult UpdateRolePermissions([FromBody] SaveRoleDTO model)
         {
             try
@@ -395,6 +419,7 @@ namespace Arihant.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "RoleMaster")]
         public JsonResult SaveRole(string RoleName, string MenuIDs)
         {
             try
@@ -421,6 +446,7 @@ namespace Arihant.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "RoleMaster")]
         public ActionResult EditRole(int id)
         {
             List<MenuRightViewModel> allMenus = _user.GetMenuRights();
@@ -441,6 +467,8 @@ namespace Arihant.Controllers
             .ToList();
             return View(model);
         }
+
+        [Authorize(Policy = "RoleMaster")]
         public IActionResult Role_Master()
         {
             List<MenuRightViewModel> allRights = _user.GetMenuRights();
@@ -450,6 +478,8 @@ namespace Arihant.Controllers
             return View(groupedRights);
         }
 
+
+        [Authorize(Policy = "RoleMaster")]
         public IActionResult Manage_Role_Master()
         {
             List<DTO_MenuRight> allRights = _user.ManageRights();
@@ -458,6 +488,7 @@ namespace Arihant.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "IP Master")]
         public JsonResult UpdateFullLocation(IP_Master_Model model)
         {
             try
@@ -486,6 +517,7 @@ namespace Arihant.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "IP Master")]
         public IActionResult GetUsersByLocation(int locationId)
         {
             List<IP_Users> users = _user.GetIPMasterUserList(locationId);
@@ -495,6 +527,7 @@ namespace Arihant.Controllers
 
 
         [HttpPost]
+        [Authorize(Policy = "IP Master")]
         public JsonResult AddIPMaster(IP_Master_Model model)
         {
 
@@ -525,6 +558,7 @@ namespace Arihant.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "IP Master")]
         public JsonResult SaveIPMaster(IPRowADd model)
         {
             try
@@ -555,6 +589,7 @@ namespace Arihant.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "IP Master")]
         public JsonResult DeactiveteLocationMaster(string id)
         {
             try
@@ -573,6 +608,7 @@ namespace Arihant.Controllers
 
 
         [HttpPost]
+        [Authorize(Policy = "IP Master")]
         public JsonResult DeleteIPMaster(string id)
         {
             try
@@ -590,6 +626,7 @@ namespace Arihant.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "Users")]
         public JsonResult DeleteUser(string UserID)
         {
             try
@@ -608,6 +645,7 @@ namespace Arihant.Controllers
 
 
         [HttpPost]
+        [Authorize(Policy = "Users")]
         public JsonResult ResetPassword(string UserID)
         {
             try
@@ -630,6 +668,7 @@ namespace Arihant.Controllers
 
 
         [HttpPost]
+        [Authorize(Policy = "Users")]
         public JsonResult ActiveUser(string UserID)
         {
             try
@@ -648,13 +687,15 @@ namespace Arihant.Controllers
 
 
         [HttpGet]
+
+  
         public JsonResult GetLocationDetails(int locationId)
         {
             var data = _user.GetLocationDetails(locationId);
             return Json(new { success = true, ips = data.IPs, users = data.Users });
         }
 
-
+        [Authorize(Policy = "IP Master")]
         public IActionResult IP_Master()
         {
             List<IP_Master_Display> IP_Masters = _user.GetIPMasterList();
@@ -665,6 +706,9 @@ namespace Arihant.Controllers
         {
             return View();
         }
+
+
+        [Authorize(Policy = "Users")]
         public IActionResult User_Master_Dashboard()
         {
            
@@ -678,6 +722,7 @@ namespace Arihant.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "Users")]
         public IActionResult UpdateUser([FromBody] UserUpdateModel model)
         {
             try
@@ -706,6 +751,7 @@ namespace Arihant.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "Users")]
         public IActionResult GetUserDetails(string id)
         {
       
@@ -732,6 +778,7 @@ namespace Arihant.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "Users")]
         public IActionResult AddUser(UserSaveViewModel model)
         {
             try

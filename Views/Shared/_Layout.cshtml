@@ -127,8 +127,47 @@
 	<main role="main" class="pb-3">
 		@RenderBody()
 	</main>
+    <script src="~/js/jquery-3.7.1.js"></script>
+    <script src="~/js/sweetalert2.js"></script>
+	<script>
+		$(document).ready(function() {
+			const urlParams = new URLSearchParams(window.location.search);
+			if (urlParams.has('unauthorized')) {
+				Swal.fire({
+					icon: 'error',
+					title: 'Access Denied',
+					text: 'You do not have permission for that module.',
+					confirmButtonColor: '#d33'
+				});
+				window.history.replaceState({}, document.title, window.location.pathname);
+			}
 
+			$(document).ajaxError(function (event, jqXHR) {
+				if (jqXHR.status === 403) {
+					Swal.fire({
+						icon: 'error',
+						title: 'Action Prohibited',
+						text: 'Your current rights do not allow this action.',
+						confirmButtonColor: '#d33'
+					});
+				}
+			});
+		});
+		const { fetch: originalFetch } = window;
+		window.fetch = async (...args) => {
+			const response = await originalFetch(...args);
+			if (response.status === 403) {
+				Swal.fire({
+					icon: 'error',
+					title: 'Restricted Access',
+					text: 'You do not have the required permissions.',
+					confirmButtonColor: '#d33'
+				});
+			}
+			return response;
+		};
 
+	</script>
 </body>
 
 </html>

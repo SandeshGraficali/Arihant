@@ -154,6 +154,33 @@
 
     <script src="~/js/jquery-3.7.1.js"></script>
     <script src="~/js/sweetalert2.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            let isSessionExpired = false;
+
+            for (const [key, value] of urlParams.entries()) {
+                if (key.toLowerCase() === 'sessionexpired') {
+                    isSessionExpired = true;
+                    break;
+                }
+            }
+
+            if (isSessionExpired) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Session Expired',
+                    text: 'Your session has timed out. Please login again.',
+                    confirmButtonColor: '#3085d6',
+                    allowOutsideClick: false
+                }).then(() => {
+                
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                });
+            }
+        });
+    </script>
     <script>
 
                 let otpInterval;

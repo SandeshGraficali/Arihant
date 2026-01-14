@@ -3,6 +3,7 @@ using Arihant.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Data;
 using static System.Collections.Specialized.BitVector32;
@@ -14,11 +15,16 @@ namespace Arihant.Controllers
         
         private readonly DL_Login _user;
         private readonly DL_Email _email;
-        public LogInController(DL_Login _master , DL_Email email)
+        private readonly JWT _jwt;
+        public LogInController(DL_Login _master , DL_Email email  , JWT token)
         {
             _user = _master;
             _email = email;
+            _jwt = token;
         }
+
+
+      
 
 
         public IActionResult User_LogIn()
@@ -92,6 +98,15 @@ namespace Arihant.Controllers
                         HttpContext.Session.SetString("UserID", email);
                         List<MenuViewModel> menus = _user.GetUserAccess(email);
                         string menuJson = JsonConvert.SerializeObject(menus);
+
+                        string token = _jwt.GenerateJwtToken(email , email , menus);
+                        Response.Cookies.Append("X-Auth-Token", token, new CookieOptions
+                        {
+                            HttpOnly = true,  
+                            Secure = true,     
+                            SameSite = SameSiteMode.Strict,
+                            Expires = DateTimeOffset.UtcNow.AddHours(8)
+                        });
                         HttpContext.Session.SetString("UserMenu", menuJson);
                     }
                     else
@@ -122,8 +137,7 @@ namespace Arihant.Controllers
         {
            
             string result= _user.CheckUserIsValid(Username, Password);
-           
-
+          
             if (result == "1")
             {
                 string userIP = HttpContext.Connection.RemoteIpAddress?.ToString();
@@ -164,6 +178,7 @@ namespace Arihant.Controllers
 
         public ActionResult Logout()
         {
+            Response.Cookies.Delete("X-Auth-Token");
             HttpContext.Session.Clear();
             return RedirectToAction("User_LogIN", "LogIn");
         }
