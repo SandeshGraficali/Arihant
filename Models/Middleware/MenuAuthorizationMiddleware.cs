@@ -16,7 +16,7 @@ namespace Arihant.Models.Middleware
         {
             string path = context.Request.Path.Value;
             if (path.Contains("/lib") || path.Contains("/css") || path.Contains("/images") || path.Contains("/js") ||
-                path == "/" || path.Contains("/LogIn") || path.Contains("Users_Master/Dashboard") || path.Contains("/UnAuthorized"))
+                path == "/" || path.Contains("/LogIn") ||  path.Contains("Users_Master/Dashboard") || path.Contains("/UnAuthorized"))
             {
                 await _next(context);
                 return;
@@ -27,7 +27,7 @@ namespace Arihant.Models.Middleware
             if (string.IsNullOrEmpty(menuData))
             {
 
-                context.Response.Redirect("/LogIn/User_LogIn");
+                context.Response.Redirect("/ArihantERP/LogIn/User_LogIn");
                 return;
                 
             }
@@ -45,7 +45,7 @@ namespace Arihant.Models.Middleware
             }
             else
             {
-                context.Response.Redirect("/LogIn/UnAuthorized");
+                context.Response.Redirect("/ArihantERP/LogIn/UnAuthorized");
             }
         }
     }

@@ -9,6 +9,11 @@ wwwroot\css\style.css
 wwwroot\css\sumoselect.css
 wwwroot\css\toggle.min.css
 wwwroot\favicon.ico
+wwwroot\fonts\ionicons.eot
+wwwroot\fonts\ionicons.svg
+wwwroot\fonts\ionicons.ttf
+wwwroot\fonts\ionicons.woff
+wwwroot\fonts\ionicons.woff2
 wwwroot\images\4-active.png
 wwwroot\images\4-inactive.png
 wwwroot\images\bg.jpg

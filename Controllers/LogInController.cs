@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Data;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Arihant.Controllers
 {
@@ -159,6 +160,12 @@ namespace Arihant.Controllers
         public IActionResult UnAuthorized()
         {
             return View(); 
+        }
+
+        public ActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("User_LogIN", "LogIn");
         }
 
     }

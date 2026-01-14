@@ -288,7 +288,7 @@
                     <input type="text" id="PaymentTerms" name="PaymentTerms" class="TextBox col-lg-12 BorderRounded5">
                 </div>
 
-                <div class="col-lg-4 floatleft padding10">
+               @*  <div class="col-lg-4 floatleft padding10">
                     <label for="CreditPeriod">Credit Period (In Days) <span style="color:red">*</span></label>
                     <input type="number" id="CreditPeriod" name="CreditPeriod" class="TextBox col-lg-12 BorderRounded5">
                 </div>
@@ -298,8 +298,13 @@
                     <label for="ExportTypeLocal">Local</label>
                     <input type="radio" id="ExportTypeExport" name="ExportType" value="Export">
                     <label for="ExportTypeExport">Export</label>
+                </div> *@
+                <div class="col-lg-4 floatleft padding10">
+                    <label for="Owner">Owner <span style="color:red">*</span></label>
+                    <select id="Owner" class="TextBox col-lg-12 BorderRounded5">
+                        <option value="">-- Select Owner --</option>
+                    </select>
                 </div>
-
                 <div class="col-lg-4 floatleft padding10">
                     <label for="IndicateViaMail">Indicate Via Mail <span style="color:red">*</span></label><br />
                     <input type="checkbox" id="IndicateViaMail" name="IndicateViaMail" value="true">
@@ -316,12 +321,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-4 floatleft padding10">
-                    <label for="Owner">Owner <span style="color:red">*</span></label>
-                    <select id="Owner" class="TextBox col-lg-12 BorderRounded5">
-                        <option value="">-- Select Owner --</option>
-                    </select>
-                </div>
+               
             </div>
             <div class="floatright padding20" style="margin-bottom: 50px; display: flex; gap: 10px;">
 
@@ -442,13 +442,13 @@
                  $('input[name="FreightType"]').val(d.logistics.freightType);
                   $('input[name="BookedTo"]').val(d.logistics.bookedTo);
                  $('input[name="PaymentTerms"]').val(d.logistics.paymentTerms);
-                 $('input[name="CreditPeriod"]').val(d.logistics.creditPeriod);
+                 // $('input[name="CreditPeriod"]').val(d.logistics.creditPeriod);
                  $('#Owner').val(d.logistics.ownerID);
                  $('#IndicateViaMail').prop('checked', d.logistics.indicateViaMail);
 
-                 if (d.logistics.exportType) {
-                     $(`input[name="ExportType"][value="${d.logistics.exportType}"]`).prop('checked', true);
-                }
+                //  if (d.logistics.exportType) {
+                //      $(`input[name="ExportType"][value="${d.logistics.exportType}"]`).prop('checked', true);
+                // }
 
                  if (d.logistics.originalInvoiceCopy) {
                      $(`input[name="OriginalInvoiceCopy"][value="${d.logistics.originalInvoiceCopy}"]`).prop('checked', true);
@@ -604,17 +604,9 @@
             if (!log.BookedTo) errors.push("Booked To is required.");
             if (!log.PaymentTerms) errors.push("Payment Terms are required.");
 
-            if (!log.CreditPeriod) {
-                errors.push("Credit Period is required.");
-            } else if (parseFloat(log.CreditPeriod) < 0) {
-                errors.push("Credit Period cannot be negative.");
-            }
-
+          
             if (!log.OwnerID) errors.push("Please select an Owner.");
 
-            if (!log.ExportType) {
-                errors.push("Please select an Export Type (Local or Export).");
-            }
 
             if (!log.IndicateViaMail) {
                 errors.push("Please check 'Indicate Via Mail'.");
@@ -659,8 +651,8 @@
                 FreightType: $('#FreightType').val(),
                 BookedTo: $('#BookedTo').val(),
                 PaymentTerms: $('#PaymentTerms').val(),
-                CreditPeriod: $('#CreditPeriod').val(),
-                ExportType: $('input[name="ExportType"]:checked').val(),
+                // CreditPeriod: $('#CreditPeriod').val(),
+                // ExportType: $('input[name="ExportType"]:checked').val(),
                 IndicateViaMail: $('#IndicateViaMail').is(':checked'),
                 OriginalInvoiceCopy: $('input[name="OriginalInvoiceCopy"]:checked').val(),
                 OwnerID: $('#Owner').val()

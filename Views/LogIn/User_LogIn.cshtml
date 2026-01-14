@@ -159,7 +159,7 @@
                 let otpInterval;
 
         function startOTPTimer() {
-            let timeLeft = 30;
+            let timeLeft = 300;
             const timerDisplay = $('#otpTimerDisplay');
             const otpInput = $('#txtOTPNew');
             const verifyBtn = $('#btnVerifyOTPNew');
@@ -177,7 +177,7 @@
                     clearInterval(otpInterval);
                     $('#btnOTPResend').show();
 
-                        $("#btnVerifyOTPNew").prop("disabled", true);
+                        $("#btnVerifyOTPNew").prop("disabled", true) .css("opacity", "0.5");;
                        
                     timerDisplay.text("OTP Expired!");
                     otpInput.prop('disabled', true);
@@ -329,7 +329,11 @@
                 success: function (response) {
                     if (response.success) {
                         Swal.fire({ icon: 'success', title: 'Sent!', text: 'OTP has been sent to your email.' });
-                                $("#btnVerifyOTPNew").prop("disabled", false);
+                                  $("#btnVerifyOTPNew")
+                                .prop("disabled", false)
+                                .removeAttr("disabled")
+                                .css("opacity", "1");
+
                                $("#btnVerifyOTPNew").text("Resend OTP");
 
                         $('#txtForgotEmail').attr('readonly', true);

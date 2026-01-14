@@ -1809,11 +1809,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Work\\Arihant\\Code\\Arihant\\Arihant\\Arihant.csproj",
+      "projectUniqueName": "C:\\Users\\Admin\\Desktop\\ArihantDemo\\Arihant\\Arihant.csproj",
       "projectName": "Arihant",
-      "projectPath": "E:\\Work\\Arihant\\Code\\Arihant\\Arihant\\Arihant.csproj",
+      "projectPath": "C:\\Users\\Admin\\Desktop\\ArihantDemo\\Arihant\\Arihant.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "E:\\Work\\Arihant\\Code\\Arihant\\Arihant\\obj\\",
+      "outputPath": "C:\\Users\\Admin\\Desktop\\ArihantDemo\\Arihant\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

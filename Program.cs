@@ -39,7 +39,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
 app.UseAuthorization();
-app.UseMiddleware<MenuAuthorizationMiddleware>();
+//app.UseMiddleware<MenuAuthorizationMiddleware>();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=LogIn}/{action=User_LogIn}/{id?}");
