@@ -92,7 +92,6 @@
         </div>
     </div>
 </body>
-
 <script src="~/js/jquery-3.7.1.js"></script>
 <script src="~/js/sumoselect.js"></script>
 <script src="~/js/datatables.js"></script>
@@ -184,10 +183,10 @@
                             Swal.fire('Success!', 'Status updated successfully.', 'success');
 
                             if (isActivating) {
-                                img.attr('src', '/images/4-active.png');
+                                img.attr('src', '../images/4-active.png');
                                 img.attr('data-status', "1");
                             } else {
-                                img.attr('src', '/images/4-inactive.png');
+                                img.attr('src', '../images/4-inactive.png');
                                 img.attr('data-status', "0");
                             }
                         } else {

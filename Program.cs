@@ -7,68 +7,76 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddControllersWithViews(options =>
-{
-    options.Filters.Add<SessionTimeoutFilter>();
-});
+builder.Services.AddControllersWithViews();
+//builder.Services.AddControllersWithViews(options =>
+//{
+//    options.Filters.Add<SessionTimeoutFilter>();
+//});
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<DL_Users_Master>();
 builder.Services.AddTransient<DL_Login>();
 builder.Services.AddTransient<DL_Email>();
 builder.Services.AddTransient<DL_BOM>();
 builder.Services.AddScoped<Arihant.Services.JWT>();
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidateAudience = true,
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-        ValidateLifetime = true,
-        ClockSkew = TimeSpan.Zero 
-    };
+//builder.Services.AddAuthentication(options =>
+//{
+//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//})
+//.AddJwtBearer(options =>
+//{
+//    options.TokenValidationParameters = new TokenValidationParameters
+//    {
+//        ValidateIssuer = true,
+//        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+//        ValidateAudience = true,
+//        ValidAudience = builder.Configuration["Jwt:Audience"],
+//        ValidateIssuerSigningKey = true,
+//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+//        ValidateLifetime = true,
+//        ClockSkew = TimeSpan.Zero
+//    };
 
 
-    options.Events = new JwtBearerEvents
-    {
-        OnMessageReceived = context =>
-        {
-            context.Token = context.Request.Cookies["X-Auth-Token"];
-            return Task.CompletedTask;
-        },
-        OnChallenge = context =>
-        {
+//    options.Events = new JwtBearerEvents
+//    {
+//        OnMessageReceived = context =>
+//        {
+//            //context.Token = context.Request.Cookies["X-Auth-Token"];
+//            //return Task.CompletedTask;
+//            var sessionToken = context.HttpContext.Session.GetString("JWT_Token");
 
-            context.HandleResponse();
-            context.Response.Redirect("/LogIn/User_Login");
-            return Task.CompletedTask;
-        },
-        OnForbidden = context =>
-        {
-            string referer = context.Request.Headers["Referer"].ToString();
-            if (string.IsNullOrEmpty(referer)) referer = "/ArihantERP/Home/Index";
+//            if (!string.IsNullOrEmpty(sessionToken))
+//            {
+//                context.Token = sessionToken;
+//            }
+//            return Task.CompletedTask;
+//        },
+//        OnChallenge = context =>
+//        {
 
-            context.Response.Redirect(referer + (referer.Contains("?") ? "&" : "?") + "unauthorized=true");
-            //context.Response.Redirect("/LogIn/UnAuthorized");
-            return Task.CompletedTask;
-        }
-    };
-});
+//            context.HandleResponse();
+//            context.Response.Redirect("/ArihantERP/LogIn/User_Login");
+//            return Task.CompletedTask;
+//        },
+//        OnForbidden = context =>
+//        {
+//            string referer = context.Request.Headers["Referer"].ToString();
+//            if (string.IsNullOrEmpty(referer)) referer = "/ArihantERP/Home/Index";
+
+//           // context.Response.Redirect(referer + (referer.Contains("?") ? "&" : "?") + "unauthorized=true");
+//            context.Response.Redirect("/ArihantERP/LogIn/UnAuthorized");
+//            return Task.CompletedTask;
+//        }
+//    };
+//});
 
 
-builder.Services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
+//builder.Services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
 
-builder.Services.AddSingleton<IAuthorizationPolicyProvider, DynamicPolicyProvider>();
+//builder.Services.AddSingleton<IAuthorizationPolicyProvider, DynamicPolicyProvider>();
 
-builder.Services.AddAuthorization();
+//builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<GraficaliClasses.GraficaliClasses>(provider =>
 {
@@ -100,12 +108,13 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseAuthentication();
+
 app.UseSession();
+app.UseAuthentication();
 app.UseAuthorization();
 //app.UseMiddleware<MenuAuthorizationMiddleware>();
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=LogIn}/{action=User_LogIn}/{id?}");
+    pattern: "{controller=Users_Master}/{action=UnitMaster}/{id?}");
 
 app.Run();

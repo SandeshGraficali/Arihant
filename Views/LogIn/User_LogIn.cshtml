@@ -315,7 +315,13 @@
                             text: 'A new OTP has been sent to your email.'
                         });
 
-     
+
+
+
+                          $("#btnVerifyOTPNew")
+                        .prop("disabled", false)
+                        .removeAttr("disabled")
+                        .css("opacity", "1");
                         $('#btnOTPResend').hide();          
                         $('#btnOTPResend').text('Resend OTP'); 
                         $('#txtOTPNew').val('');            
@@ -356,10 +362,7 @@
                 success: function (response) {
                     if (response.success) {
                         Swal.fire({ icon: 'success', title: 'Sent!', text: 'OTP has been sent to your email.' });
-                                  $("#btnVerifyOTPNew")
-                                .prop("disabled", false)
-                                .removeAttr("disabled")
-                                .css("opacity", "1");
+                                
 
                                $("#btnVerifyOTPNew").text("Resend OTP");
 
@@ -395,6 +398,7 @@
                 data: { email: email, otp: otp },
                 success: function (response) {
                     if (response.success) {
+                        clearAllFields();
                             window.location.href = '@Url.Action("Dashboard", "Users_Master")';
                     } else {
 
@@ -549,6 +553,10 @@
             });
             }
 
+            function clearAllFields()
+            {
+                $('input[type="text"], input[type="password"]').val('');
+            }
     </script>
 
 

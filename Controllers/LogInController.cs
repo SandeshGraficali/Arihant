@@ -100,13 +100,14 @@ namespace Arihant.Controllers
                         string menuJson = JsonConvert.SerializeObject(menus);
 
                         string token = _jwt.GenerateJwtToken(email , email , menus);
-                        Response.Cookies.Append("X-Auth-Token", token, new CookieOptions
-                        {
-                            HttpOnly = true,  
-                            Secure = true,     
-                            SameSite = SameSiteMode.Strict,
-                            Expires = DateTimeOffset.UtcNow.AddHours(8)
-                        });
+                        //Response.Cookies.Append("X-Auth-Token", token, new CookieOptions
+                        //{
+                        //    HttpOnly = true,  
+                        //    Secure = true,     
+                        //    SameSite = SameSiteMode.Strict,
+                        //    Expires = DateTimeOffset.UtcNow.AddHours(8)
+                        //});
+                        HttpContext.Session.SetString("JWT_Token", token);
                         HttpContext.Session.SetString("UserMenu", menuJson);
                     }
                     else

@@ -1,0 +1,479 @@
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="~/css/datatables.css" rel="stylesheet" />
+    <link href="~/css/allmin.css" rel="stylesheet" />
+    <style>
+        /* --- General Layout --- */
+        .floatleft {
+            float: left;
+        }
+
+        .padding10 {
+            padding: 10px;
+        }
+
+        .padding20 {
+            padding: 20px;
+        }
+
+        .marginB20 {
+            margin-bottom: 20px;
+        }
+
+        .BorderRounded5 {
+            border-radius: 5px;
+        }
+
+        .BorderRounded10 {
+            border-radius: 10px;
+        }
+
+        .Shadow {
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .clear {
+            clear: both;
+        }
+
+        .bg {
+            background-color: #f4f7f6;
+        }
+
+        .BgColor1 {
+            background-color: #ffffff;
+        }
+
+        .Border1 {
+            border: 1px solid #dee2e6;
+        }
+
+        /* --- Responsive Header --- */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        /* --- Buttons --- */
+        .btn-action {
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+        }
+
+        .btn-add {
+            background-color: #000080;
+            color: white;
+        }
+
+        .btn-edit {
+            background-color: #ffc107;
+            color: black;
+            margin-right: 5px;
+        }
+
+        .btn-remove {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-save {
+            background-color: #28a745;
+            color: white;
+            width: 200px;
+            font-size: 16px;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .grid-container {
+            overflow-x: auto;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .custom-grid {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            font-size: 13px;
+            border: 1px solid #eee;
+        }
+
+            .custom-grid th, .custom-grid td {
+                padding: 10px;
+                text-align: center;
+                vertical-align: middle;
+                border-bottom: 1px solid #eee;
+            }
+
+            .custom-grid th {
+                background-color: #f1f3f9;
+                font-weight: bold;
+            }
+
+        /* --- Modal --- */
+        .custom-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            overflow-y: auto;
+            padding: 20px 10px;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 2% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 70%;
+            position: relative;
+        }
+
+        .TextBox {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        @@media (max-width: 768px) {
+            .col-lg-4, .col-lg-6, .col-lg-12 {
+                width: 100% !important;
+                float: none !important;
+                padding: 5px 5px !important;
+            }
+
+            .modal-content {
+                width: 95% !important;
+            }
+
+            .btn-save {
+                width: 100% !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg">
+    <br />
+    <br />
+    <div class="wrapper paddingLR10">
+        <form id="UnitForm">
+             <input type="hidden" id="UnitID" name="UnitID" value="@(Model?.UnitID ?? 0)" /> 
+            <div class="col-lg-12 floatleft BgColor1 Border1 padding20 BorderRounded10 Shadow marginB20">
+                <div class="NormalTextBig"><strong>Unit Details</strong></div><hr />
+                <div class="col-lg-4 floatleft padding10">
+                    <label>Company Name</label><span style="color:red">*</span>
+
+
+
+                    <select id="CompanyName" class="TextBox">
+                        <option value="">-- Select Type --</option>
+                        @if (ViewBag.CompanyList != null)
+                        {
+                            foreach (var item in (IEnumerable<Arihant.Models.Company_Master.C_Master>)ViewBag.CompanyList)
+                            {
+                                <option value="@item.ID">@item.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="col-lg-4 floatleft padding10"><label>Factory Name<span style="color:red;margin-left:3px">*</span></label><input type="text" id="FactoryName" name="FactoryName" class="TextBox" required></div>
+                <div class="col-lg-4 floatleft padding10"><label>Unit Code<span style="color:red;margin-left:3px">*</span></label><input type="text" id="UnitCode" name="UnitCode" class="TextBox" required></div>
+         
+
+                
+                <div class="clear"></div>
+            </div>
+            @Html.Partial("_ContactCommunication")
+            <div class="col-lg-12 floatleft BgColor1 Border1 padding20 BorderRounded10 Shadow marginB20">
+                <div class="section-header">
+                    <div class="NormalTextBig"><strong>Address Details</strong></div>
+                    <button type="button" id="Add" class="btn-action btn-add" onclick="ShowAdd()">+ Add Address </button>
+
+
+                </div>
+                <hr />
+                <div id="MAinAddDive" style="display:none">
+                    <div class="col-lg-4 floatleft padding10">
+                        <label>Address Type<span style="color:red;margin-left:3px">*</span></label>
+                        <select id="ddlAddressType" class="TextBox">
+                            <option value="">-- Select Type --</option>
+                            @if (ViewBag.Addresslist != null)
+                            {
+                                foreach (var item in (IEnumerable<Arihant.Models.Company_Master.C_Master>)ViewBag.Addresslist)
+                                {
+                                    <option value="@item.ID">@item.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="clear"></div>
+
+                    @Html.Partial("_AddressDetails", "MainAddr")
+                    <div class="col-lg-4 floatleft padding10">
+                    </div>
+                    <div class="col-lg-4 floatleft padding10">
+                    </div>
+                    <div class="col-lg-2 floatleft padding10">
+                    </div>
+                    <div class="col-lg-2 floatleft padding10">
+                        <button type="button" id="AddMainADd" style="display:none" class="btn-action btn-add" onclick="AddAddressToGrid()">+ Add Address to List</button>
+                    </div>
+
+                </div>
+
+
+                <div class="grid-container">
+                    <table style="display:none" class="custom-grid" id="tblAddress">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Address 1</th>
+                                <th>Address 2</th>
+                                <th>Landmark</th>
+                                <th>Pincode</th>
+                                <th>City</th>
+                                <th>State</th>
+                                <th>Country</th>
+                                <th>GST No.</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+         
+
+            <div class="col-lg-12 floatleft padding20 text-right">
+                <div class="col-lg-12 floatleft padding20 text-right">
+                    <button class="btn-action"
+                            style="background-color:#000080; color:white; width:100px; font-size:16px;"
+                            onclick="location.href='@Url.Action("UnitMaster", "Users_Master")'">
+                        Back
+                    </button>
+
+                    @if (ViewBag.IsEdit == true)
+                    {
+                        <button type="submit" class="btn-action" style="background-color:#ffc107; color:black; width:200px; font-size:16px;">Update</button>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn-action btn-save">Save</button>
+                    }
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="editModal" class="custom-modal">
+        <div class="modal-content Shadow">
+            <div class="section-header">
+                <div class="NormalTextBig FontColor1"><strong id="modalHeading">Edit Details</strong></div>
+                <button type="button" onclick="closeModal()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+            </div>
+            <hr />
+            <div id="modalInputs" class="clear"></div>
+            <div class="clear"></div>
+            <hr />
+            <div class="text-right">
+                <button type="button" class="btn-action" style="background:#6c757d; color:white;" onclick="closeModal()">Cancel</button>
+                <button type="button" class="btn-action btn-add" id="btnSaveUpdate">Update Details</button>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        window.AppConfig = {
+            UserMasterBaseUrl: '@Url.Content(Configuration["ApiSettings:UserMasterBaseUrl"])'
+        };
+        console.log("AppConfig Initialized:", window.AppConfig);
+    </script>
+  
+    <script src="~/js/masters/address.js"></script>
+    <script src="~/js/masters/contactdetails.js"></script>
+    <script src="~/js/masters/bankdetails.js"></script>
+
+    <script src="~/js/sweetalert2.js"></script>
+    <script>
+        var countryList = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.countrylist));
+
+        $(document)
+          .ready(function() {
+            InitializeStates();
+
+            var isEdit = '@ViewBag.IsEdit'.toLowerCase() === 'true';
+            if (isEdit) {
+              PopulateGridsForEdit();
+            }
+
+            $("#UnitForm")
+              .on("submit", function(e) {
+                e.preventDefault();
+                SaveAllData();
+              });
+          });
+
+
+
+             function PopulateGridsForEdit() {
+
+         
+          $('#tblAddress')
+            .show();
+        var fullModel = @(Model != null
+                        ? Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model))
+                        : Html.Raw("null"));
+          console.log("Binding Full Vendor Model Data...", fullModel);
+          if (!fullModel) return;
+
+          $("#FactoryName")
+            .val(fullModel.factoryName);
+          $("#UnitCode")
+            .val(fullModel.unitCode);
+         $('#CompanyName').val(fullModel.companyName);
+          
+                bindContactDetails(
+            fullModel.Email,
+            fullModel.AlternateEmail,
+            fullModel.ContactPersonName,
+            fullModel.OffMobileNO,
+            fullModel.WhatsappNo,
+            fullModel.Website,
+            fullModel.Tel1,
+            fullModel.MobileNo
+        );
+          bindAddressTable(fullModel.AddressList);
+          
+        }
+
+        function InitializeStates() {
+          bindDropdownList(["MainAddr_Country", "BankAddr_Country"], countryList);
+        }
+          function ShowAdd() {
+          $("#modalHeading")
+            .text("Add Address Details");
+          var addressContent = $('#MAinAddDive')
+            .html();
+          $("#modalInputs")
+            .html(addressContent);
+          $("#editModal")
+            .show();
+          $("#btnSaveUpdate")
+            .hide();
+          $("#btnModalAddAddr")
+            .remove();
+
+          var addBtn = '<div class="col-lg-12 floatleft padding10 text-right">' +
+            '<button type="button" id="btnModalAddAddr" class="btn-action btn-add" onclick="AddAddressToGrid()">+ Add Address to List</button>' +
+            '</div>';
+          $("#modalInputs")
+            .append(addBtn);
+          $('#MAinAddDive')
+            .hide();
+        }
+
+        function closeModal()
+        {
+          $("#editModal")
+            .hide();
+          currentRow = null;
+        }
+
+
+
+        function SaveAllData()
+        {
+             
+          const companyName = $('#CompanyName').val();
+
+               const factoryName = $("#FactoryName")
+            .val()
+            .trim();
+
+          const unitCode = $("#UnitCode")
+            .val()
+            .trim();
+
+          const offMobile = $("input[name='MobileNo']")
+            .val()
+            .trim();
+     
+          if (!companyName || !unitCode || !offMobile || !factoryName) {
+               Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: 'Please fill all mandatory fields (company Name, UnitCode,FactoryName, and Mobile).'
+
+            });
+            return;
+          }
+
+             if ($("#tblAddress tbody tr").length === 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Address Required',
+                text: 'Please add at least one Address to the list.'
+            });
+            return;
+        }
+
+
+          const formData = {
+               UnitID: $("#UnitID").val()
+            , companyName: companyName
+            , factoryName: factoryName
+            , unitCode: unitCode
+            , ...getContactDetails()
+            , AddressList: getAddressTableData()
+        
+          };
+
+
+
+
+          $.ajax({
+            url: '@Url.Action("SaveUnit", "Users_Master")'
+            , type: 'POST'
+            , data: {
+              jsonData: JSON.stringify(formData)
+            }
+            , success: function(response) {
+              if (response.success) {
+                Swal.fire('Success', 'Unit Master saved successfully!', 'success')
+                  .then(() => {
+                    window.location.href = '@Url.Action("UnitMaster", "Users_Master")';
+                  });
+              } else {
+                Swal.fire('Error', response.message || 'Saving failed.', 'error');
+              }
+            }
+            , error: function() {
+              Swal.fire('Error', 'Could not reach the server.', 'error');
+            }
+          });
+        }
+
+
+    </script>
+ 
+</body>

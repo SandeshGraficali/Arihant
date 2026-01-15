@@ -86,15 +86,17 @@ function AddAddressToGrid() {
     let ctText = modal.find(`#${p}_City option:selected`).text();
     let gstNo = modal.find(`#${p}_GSTNo`).val().trim();
 
-    const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
-    if (!gstRegex.test(gstNo)) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Validation Error',
-            text: 'Invalid Main GST format. Expected: 22AAAAA0000A1Z5',
-            target: document.getElementById('editModal')
-        });
-        return;
+    if (gstNo !== "") {
+        const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+        if (!gstRegex.test(gstNo)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: 'Invalid Main GST format. Expected: 22AAAAA0000A1Z5',
+                target: document.getElementById('editModal')
+            });
+            return;
+        }
     }
 
 
@@ -118,15 +120,15 @@ function AddAddressToGrid() {
         }
     });
 
-    if (isDuplicate) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Duplicate Entry',
-            text: 'This GST Number is already added to the list.',
-            target: document.getElementById('editModal')
-        });
-        return;
-    }
+    //if (isDuplicate) {
+    //    Swal.fire({
+    //        icon: 'warning',
+    //        title: 'Duplicate Entry',
+    //        text: 'This GST Number is already added to the list.',
+    //        target: document.getElementById('editModal')
+    //    });
+    //    return;
+    //}
 
     let row = `<tr>
                 <td>${typeName}</td>

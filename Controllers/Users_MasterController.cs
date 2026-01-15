@@ -2,9 +2,11 @@
 using Arihant.Models.Company_Master;
 using Arihant.Models.IP_Master;
 using Arihant.Models.Rights_Master;
+using Arihant.Models.Unit;
 using Arihant.Models.User_Master;
 using Arihant.Models.Vender;
 using Arihant.Services;
+using DocumentFormat.OpenXml.EMMA;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -25,6 +27,77 @@ namespace Arihant.Controllers
         {
             _user = _master;
         }
+
+        [HttpPost]
+        public JsonResult SaveUnit(string jsonData)
+        {
+            try
+            {
+                var options = new System.Text.Json.JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                var model = System.Text.Json.JsonSerializer.Deserialize<UnitMaster>(jsonData, options);
+
+                string ModifiedBy = HttpContext.Session.GetString("UserName") ?? "";
+                string result = _user.AddUnitDetails(model, ModifiedBy);
+
+                if (result.StartsWith("Success", StringComparison.OrdinalIgnoreCase))
+                {
+                    return Json(new { success = true, message = result });
+                }
+                else
+                {
+                    return Json(new { success = false, message = result });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
+
+        public IActionResult UnitMaster()
+        {
+            var list = _user.GetUnitList();
+            return View(list);
+        }
+
+
+        public IActionResult AddUnit(int id=0)
+        {
+            ViewBag.countrylist = _user.GetC_MasterList();
+            ViewBag.Addresslist = _user.GetC_MasterAddresList();
+            ViewBag.CompanyList = _user.GetCompany_MasterList();
+
+            if (id > 0)
+            {
+
+                var model = _user.GetUNITByID(id);
+                ViewBag.IsEdit = true;
+                return View(model);
+            }
+            else
+            {
+                ViewBag.IsEdit = false;
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+
+        public JsonResult DeleteUnitStatus(int UinitId, int status, string operation = "TOGGLE_STATUS")
+        {
+            string ModifiedBy = HttpContext.Session.GetString("UserName") ?? "";
+          
+            _user.deleteUnitService(UinitId, ModifiedBy, operation);
+            return Json(new { success = true, message = "Unit Deleted Sucessfully" });
+
+        }
+
 
         [HttpPost]
         [Authorize(Policy = "Vendors Master")]
@@ -48,7 +121,7 @@ namespace Arihant.Controllers
             if (model == null) return NotFound();
 
             ViewBag.IsEdit = true;
-            return View("Add_Vender", model); 
+            return View("Add_Vender", model);
         }
 
 
@@ -67,7 +140,7 @@ namespace Arihant.Controllers
                 string ModifiedBy = HttpContext.Session.GetString("UserName") ?? "";
                 string result = _user.AddVendorDetails(model, ModifiedBy);
 
-                    if (result.StartsWith("Success", StringComparison.OrdinalIgnoreCase))
+                if (result.StartsWith("Success", StringComparison.OrdinalIgnoreCase))
                 {
                     return Json(new { success = true, message = result });
                 }
@@ -91,19 +164,19 @@ namespace Arihant.Controllers
                 var list = _user.GetVendorList();
                 return View(list);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return View();
             }
-            
-           
+
+
         }
 
         [HttpPost]
         [Authorize(Policy = "Vendors Master")]
         public JsonResult UpdateVendorStatus(int vendorId, int status)
         {
-            
+
             bool isActive = (status == 1);
             string ModifiedBy = HttpContext.Session.GetString("UserName") ?? "";
             string result = _user.UpdateVendorStatusService(vendorId, isActive, ModifiedBy);
@@ -113,6 +186,19 @@ namespace Arihant.Controllers
                 return Json(new { success = true, message = result });
             }
             return Json(new { success = false, message = result });
+        }
+
+
+        [HttpPost]
+
+        public JsonResult UpdateUnitStatus(int unitId, int status)
+        {
+
+            bool isActive = (status == 1);
+            string ModifiedBy = HttpContext.Session.GetString("UserName") ?? "";
+            _user.UpdateUnitService(unitId, isActive, ModifiedBy);
+            return Json(new { success = true, message = "Unit Status Sucessfully Chnage" });
+
         }
 
         [Authorize(Policy = "Vendors Master")]
@@ -125,7 +211,7 @@ namespace Arihant.Controllers
 
             if (id > 0)
             {
-               
+
                 model = _user.GetVendorByID(id);
                 ViewBag.IsEdit = true;
             }
@@ -143,13 +229,13 @@ namespace Arihant.Controllers
         public JsonResult SaveClient(string jsonData)
         {
             string ModifiedBy = HttpContext.Session.GetString("UserName") ?? "";
-            string result = _user.AddClientDetails(jsonData , ModifiedBy);
+            string result = _user.AddClientDetails(jsonData, ModifiedBy);
 
             if (result == "1")
                 return Json(new { success = true, message = "User Added successfully!" });
             else
                 return Json(new { success = false, message = result });
-           
+
         }
 
         [Authorize(Policy = "Customer Master")]
@@ -202,11 +288,11 @@ namespace Arihant.Controllers
         [Authorize(Policy = "Customer Master")]
         public IActionResult ClientMaster(int? id)
         {
-           ViewBag.countrylist = _user.GetC_MasterList();
+            ViewBag.countrylist = _user.GetC_MasterList();
             ViewBag.Addresslist = _user.GetC_MasterAddresList();
             ViewBag.ownerlist = _user.GetOwnerList();
             if (id.HasValue && id.Value > 0)
-            {               
+            {
                 var clientData = _user.GetClientById(id.Value);
                 ViewBag.IsEdit = true;
                 return View(clientData);
@@ -259,8 +345,8 @@ namespace Arihant.Controllers
             try
             {
                 string createdBy = HttpContext.Session.GetString("UserName") ?? "System";
-                string result = _user.UpdateCompanyDetails(data , createdBy);
-             
+                string result = _user.UpdateCompanyDetails(data, createdBy);
+
                 if (result == "1")
                     return Json(new { success = true, message = "Company Updated successfully!" });
                 else
@@ -275,20 +361,20 @@ namespace Arihant.Controllers
         [Authorize(Policy = "Company")]
         public IActionResult GetCompanyList()
         {
-            List<CompanyProfileModel>  list = _user.GetAllCompanyMasters();    
+            List<CompanyProfileModel> list = _user.GetAllCompanyMasters();
             return View(list);
         }
 
- 
+
         [HttpGet]
         [Authorize(Policy = "Company")]
         public IActionResult EditCompany(int id)
         {
             ViewBag.Addresslist = _user.GetC_MasterAddresList();
             ViewBag.countrylist = _user.GetC_MasterList();
-                var data = _user.getCompanyByID(id.ToString());
-                var model = data.FirstOrDefault();
-            return View("CompanyForm", model); 
+            var data = _user.getCompanyByID(id.ToString());
+            var model = data.FirstOrDefault();
+            return View("CompanyForm", model);
         }
 
         [HttpGet]
@@ -340,7 +426,7 @@ namespace Arihant.Controllers
             try
             {
                 string createdBy = HttpContext.Session.GetString("UserName") ?? "System";
-                string result= _user.SaveCompanyDetails(data , createdBy);
+                string result = _user.SaveCompanyDetails(data, createdBy);
 
                 if (result == "1")
                     return Json(new { success = true, message = "Company created successfully!" });
@@ -359,13 +445,13 @@ namespace Arihant.Controllers
         {
             ViewBag.Addresslist = _user.GetC_MasterAddresList();
             ViewBag.countrylist = _user.GetC_MasterList();
-            return View("CompanyForm", new CompanyProfileModel()); 
+            return View("CompanyForm", new CompanyProfileModel());
         }
 
         [Authorize(Policy = "Company")]
         public IActionResult CompanyForm()
         {
-          
+
             return View();
         }
 
@@ -398,7 +484,7 @@ namespace Arihant.Controllers
             {
                 string createdBy = HttpContext.Session.GetString("UserName") ?? "System";
                 string menuIdsString = model.MenuIDs != null ? string.Join(",", model.MenuIDs) : "";
-                string result = _user.UpdateRoleWithRights(model.RoleName, menuIdsString, createdBy , model.RoleID.ToString());
+                string result = _user.UpdateRoleWithRights(model.RoleName, menuIdsString, createdBy, model.RoleID.ToString());
                 if (result == "1")
                 {
                     return Json(new { success = true, message = "Menu  Added successfully!", result = result });
@@ -424,15 +510,15 @@ namespace Arihant.Controllers
         {
             try
             {
-                string createdBy = HttpContext.Session.GetString("UserName") ?? "System";        
+                string createdBy = HttpContext.Session.GetString("UserName") ?? "System";
                 string result = _user.InsertRoleWithRights(RoleName, MenuIDs, createdBy);
                 if (result == "1")
                 {
-                    return Json(new { success = true, message = "Role Added successfully!"  , result = result });
+                    return Json(new { success = true, message = "Role Added successfully!", result = result });
                 }
                 else if (result == "0")
                 {
-                    return Json(new { success = false, message = "Role is already exists."  , result  = result });
+                    return Json(new { success = false, message = "Role is already exists.", result = result });
                 }
                 else
                 {
@@ -463,7 +549,7 @@ namespace Arihant.Controllers
                 RightName = m.RightName,
                 IsAssigned = particularRights.Any(pr => pr.MenuID == m.MenuID)
             })
-            .GroupBy(x => x.Module) 
+            .GroupBy(x => x.Module)
             .ToList();
             return View(model);
         }
@@ -473,7 +559,7 @@ namespace Arihant.Controllers
         {
             List<MenuRightViewModel> allRights = _user.GetMenuRights();
             var groupedRights = allRights.GroupBy(x => x.Module).ToList();
-   
+
             ViewBag.GroupedMenuRights = groupedRights;
             return View(groupedRights);
         }
@@ -508,7 +594,7 @@ namespace Arihant.Controllers
                 {
                     return Json(new { success = false, message = "Error: " + result });
                 }
-              
+
             }
             catch (Exception ex)
             {
@@ -534,8 +620,8 @@ namespace Arihant.Controllers
             try
             {
                 string ModifiedBy = HttpContext.Session.GetString("UserName") ?? "";
-                 string result = _user.AddIPAddress(model , ModifiedBy);
-               
+                string result = _user.AddIPAddress(model, ModifiedBy);
+
                 if (result == "1")
                 {
                     return Json(new { success = true, message = "IP details updated successfully!" });
@@ -650,8 +736,8 @@ namespace Arihant.Controllers
         {
             try
             {
-               
-                
+
+
                 string ModifiedBy = HttpContext.Session.GetString("UserName") ?? "";
                 string result = _user.ResetPassword(UserID, ModifiedBy);
 
@@ -688,7 +774,7 @@ namespace Arihant.Controllers
 
         [HttpGet]
 
-  
+
         public JsonResult GetLocationDetails(int locationId)
         {
             var data = _user.GetLocationDetails(locationId);
@@ -711,7 +797,7 @@ namespace Arihant.Controllers
         [Authorize(Policy = "Users")]
         public IActionResult User_Master_Dashboard()
         {
-           
+
             ViewBag.LocationList = _user.GetLocationList();
             ViewBag.RoleList = _user.GetRoleList();
             List<IPViewModel_withIPS> result = _user.GetAllUsers();
@@ -727,7 +813,7 @@ namespace Arihant.Controllers
         {
             try
             {
-                if (model == null )
+                if (model == null)
                 {
                     return Json(new { success = false, message = "Invalid data provided." });
                 }
@@ -754,7 +840,7 @@ namespace Arihant.Controllers
         [Authorize(Policy = "Users")]
         public IActionResult GetUserDetails(string id)
         {
-      
+
             var user = _user.GetUserByID(id);
             if (user == null) return NotFound();
 
@@ -769,8 +855,8 @@ namespace Arihant.Controllers
                     emailID = user.EmailID,
                     expiryDate = user.ExpiryDate,
                     accessType = user.AccessType,
-                    roleIDs = user.RoleIDs, 
-                    locationIDs = user.LocationIDs, 
+                    roleIDs = user.RoleIDs,
+                    locationIDs = user.LocationIDs,
                     isDirectAccess = user.IsDirectAccess,
                     selectedMenus = user.SelectedMenuRights
                 }

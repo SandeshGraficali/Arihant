@@ -17,8 +17,8 @@ namespace Arihant.Services
             }
 
             var sessionUser = context.HttpContext.Session.GetString("UserID");
-            var authCookie = context.HttpContext.Request.Cookies["X-Auth-Token"];
-
+            //var authCookie = context.HttpContext.Request.Cookies["X-Auth-Token"];
+            var authCookie = context.HttpContext.Session.GetString("JWT_Token");
             if (string.IsNullOrEmpty(authCookie) || string.IsNullOrEmpty(sessionUser))
             {
                 context.HttpContext.Response.Cookies.Delete("X-Auth-Token");

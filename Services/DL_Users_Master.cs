@@ -3,6 +3,7 @@ using Arihant.Models.Common;
 using Arihant.Models.Company_Master;
 using Arihant.Models.IP_Master;
 using Arihant.Models.Rights_Master;
+using Arihant.Models.Unit;
 using Arihant.Models.User_Master;
 using Arihant.Models.Vender;
 using Azure;
@@ -29,6 +30,127 @@ namespace Arihant.Services
             _email = user;
             _configuration = configuration;
         }
+
+
+        public UnitMaster GetUNITByID(int id)
+        {
+            UnitMaster model = null;
+            var parameters = new Dictionary<string, SqlParameter>
+            {
+                { "Operation", new SqlParameter("@Operation", "Get_Unit_By_ID") },
+                { "ID", new SqlParameter("@ID", id) }
+            };
+
+            DataSet ds = gc.ExecuteStoredProcedureGetDataSet("SP_UnitMaster", parameters.Values.ToArray());
+            var data = ds.Tables.Map<UnitMaster>().ToList();
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                DataRow dr = ds.Tables[0].Rows[0];
+                model = new UnitMaster
+                {
+                    UnitID = id.ToString(),
+                    companyName = dr["CompanyID"].ToString(),
+                    factoryName = dr["FactoryName"].ToString(),
+                    unitCode = dr["UnitCode"].ToString(),
+                
+                    Email = dr["ContactEmail"].ToString(),
+                    AlternateEmail = dr["AlternetEmail"].ToString(),
+                    Website = dr["Website"].ToString(),
+                    WhatsappNo = dr["WhatsAppNO"].ToString(),
+                    Tel1 = dr["Telephone"].ToString(),
+                    ContactPersonName = dr["ContactPersonName"].ToString(),
+                    MobileNo = dr["MobileNumber"].ToString(),
+                    OffMobileNO = dr["OfficeMobileNO"].ToString(),
+                    
+                };
+
+
+                foreach (DataRow adr in ds.Tables[1].Rows)
+                {
+                    model.AddressList.Add(new AddressDTO
+                    {
+                        AddressTypeID = adr["AddressType"].ToString(),
+                        AddressLine1 = adr["FullAddress"].ToString(),
+                        AddressLine2 = adr["AddLine2"].ToString(),
+                        Pincode = adr["PinCode"].ToString(),
+                        Landmark = adr["Landmark"].ToString(),
+                        CityName = adr["CityName"].ToString(),
+                        CityID = adr["City"].ToString(),
+                        StateName = adr["StateName"].ToString(),
+                        CountryName = adr["CountryName"].ToString(),
+                        StateID = adr["State"].ToString(),
+                        CountryID = adr["Country"].ToString(),
+                        GSTNO = adr["GSTNO"].ToString()
+                    });
+                }
+
+            
+            }
+            return model;
+        }
+
+        public string AddUnitDetails(UnitMaster model, string CreatedBy)
+        {
+            try
+            {
+                if (model == null)
+                    return "Error: Model is null";
+
+
+                var contactList = new List<object>
+                    {
+                        new
+                        {
+                            Email = model.Email,
+                            AlternateEmail = model.AlternateEmail,
+                            ContactPersonName = model.ContactPersonName,
+                            OffMobileNO = model.OffMobileNO,
+                            WhatsappNo = model.WhatsappNo,
+                            Website = model.Website,
+                            Telephone = model.Tel1,
+                            Mobile1 = model.MobileNo,
+                            Mobile2 = "",
+                            Mobile3 = "",
+                            Mobile4 = "",
+                            Mobile5 = ""
+                        }
+                    };
+
+                var contactJson = System.Text.Json.JsonSerializer.Serialize(contactList);
+                var addressJson = System.Text.Json.JsonSerializer.Serialize(model.AddressList ?? new List<AddressDTO>());
+                var bankJson = System.Text.Json.JsonSerializer.Serialize(model.BankList ?? new List<BankDTO>());
+
+                var outParam = new SqlParameter("@result", SqlDbType.NVarChar, 250)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                var parameters = new Dictionary<string, SqlParameter>
+                {
+                    { "UnitID", new SqlParameter("@UnitID", model.UnitID ?? (object)DBNull.Value) },
+                    { "companyName", new SqlParameter("@companyName", model.companyName ?? (object)DBNull.Value) },
+                    { "factoryName", new SqlParameter("@factoryName", model.factoryName ?? (object)DBNull.Value) },
+                    { "unitCode", new SqlParameter("@unitCode", model.unitCode) },
+
+                    { "ContactJson", new SqlParameter("@ContactJson", contactJson) },
+                    { "AddressJson", new SqlParameter("@AddressJson", addressJson) },
+                    { "BankJson", new SqlParameter("@BankJson", bankJson) },
+
+                    { "CreatedBy", new SqlParameter("@CreatedBy", CreatedBy) },
+                    { "ModifiedBy", new SqlParameter("@ModifiedBy", DBNull.Value) },
+                    { "result", outParam }
+                };
+
+                var response = gc.ExecuteStoredProcedure("sp_SaveUnitMaster", parameters);
+
+                return response.OutputParameters["@result"]?.ToString() ?? "Error: No result from DB";
+            }
+            catch (Exception ex)
+            {
+                return "Error: " + ex.Message;
+            }
+        }
+
 
         public string UpdateVendorStatusService(int vendorId, bool status, string modifiedBy, string operation)
         {
@@ -74,6 +196,48 @@ namespace Arihant.Services
             catch (Exception ex)
             {
                 return "Error: " + ex.Message;
+            }
+        }
+
+        public void UpdateUnitService(int vendorId, bool status, string modifiedBy)
+        {
+            try
+            {
+             
+                var parameters = new Dictionary<string, SqlParameter>
+            {
+                { "ID", new SqlParameter("@ID", vendorId) },
+                { "IsActive", new SqlParameter("@IsActive", status) },
+                { "ModifiedBy", new SqlParameter("@ModifiedBy", modifiedBy) },
+                { "Operation", new SqlParameter("@Operation", "TOGGLE_STATUS") }
+            };
+
+                var response = gc.ExecuteStoredProcedure("SP_UnitMaster", parameters);
+                
+            }
+            catch (Exception ex)
+            {
+               
+            }
+        }
+
+        public void deleteUnitService(int vendorId, string modifiedBy, string Operation)
+        {
+            try
+            {
+
+                var parameters = new Dictionary<string, SqlParameter>
+                {
+                    { "ID", new SqlParameter("@ID", vendorId) },
+                    { "ModifiedBy", new SqlParameter("@ModifiedBy", modifiedBy) },
+                    { "Operation", new SqlParameter("@Operation", Operation) }
+                };
+
+                var response = gc.ExecuteStoredProcedure("SP_UnitMaster", parameters);
+            }
+            catch (Exception ex)
+            {
+
             }
         }
 
@@ -182,6 +346,44 @@ namespace Arihant.Services
             catch (Exception ex)
             {
                
+                throw ex;
+            }
+            return vendors;
+        }
+
+
+        public List<UnitMaster> GetUnitList()
+        {
+            List<UnitMaster> vendors = new List<UnitMaster>();
+            try
+            {
+                var parameters = new Dictionary<string, SqlParameter>
+                {
+                    { "Operation", new SqlParameter("@Operation", "Get_UnitListALL") }
+                };
+
+
+                DataSet response = gc.ExecuteStoredProcedureGetDataSet("SP_UnitMaster", parameters.Values.ToArray());
+
+                if (response != null && response.Tables.Count > 0)
+                {
+                    foreach (DataRow dr in response.Tables[0].Rows)
+                    {
+                        vendors.Add(new UnitMaster
+                        {
+                            UnitID = dr["UnitID"] != DBNull.Value ? dr["UnitID"].ToString() : "",
+                            companyName = dr["CompanyName"] != DBNull.Value ? dr["CompanyName"].ToString() : "",
+                            factoryName = dr["FactoryName"] != DBNull.Value ? dr["FactoryName"].ToString() : "",
+                            unitCode = dr["UnitCode"] != DBNull.Value ? dr["UnitCode"].ToString() : "",
+                            IsActive = dr["IsActive"] != DBNull.Value ? dr["IsActive"].ToString() : "",
+                            
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
                 throw ex;
             }
             return vendors;
@@ -697,6 +899,33 @@ namespace Arihant.Services
                         list.Add(obj);
                     }
                 }
+            return list;
+        }
+
+        public List<C_Master> GetCompany_MasterList()
+        {
+            List<C_Master> list = new List<C_Master>();
+            var parameters = new Dictionary<string, SqlParameter>
+                {
+                    { "Operation", new SqlParameter("@Operation", "Get_Company_Masters") }
+                };
+
+            DataSet ds = gc.ExecuteStoredProcedureGetDataSet("SP_UnitMaster", parameters.Values.ToArray());
+            if (ds != null && ds.Tables.Count > 0)
+            {
+                DataTable dt = ds.Tables[0];
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    C_Master obj = new C_Master
+                    {
+                        ID = row["ID"].ToString(),
+                        Name = row["Name"].ToString()
+                    };
+
+                    list.Add(obj);
+                }
+            }
             return list;
         }
 
